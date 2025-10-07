@@ -1,46 +1,79 @@
-# Scrollkeeper-Guild-Tools
-Dive into the next level of guild mastery with Scrollkeeper Guild Tools — the must-have suite that supercharges your ESO guild experience with a single, slick settings panel!
+<h2>Scrollkeeper Guild Tools</h2>
 
-• 💰 Donation Tracking & APIs
-– Caches every banked-gold event, so you can see total donated and last-donation timestamps.
-– Gold-icon overlays on your guild roster rows with tooltips, plus a public API for other modules (like ProvisionMember) to build on.
+<i>Where guilds keep their history — and their edge.</i>
 
-• 🗒️ In-Game Notebook & Personal Notes
-– Right-click any guild roster entry to add or edit a private note.
-– Search, filter, and review notes per member—no more sticky notes or OOC chat clutter.
+Take your ESO guild management to the next level with Scrollkeeper Guild Tools, a modern, performance-friendly successor to traditional officer utilities. Track donations, monitor probation timers, analyze guild history, and communicate with ease — all in one cohesive, stylish package that works live, without reloads.
 
-• 📧 Powerful Mail Enhancements
-– Context-menu shortcuts on your inbox: quick reply, forward, delete, and guild-invite by sender.
-- Mass mail the guild (with safe throttle delay).
-– Auto-filter mail by donation amount or time since last donation.
-– Pre-filled “compose mail” windows that remember your settings.
+Whether you lead a trade empire, a PvE fellowship, or a den of thieves, Scrollkeeper gives you the insight and tools you need to keep your guild thriving.
 
-• 🔍 Context-Menu Magic Everywhere
-– Chat: right-click names to send mail, invite to guild, or open your Notebook entry.
-– Guild Roster: one-click invite, notes, and mail actions.
-– Never dig through slash-commands again—your most-used guild actions live in a single right-click menu.
+<h3>⚙️ Dependencies</h3>
+<ul>
+<li><b>Requires:</b> LibAddonMenu-2.0&gt;=40, LibHistoire, LibAsync, LibTextFilter, LibDateTime, LibChatMenuButton</li>
+<li><b>Optional:</b> Advanced Member Tooltip (LibHistoire)</li>
+</ul>
 
-• 🎲 Slash-Command Arsenal
-– “/roll,” “/afk,” “/dnd,” “/on,” “/off,” group-invite shortcuts and a dozen more, all under the familiar “/” prompt.
-– Fully configurable and ready to override the default chat commands you rely on.
+<h2>⚔️ Features</h2>
+<h3>🕮 ProvisionMember: Probation & Donation Tracking</h3>
+<ul>
+<li>Tracks <b>time in guild</b> for probation monitoring.</li>
+<li>Records <b>donations</b> with totals and timestamps.</li>
+<li><b>Filter and mail</b> specific members (e.g., overdue, unpaid).</li>
+<li><b>Color-coded status</b> indicators for quick roster review.</li>
+<li>Includes a <b>live trader-flip countdown</b> — megaserver and DST aware.</li>
+</ul>
 
-• 💬 Chat & Whisper-Link Power
-– Whisper-link option on any player name—instantly paste a clickable link into your chat box.
-– Optional chat-window button to jump straight into the Scrollkeeper panel.
+<h3>🧾 Guild History</h3>
+<ul>
+<li>Captures <b>Roster</b>, <b>Bank</b>, and <b>Trader</b> history from LibHistoire.</li>
+<li><b>Unlimited view depth</b> – scroll through as many events as you’ve cached.</li>
+<li><b>Searchable results</b> – instantly find names, gold amounts, or item events.</li>
+<li><b>Color-coded roster changes</b> for visual clarity.</li>
+<li>Fully live — <b>no /reloadui required</b>.</li>
+</ul>
 
-• 🎉 Automated Welcome Messages
-– Custom, per-guild greeting templates (multilingual support).
-– Send “Welcome, %1!” automatically in guild chat the moment new members join.
+<h3>✉️ Mail Management</h3>
+<ul>
+<li>Create and reuse <b>custom mail templates</b> for dues, welcomes, and announcements.</li>
+<li>Send <b>filtered mass mail</b> with safe throttling.</li>
+<li>Compose messages directly in-game, <b>no reload needed</b>.</li>
+</ul>
 
-• 🎨 Total Color & Theme Control
-– Choose from 4 global themes accent—preview live in your UI.
-– Switch client language (EN/DE/FR/ES/JP/RU) on the fly from the same settings panel.
+<h3>💬 Chat Integration & Commands</h3>
+<ul>
+<li><b>Chat buttons</b> for instant access to settings or to open all windows at once.</li>
+<li>Slash commands:<br>
+&nbsp;&nbsp;/sgthistory – History Window<br>
+&nbsp;&nbsp;/sgtmail – Mail Module<br>
+&nbsp;&nbsp;/sgtnote – Notebook<br>
+&nbsp;&nbsp;/sgtprovision – Member Tracker</li>
+<li>Includes <b>fun utility commands</b> like <i>/roll</i>, <i>/afk</i>, <i>/on</i>, and <i>/off</i>.</li>
+</ul>
 
-• 👥 Enhanced Roster UI & Trader Timer
-– Color-code eligible members (based on your mail/donation filters).
-– Gold-donation icons right on the roster, with hover-tooltips showing totals.
-– Live, color-coded countdown to the next trader reset (megaserver and DST aware).
+<h3>🗒️ Notes & Member Tools</h3>
+<ul>
+<li><b>Right-click menus</b> in chat or roster for mail, invites, or private notes.</li>
+<li><b>Notebook system</b> to store, edit, and search member notes.</li>
+<li>Keeps officer records organized without external spreadsheets.</li>
+</ul>
 
-All powered by a lightweight core framework that handles seamless loading—so you spend less time configuring and more time dominating Cyrodiil, Coldharbour, or wherever your guild calls home.
+<h3>🎉 Automated Welcome Messages</h3>
+<ul>
+<li><b>Custom greeting templates</b> that trigger when new members join.</li>
+<li>Supports <b>placeholders</b> (e.g., %1 for player name).</li>
+<li>Full <b>localization</b> for English, German, French, Spanish, Japanese, and Russian.</li>
+</ul>
 
-It’s time to level up your guild game—install Scrollkeeper Guild Tools today!
+<h3>🎨 Themes & Settings</h3>
+<ul>
+<li>Choose from <b>4 color themes</b> — instantly switch styles.</li>
+<li>Change <b>settings, filters, and languages</b> live, with <b>no reload required</b>.</li>
+<li>Unified settings panel via <b>LibAddonMenu-2.0</b> for easy configuration.</li>
+</ul>
+
+<h2>🐉 Why Scrollkeeper?</h2>
+
+Because every guild deserves a chronicler.
+Scrollkeeper Guild Tools is built for leaders who care about structure, officers who value data, and players who thrive on organization.
+
+From donations to history, from members to mail —
+Scrollkeeper keeps the record so you can keep the guild.
