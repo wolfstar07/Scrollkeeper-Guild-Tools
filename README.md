@@ -52,7 +52,7 @@ Whether you lead a trade empire, a PvE fellowship, or a den of thieves, Scrollke
 <h3>🗒️ Notes & Member Tools</h3>
 <ul>
 <li><b>Right-click menus</b> in chat or roster for mail, invites, or private notes.</li>
-<li><b>Notebook system</b> to store, edit, and search member notes.</li>
+<li><b>Notebook system</b> to store, edit, and search member notes and conversations.</li>
 <li>Keeps officer records organized without external spreadsheets.</li>
 </ul>
 
@@ -66,8 +66,9 @@ Whether you lead a trade empire, a PvE fellowship, or a den of thieves, Scrollke
 <h3>🎨 Themes & Settings</h3>
 <ul>
 <li>Choose from <b>4 color themes</b> — instantly switch styles.</li>
-<li>Change <b>settings, filters, and languages</b> live, with <b>no reload required</b>.</li>
+<li>Change <b>settings and filters</b> live, with <b>no reload required</b>.</li>
 <li>Unified settings panel via <b>LibAddonMenu-2.0</b> for easy configuration.</li>
+<li>Fully localized in Spanish, French, German, Japanese, Italian, and Russian.</li>
 </ul>
 
 <h2>🐉 Why Scrollkeeper?</h2>
