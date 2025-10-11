@@ -9,7 +9,7 @@ Whether you lead a trade empire, a PvE fellowship, or a den of thieves, Scrollke
 <h3>⚙️ Dependencies</h3>
 <ul>
 <li><b>Requires:</b> LibAddonMenu-2.0&gt;=40, LibHistoire, LibAsync, LibTextFilter, LibDateTime, LibChatMenuButton</li>
-<li><b>Optional:</b> Advanced Member Tooltip (LibHistoire)</li>
+<li><b>Optional:</b> Advanced Member Tooltip (LibHistoire) pChat</li>
 </ul>
 
 <h2>⚔️ Features</h2>
@@ -60,7 +60,6 @@ Whether you lead a trade empire, a PvE fellowship, or a den of thieves, Scrollke
 <ul>
 <li><b>Custom greeting templates</b> that trigger when new members join.</li>
 <li>Supports <b>placeholders</b> (e.g., %1 for player name).</li>
-<li>Full <b>localization</b> for English, German, French, Spanish, Japanese, and Russian.</li>
 </ul>
 
 <h3>🎨 Themes & Settings</h3>
