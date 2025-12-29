@@ -37,6 +37,8 @@ Whether you lead a trade empire, a PvE fellowship, or a den of thieves, Scrollke
 <li>Create and reuse <b>custom mail templates</b> for dues, welcomes, and announcements.</li>
 <li>Send <b>filtered mass mail</b> with safe throttling.</li>
 <li>Compose messages directly in-game, <b>no reload needed</b>.</li>
+<li>Message preview.</li>
+<li>Ability to automatically remove members from guild after mailing.</li>
 </ul>
 
 <h3>💬 Chat Integration & Commands</h3>
