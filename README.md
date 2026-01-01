@@ -27,7 +27,7 @@ Whether you lead a trade empire, a PvE fellowship, or a den of thieves, Scrollke
 <li>Captures <b>Roster</b>, <b>Bank</b>, and <b>Trader</b> history from LibHistoire.</li>
 <li><b>Unlimited view depth</b> – scroll through as many events as you’ve cached.</li>
 <li><b>Searchable results</b> – instantly find names, gold amounts, or item events.</li>
-<li><b>Create manual logs</b> - inject logs of mailed items and gold into your history for the purposes of donation tracking.</li>
+<li><b>Create and delete manual logs</b> - inject logs of mailed items and gold into your history for the purposes of donation tracking.</li>
 <li><b>Color-coded roster changes</b> for visual clarity.</li>
 <li>Fully live — <b>no /reloadui required</b>.</li>
 </ul>
@@ -55,6 +55,7 @@ Whether you lead a trade empire, a PvE fellowship, or a den of thieves, Scrollke
 <h3>🗒️ Notes & Member Tools</h3>
 <ul>
 <li><b>Right-click menus</b> in chat or roster for mail, invites, or private notes.</li>
+<li>Note preview.</li>
 <li><b>Notebook system</b> to store, edit, and search member notes and conversations.</li>
 <li>Keeps officer records organized without external spreadsheets.</li>
 </ul>
