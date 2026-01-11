@@ -20,6 +20,7 @@ Whether you lead a trade empire, a PvE fellowship, or a den of thieves, Scrollke
 <li><b>Filter and mail</b> specific members (e.g., overdue, unpaid).</li>
 <li><b>Color-coded status</b> indicators for quick roster review.</li>
 <li>Includes a <b>live trader-flip countdown</b> — megaserver and DST aware.</li>
+<li>Configure task reminders - never forget to do any of your guild chores again!</li>
 </ul>
 
 <h3>🧾 Guild History</h3>
