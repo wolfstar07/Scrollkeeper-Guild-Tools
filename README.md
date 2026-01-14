@@ -20,7 +20,7 @@ Whether you lead a trade empire, a PvE fellowship, or a den of thieves, Scrollke
 <li><b>Filter and mail</b> specific members (e.g., overdue, unpaid).</li>
 <li><b>Color-coded status</b> indicators for quick roster review.</li>
 <li>Includes a <b>live trader-flip countdown</b> — megaserver and DST aware.</li>
-<li>Configure task reminders - never forget to do any of your guild chores again!</li>
+<li>Configure <b>task reminders</b> - never forget to do any of your guild chores again!</li>
 </ul>
 
 <h3>🧾 Guild History</h3>
@@ -58,18 +58,20 @@ Whether you lead a trade empire, a PvE fellowship, or a den of thieves, Scrollke
 <li><b>Right-click menus</b> in chat or roster for mail, invites, or private notes.</li>
 <li>Note preview.</li>
 <li><b>Notebook system</b> to store, edit, and search member notes and conversations.</li>
+<li>Track event attendance.</li>
 <li>Keeps officer records organized without external spreadsheets.</li>
 </ul>
 
 <h3>🎉 Automated Welcome Messages</h3>
 <ul>
 <li><b>Custom greeting templates</b> that trigger when new members join.</li>
+<li>Message queueing if multiple members join at the same time.</li>
 <li>Supports <b>placeholders</b> (e.g., %1 for player name).</li>
 </ul>
 
 <h3>🎨 Themes & Settings</h3>
 <ul>
-<li>Choose from <b>4 color themes</b> — instantly switch styles.</li>
+<li>Choose from <b>multiple color themes</b> — instantly switch styles.</li>
 <li>Change <b>settings and filters</b> live, with <b>no reload required</b>.</li>
 <li>Unified settings panel via <b>LibAddonMenu-2.0</b> for easy configuration.</li>
 <li>Fully localized in Spanish, French, German, Japanese, Italian, and Russian.</li>
