@@ -1,0 +1,69 @@
+All settings are configurable in real time and do not require a UI reload. A chat message confirms when Scrollkeeper is fully loaded and it is safe to open Scrollkeeper History after login.
+
+[HR]
+
+[SIZE="4"][B]Manual Donation Logging[/B][/SIZE]
+
+To manually inject mailed donations into the history cache:
+
+• Open the Guild Roster  
+• Right-click a member's name  
+• Select [B]Log Donation[/B]
+
+You may specify:
+• Donation type  
+• Gold value  
+• Optional notes  
+
+This is useful for logging donations that were mailed while you were offline or before Scrollkeeper was installed.
+
+[HR]
+
+[SIZE="4"][B]Chat Buttons[/B][/SIZE]
+
+Two buttons are added to the top-right corner of the chat window:
+
+• Open all Scrollkeeper windows  
+• Open Scrollkeeper Settings directly  
+
+These provide quick access without navigating through the menu system or manually opening multiple windows.
+
+[HR]
+
+[SIZE="4"][B]Notebook Search[/B][/SIZE]
+
+The Notebook search field:
+
+• Is not case-sensitive  
+• Searches both subject lines and note bodies  
+• Returns all matches within the selected category  
+
+This makes locating archived mail logs and notes fast and reliable.
+
+[HR]
+
+[SIZE="4"][B]Mass Mail Sender[/B][/SIZE]
+
+The Mass Mail tool allows you to:
+
+• Create reusable mail templates  
+• Preview the message before sending  
+• Preview recipient lists  
+• Filter recipients by guild, rank, or Provision Member group  
+• Automatically remove members after mailing (optional)
+
+After sending:
+• A log entry is created in Scrollkeeper Notebook  
+• Failed recipients are recorded   
+
+[HR]
+
+[SIZE="4"][B]Task Reminder System[/B][/SIZE]
+
+The Task system includes preset tasks and fully customizable entries.
+
+• Tasks display only on the roster of their assigned guild  
+• A countdown timer shows time remaining  
+• Clicking the timer resets it  
+
+Perfect for tracking recurring guild responsibilities.
