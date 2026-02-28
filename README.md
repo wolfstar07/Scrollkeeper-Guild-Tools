@@ -74,7 +74,7 @@ Whether you lead a trade empire, a PvE fellowship, or a den of thieves, Scrollke
 <li>Choose from <b>multiple color themes</b> — instantly switch styles.</li>
 <li>Change <b>settings and filters</b> live, with <b>no reload required</b>.</li>
 <li>Unified settings panel via <b>LibAddonMenu-2.0</b> for easy configuration.</li>
-<li>Fully localized in Spanish, French, German, Japanese, Italian, and Russian.</li>
+<li>Fully localized in English, Spanish, French, German, Japanese, Italian, and Russian.</li>
 </ul>
 
 <h2>🐉 Why Scrollkeeper?</h2>
