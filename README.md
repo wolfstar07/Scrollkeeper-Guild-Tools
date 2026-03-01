@@ -9,7 +9,7 @@ Whether you lead a trade empire, a PvE fellowship, or a den of thieves, Scrollke
 <h3>⚙️ Dependencies</h3>
 <ul>
 <li><b>Requires:</b> LibAddonMenu-2.0&gt;=40, LibHistoire, LibAsync, LibTextFilter, LibDateTime, LibChatMenuButton</li>
-<li><b>Optional:</b> Advanced Member Tooltip (LibHistoire) pChat</li>
+<li><b>Optional:</b> Advanced Member Tooltip (LibHistoire) pChat, DolgubonsGuildReorder, LibScroll</li>
 </ul>
 
 <h2>⚔️ Features</h2>
