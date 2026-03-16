@@ -1,9 +1,10 @@
-ScrollkeeperLocalization = ScrollkeeperLocalization or {}
+Scrollkeeper = Scrollkeeper or {}
+Scrollkeeper.Localization = Scrollkeeper.Localization or {}
 
 --------------------------------------------------------------------------------
 -- FRAMEWORK CORE
 --------------------------------------------------------------------------------
-ScrollkeeperLocalization["ScrollkeeperFramework"] = {
+Scrollkeeper.Localization["ScrollkeeperFramework"] = {
   FRAMEWORK_LOADED = "Scrollkeeper Framework loaded successfully",
   CRITICAL_ERROR = "CRITICAL ERROR: Could not create settings panel!",
   ERROR_REGISTERING = "ERROR registering settings",
@@ -21,7 +22,7 @@ ScrollkeeperLocalization["ScrollkeeperFramework"] = {
 --------------------------------------------------------------------------------
 -- COLOR THEMES
 --------------------------------------------------------------------------------
-ScrollkeeperLocalization["ScrollkeeperColorThemes"] = {
+Scrollkeeper.Localization["ScrollkeeperColorThemes"] = {
   -- Main
   SUBMENU_NAME = "Color Themes",
   DESCRIPTION = "Choose from pre-defined color themes for Scrollkeeper's interface elements.",
@@ -42,7 +43,7 @@ ScrollkeeperLocalization["ScrollkeeperColorThemes"] = {
   NOTE = "Note: Theme changes apply immediately to all open Scrollkeeper windows.",
   
   -- Error Messages
-  ERROR_FRAMEWORK_MISSING = "[ScrollkeeperColorThemes] ERROR: ScrollkeeperFramework missing!",
+  ERROR_FRAMEWORK_MISSING = "|c00FF00[ScrollkeeperColorThemes]|r ERROR: ScrollkeeperFramework missing!",
   
   -- Theme Names (if you want to localize them)
   THEME_EMBER = "Ember",
@@ -59,7 +60,7 @@ ScrollkeeperLocalization["ScrollkeeperColorThemes"] = {
 --------------------------------------------------------------------------------
 -- PROVISIONAL MEMBER TRACKING
 --------------------------------------------------------------------------------
-ScrollkeeperLocalization["ScrollkeeperProvisionMember"] = {
+Scrollkeeper.Localization["ScrollkeeperProvisionMember"] = {
   SUBMENU_NAME = "Provisional Member Tracking",
   DESCRIPTION = "Track guild members in probationary ranks and those not meeting donation requirements. Use |cFFD700/sgtprovision|r to open the management window.",
   MASTER_ENABLE = "Enable Provisional Member Tracking (Master)",
@@ -321,7 +322,7 @@ ScrollkeeperLocalization["ScrollkeeperProvisionMember"] = {
 --------------------------------------------------------------------------------
 -- GUILD MAIL
 --------------------------------------------------------------------------------
-ScrollkeeperLocalization["ScrollkeeperNotebookMail"] = {
+Scrollkeeper.Localization["ScrollkeeperNotebookMail"] = {
   SUBMENU_NAME = "Guild Mail",
   DESCRIPTION = "Bulk mail composition with template integration. Mail sends are automatically throttled at 3.1 seconds between messages. Use |cFFD700/sgtmail|r to open the mail window.",
   ENABLE_MAIL = "Enable Guild Mail",
@@ -429,26 +430,26 @@ ScrollkeeperLocalization["ScrollkeeperNotebookMail"] = {
 --------------------------------------------------------------------------------
 -- NOTEBOOK
 --------------------------------------------------------------------------------
-ScrollkeeperLocalization["ScrollkeeperNotebook"] = {
+Scrollkeeper.Localization["ScrollkeeperNotebook"] = {
   -- Main
   SUBMENU_NAME = "Notebook Settings",
   WINDOW_TITLE = "Scrollkeeper Notebook",
   
   -- Error Messages
-  ERROR_FRAMEWORK_MISSING = "[ScrollkeeperNotebook] ERROR: ScrollkeeperFramework missing!",
-  ERROR_ALREADY_INIT = "[ScrollkeeperNotebook] Already initialized, skipping...",
-  ERROR_WINDOW_EXISTS = "[ScrollkeeperNotebook] Window already exists, returning existing",
-  ERROR_DROPDOWN_FAILED = "[ScrollkeeperNotebook] Warning: Could not create dropdown",
+  ERROR_FRAMEWORK_MISSING = "|c00FF00[ScrollkeeperNotebook]|r ERROR: ScrollkeeperFramework missing!",
+  ERROR_ALREADY_INIT = "|c00FF00[ScrollkeeperNotebook]|r Already initialized, skipping...",
+  ERROR_WINDOW_EXISTS = "|c00FF00[ScrollkeeperNotebook]|r Window already exists, returning existing",
+  ERROR_DROPDOWN_FAILED = "|c00FF00[ScrollkeeperNotebook]|r Warning: Could not create dropdown",
   ERROR_WINDOW_NOT_INIT = "Notebook window not initialized.",
   ERROR_NO_NOTE_ENTRY = "There is no note entry for %s.",
-  ERROR_DISABLED = "[ScrollkeeperNotebook] Notebook is disabled",
-  ERROR_NO_TITLE = "[ScrollkeeperNotebook] Please enter a title for the note",
-  ERROR_SAVE_FAILED = "[ScrollkeeperNotebook] Failed to save note",
-  ERROR_TEMPLATE_NO_TITLE = "[ScrollkeeperNotebook] Please enter a title for the template",
+  ERROR_DISABLED = "|c00FF00[ScrollkeeperNotebook]|r Notebook is disabled",
+  ERROR_NO_TITLE = "|c00FF00[ScrollkeeperNotebook]|r Please enter a title for the note",
+  ERROR_SAVE_FAILED = "|c00FF00[ScrollkeeperNotebook]|r Failed to save note",
+  ERROR_TEMPLATE_NO_TITLE = "|c00FF00[ScrollkeeperNotebook]|r Please enter a title for the template",
   
   -- Success Messages
-  SUCCESS_NOTE_SAVED = "[ScrollkeeperNotebook] Note saved: %s",
-  SUCCESS_TEMPLATE_SAVED = "[ScrollkeeperNotebook] Mail template saved: %s",
+  SUCCESS_NOTE_SAVED = "|c00FF00[ScrollkeeperNotebook]|r Note saved: %s",
+  SUCCESS_TEMPLATE_SAVED = "|c00FF00[ScrollkeeperNotebook]|r Mail template saved: %s",
   
   -- Window Labels
   LABEL_SEARCH = "Search:",
@@ -518,24 +519,24 @@ ScrollkeeperLocalization["ScrollkeeperNotebook"] = {
 --------------------------------------------------------------------------------
 -- HISTORY
 --------------------------------------------------------------------------------
-ScrollkeeperLocalization["ScrollkeeperHistory"] = {
+Scrollkeeper.Localization["ScrollkeeperHistory"] = {
   -- Main
   SUBMENU_NAME = "Guild History Search",
   WINDOW_TITLE = "Guild History Search",
   
   -- Error Messages
-  ERROR_FRAMEWORK_MISSING = "[ScrollkeeperHistory] ERROR: ScrollkeeperFramework missing!",
-  ERROR_WINDOW_FAILED = "[ScrollkeeperHistory] Failed to create window",
-  ERROR_NO_EXPORT = "[ScrollkeeperHistory] No events to export",
+  ERROR_FRAMEWORK_MISSING = "|c00FF00[ScrollkeeperHistory]|r ERROR: ScrollkeeperFramework missing!",
+  ERROR_WINDOW_FAILED = "|c00FF00[ScrollkeeperHistory]|r Failed to create window",
+  ERROR_NO_EXPORT = "|c00FF00[ScrollkeeperHistory]|r No events to export",
   
   -- Success Messages
-  SUCCESS_READY = "[ScrollkeeperHistory] Ready - use /sgthistory",
+  SUCCESS_READY = "|c00FF00[ScrollkeeperHistory]|r Ready - use /sgthistory",
   
   -- Log Messages
   LOG_LOADING = "[History] Loading... SF.Data exists: %s",
   LOG_DATA_GETEVENTS = "[History] SF.Data.getEvents at load: %s",
   LOG_DATA_UNAVAILABLE = "[History] SF.Data.getEvents not available",
-  LOG_FALLBACK_INIT = "[ScrollkeeperHistory] Fallback initialization triggered",
+  LOG_FALLBACK_INIT = "|c00FF00[ScrollkeeperHistory]|r Fallback initialization triggered",
   
   -- Window Labels
   LABEL_GUILD = "Guild:",
@@ -656,13 +657,13 @@ ScrollkeeperLocalization["ScrollkeeperHistory"] = {
   -- Member Names
   MEMBER_UNKNOWN = "Unknown",
   
-  LOG_LIBSCROLL_NOT_FOUND = "[ScrollkeeperHistory] LibScroll not found - using basic scrolling",  
+  LOG_LIBSCROLL_NOT_FOUND = "|c00FF00[ScrollkeeperHistory]|r LibScroll not found - using basic scrolling",  
 }
 
 --------------------------------------------------------------------------------
 -- ROSTER
 --------------------------------------------------------------------------------
-ScrollkeeperLocalization["ScrollkeeperRoster"] = {
+Scrollkeeper.Localization["ScrollkeeperRoster"] = {
   -- Main
   SUBMENU_NAME = "Roster Enhancement",
   
@@ -689,7 +690,7 @@ ScrollkeeperLocalization["ScrollkeeperRoster"] = {
                  "|cFF0000< 2 hours|r - Urgent!",
   
   -- Error Messages
-  ERROR_FRAMEWORK_MISSING = "[ScrollkeeperRoster] ERROR: ScrollkeeperFramework is missing!",
+  ERROR_FRAMEWORK_MISSING = "|c00FF00[ScrollkeeperRoster]|r ERROR: ScrollkeeperFramework is missing!",
   
   -- Tasks
   TASKS_HEADER = "Task Reminders",
@@ -759,7 +760,7 @@ ScrollkeeperLocalization["ScrollkeeperRoster"] = {
 --------------------------------------------------------------------------------
 -- CONTEXT MENU
 --------------------------------------------------------------------------------
-ScrollkeeperLocalization["ScrollkeeperContextMenu"] = {
+Scrollkeeper.Localization["ScrollkeeperContextMenu"] = {
   SUBMENU_NAME = "Context Menu Options",
   DESCRIPTION = "Adds new-mail, guild-invite and chat-invite entries to all right-click context menus.",
   MASTER_ENABLE = "Enable Context Menu Features",
@@ -822,7 +823,7 @@ ScrollkeeperLocalization["ScrollkeeperContextMenu"] = {
 --------------------------------------------------------------------------------
 -- DATA MODULE
 --------------------------------------------------------------------------------
-ScrollkeeperLocalization["ScrollkeeperData"] = {
+Scrollkeeper.Localization["ScrollkeeperData"] = {
   -- Module Info
   DESCRIPTION = "Background caching service for guild history data using LibHistoire.",
   
@@ -836,14 +837,14 @@ ScrollkeeperLocalization["ScrollkeeperData"] = {
   -- Log Messages
   EVENTS_CACHED = "%s/%s: %d events cached",
   STARTED_CACHING = "Started caching %d guilds",
-  MODULE_LOADED = "[ScrollkeeperData] Loaded - background caching service",
+  MODULE_LOADED = "|c00FF00[ScrollkeeperData]|r Loaded - background caching service",
   LOG_MANUAL_DONATION = "Manual donation logged: %s - %d gold",
   MANUAL_DONATION_SOURCE = "Manual Entry",
   
   -- Error Messages
-  ERROR_FRAMEWORK_MISSING = "[ScrollkeeperData] ERROR: ScrollkeeperFramework missing!",
-  ERROR_DATA_NOT_TABLE = "[ScrollkeeperData] CRITICAL: SF.Data is not a table!",
-  ERROR_HISTOIRE_NOT_FOUND = "[ScrollkeeperData] ERROR: LibHistoire not found!",
+  ERROR_FRAMEWORK_MISSING = "|c00FF00[ScrollkeeperData]|r ERROR: ScrollkeeperFramework missing!",
+  ERROR_DATA_NOT_TABLE = "|c00FF00[ScrollkeeperData]|r CRITICAL: SF.Data is not a table!",
+  ERROR_HISTOIRE_NOT_FOUND = "|c00FF00[ScrollkeeperData]|r ERROR: LibHistoire not found!",
   
   -- Cache Display
   GUILD_HEADER = "%s:",
@@ -855,16 +856,47 @@ ScrollkeeperLocalization["ScrollkeeperData"] = {
   CAT_BANKED_GOLD = "bankedGold",
   CAT_BANKED_ITEMS = "bankedItems",
   CAT_SALES = "sales",
+  
+  -- Manual donation logging
+  LOG_MANUAL_DONATION = "|c00FF00[ScrollkeeperData]|r Logged: %d gold from %s to %s",
+
+  -- Delete entry messages
+  ERROR_DELETE_MISSING_PARAMS = "|c00FF00[ScrollkeeperData]|r deleteManualEntry: Missing required parameters",
+  SUCCESS_DELETE_ENTRY = "|c00FF00[ScrollkeeperData]|r Successfully deleted manual entry from cache and storage",
+  ERROR_DELETE_NOT_FOUND = "|c00FF00[ScrollkeeperData]|r deleteManualEntry: Entry not found",
+
+  -- Debug cache messages
+  DEBUG_NO_GUILD = "[Data Debug] No guild specified",
+  DEBUG_NO_CACHE_FOR_GUILD = "[Data Debug] No cache for guild: %s",
+  DEBUG_AVAILABLE_GUILDS = "[Data Debug] Available guilds:",
+  DEBUG_GUILD_LIST_ITEM = "  - %s",
+  DEBUG_CACHE_FOR_GUILD = "[Data Debug] Cache for %s:",
+  DEBUG_BANKED_GOLD_COUNT = "  bankedGold: %d events",
+  DEBUG_RECENT_DEPOSITS = "  Recent deposits:",
+  DEBUG_NO_DEPOSITS = "  No deposits found",
+  DEBUG_BANKED_GOLD_MISSING = "  bankedGold: NOT PRESENT",
+  DEBUG_ROSTER_COUNT = "  roster: %d events",
+  DEBUG_ROSTER_MISSING = "  roster: NOT PRESENT",
+
+  -- Slash command messages
+  ERROR_DATA_MODULE_UNAVAILABLE = "Data module or check function not available",
+  CMD_CHECKGOLD_USAGE = "Usage: /sgtcheckgold GuildName|@DisplayName|Days",
+  CMD_CHECKGOLD_EXAMPLE = "Example: /sgtcheckgold Dragon's Nest Thievery Co|@YourName|14",
+  CMD_CHECKGOLD_RESULT = "%s donated %d gold in last %d days (%s)",
+
+  -- Initialization
+  ERROR_LIBHISTOIRE_MISSING = "|c00FF00[ScrollkeeperData]|r ERROR: LibHistoire not found",
 }
 
 --------------------------------------------------------------------------------
 -- WELCOME MESSAGES
 --------------------------------------------------------------------------------
-ScrollkeeperLocalization["ScrollkeeperWelcome"] = {
+Scrollkeeper.Localization["ScrollkeeperWelcome"] = {
   SUBMENU_NAME = "Welcome Messages",
   DESCRIPTION = "Configure welcome messages for guild members. Use %1 for player name and %2 for guild name. Messages will queue when accepting multiple applications or if text field is active.",
   MASTER_ENABLE = "Enable Welcome Messages",
   MASTER_ENABLE_TIP = "Toggle all welcome messages on or off.",
+  LOG_MEMBER_JOINED = "|c00FF00[ScrollkeeperWelcome]|r %s joined %s as %s",
   
   -- Template
   TEMPLATE_HEADER = "Template Variables",
@@ -881,7 +913,7 @@ ScrollkeeperLocalization["ScrollkeeperWelcome"] = {
 --------------------------------------------------------------------------------
 -- STANDARD COMMANDS
 --------------------------------------------------------------------------------
-ScrollkeeperLocalization["ScrollkeeperStandardCommands"] = {
+Scrollkeeper.Localization["ScrollkeeperStandardCommands"] = {
   -- Main
   SUBMENU_NAME = "Chat Commands & Utilities",
   DESCRIPTION = "Additional utility commands and keybinding support for Scrollkeeper.",
@@ -1016,22 +1048,22 @@ ScrollkeeperLocalization["ScrollkeeperStandardCommands"] = {
   TEST_DATA_NOT_LOADED = "Data module not loaded",
   
   -- Error Messages
-  ERROR_FRAMEWORK_MISSING = "[ScrollkeeperStandardCommands] ERROR: ScrollkeeperFramework missing!",
+  ERROR_FRAMEWORK_MISSING = "|c00FF00[ScrollkeeperStandardCommands]|r ERROR: ScrollkeeperFramework missing!",
   ERROR_NOTEBOOK_DISABLED = "Notebook is disabled in settings",
   ERROR_NOTEBOOK_NO_WINDOW = "Notebook window not available",
   ERROR_NOTEBOOK_NOT_LOADED = "Notebook module not loaded",
   
   -- Log Messages
-  LOG_REGISTERING = "[ScrollkeeperStandardCommands] Registering slash commands...",
-  LOG_REGISTERED = "[ScrollkeeperStandardCommands] Slash commands registered",
-  LOG_INITIALIZING = "[ScrollkeeperStandardCommands] Initializing...",
-  LOG_COMPLETE = "[ScrollkeeperStandardCommands] Initialization complete",
+  LOG_REGISTERING = "|c00FF00[ScrollkeeperStandardCommands]|r Registering slash commands...",
+  LOG_REGISTERED = "|c00FF00[ScrollkeeperStandardCommands]|r Slash commands registered",
+  LOG_INITIALIZING = "|c00FF00[ScrollkeeperStandardCommands]|r Initializing...",
+  LOG_COMPLETE = "|c00FF00[ScrollkeeperStandardCommands]|r Initialization complete",
 }
 
 --------------------------------------------------------------------------------
 -- ATTENDANCE
 --------------------------------------------------------------------------------
-ScrollkeeperLocalization["ScrollkeeperAttendance"] = {
+Scrollkeeper.Localization["ScrollkeeperAttendance"] = {
   -- Module info
   SUBMENU_NAME = "Event Attendance",
   
@@ -1095,3 +1127,35 @@ ScrollkeeperLocalization["ScrollkeeperAttendance"] = {
   BTN_CLEAR_HISTORY_TIP = "Remove all saved attendance sessions",
   WARNING_CLEAR_HISTORY = "This will permanently delete all attendance records!",
 }
+
+--------------------------------------------------------------------------------
+-- APPLICATIONS
+--------------------------------------------------------------------------------
+Scrollkeeper.Localization["ScrollkeeperApplications"] = {
+  -- Module info
+  SUBMENU_NAME = "Guild Applications",
+  DESCRIPTION = "Automatically log guild applications to your Notebook for record keeping. Applications are saved with full details including the applicant's message.",
+  
+  -- Settings
+  MASTER_ENABLE = "Enable Application Logging",
+  MASTER_ENABLE_TIP = "Master toggle for application logging functionality",
+  AUTO_LOG = "Automatically Log New Applications",
+  AUTO_LOG_TIP = "When enabled, new guild applications are automatically saved to Notebook",
+  SHOW_NOTIFICATIONS = "Show Chat Notifications",
+  SHOW_NOTIFICATIONS_TIP = "Display a message in chat when applications are logged",
+  
+  -- Guild settings
+  HEADER_GUILDS = "Per-Guild Settings",
+  GUILDS_DESC = "Choose which guilds to log applications for:",
+  GUILD_TOGGLE_TIP = "Log applications for %s",
+  
+  -- Errors
+  ERROR_NOTEBOOK_UNAVAILABLE = "|c00FF00[ScrollkeeperApplications]|r Notebook module is not available. Applications cannot be logged.",
+  WARNING_NOTEBOOK_MISSING = "|c00FF00[ScrollkeeperApplications]|r WARNING: Notebook module not loaded. Application logging will not work.",
+  
+  SUCCESS_LOGGED_SINGLE = "|c00FF00[ScrollkeeperApplications]|r Logged application from |cFFD700%s|r to |cFFD700%s|r",
+  ERROR_SAVE_FAILED = "|cFF5555[ScrollkeeperApplications]|r Failed to save application from %s",
+  SUCCESS_LOGGED_MULTIPLE = "|c00FF00[ScrollkeeperApplications]|r Logged %d applications for |cFFD700%s|r",
+}
+-- Backward compatibility (DEPRECATED)
+_G.Scrollkeeper.Localization = Scrollkeeper.Localization
