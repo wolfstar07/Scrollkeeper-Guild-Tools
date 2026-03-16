@@ -1,10 +1,17 @@
 -- Scrollkeeper Guild Tools Addon
 -- ScrollkeeperContextMenu
  
-local _addon = {
-  Name    = "ScrollkeeperContextMenu",
-}
-ScrollkeeperContextMenu = ScrollkeeperContextMenu or _addon
+-- Local references
+local Scrollkeeper = Scrollkeeper
+local SF = Scrollkeeper.Framework
+local SF_Set = Scrollkeeper.Settings
+
+-- Initialize module
+Scrollkeeper.ContextMenu = Scrollkeeper.ContextMenu or { Name = "ScrollkeeperContextMenu" }
+local _addon = Scrollkeeper.ContextMenu
+
+-- Backward compatibility (DEPRECATED)
+_G.ScrollkeeperContextMenu = Scrollkeeper.ContextMenu
 
 -- Prevent multiple initialization
 if _addon._initialized then
@@ -193,7 +200,7 @@ local function createDonationWindow(displayName)
   guildCombo:SetSortsItems(false)
   guildCombo:SetFont("ZoFontGame")
   
--- Store guildCombo on window object BEFORE using it
+  -- Store guildCombo on window object BEFORE using it
   window.guildCombo = guildCombo
 
   -- Populate guild dropdown
@@ -226,7 +233,7 @@ local function createDonationWindow(displayName)
     end
   end
 
--- Set up guild roster sync AFTER window.guildCombo is defined
+  -- Set up guild roster sync AFTER window.guildCombo is defined
   ZO_PreHook(GUILD_ROSTER_MANAGER, "SetGuildId", function(_, newGuildId)
     if window and not window:IsHidden() and window.guildCombo then
       local name = GetGuildName(newGuildId)
