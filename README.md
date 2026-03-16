@@ -58,6 +58,7 @@ Whether you lead a trade empire, a PvE fellowship, or a den of thieves, Scrollke
 <li><b>Right-click menus</b> in chat or roster for mail, invites, or private notes.</li>
 <li>Note preview.</li>
 <li><b>Notebook system</b> to store, edit, and search member notes and conversations.</li>
+<li>Automatic application logging.</li>
 <li>Track event attendance.</li>
 <li>Keeps officer records organized without external spreadsheets.</li>
 </ul>
