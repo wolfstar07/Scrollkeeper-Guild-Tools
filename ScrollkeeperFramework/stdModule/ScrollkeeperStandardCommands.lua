@@ -1,17 +1,24 @@
 -- Scrollkeeper Guild Tools Addon
 -- ScrollkeeperStandardCommands
 
-if not ScrollkeeperFramework then
-  d(SF.func._L("ScrollkeeperStandardCommands", "ERROR_FRAMEWORK_MISSING"))
+-- Local references
+local Scrollkeeper = Scrollkeeper
+local SF = Scrollkeeper.Framework
+
+if not SF then
+  d("ERROR: ScrollkeeperFramework missing!")
   return
 end
 
-local SF = ScrollkeeperFramework
-
-local _addon = {
-  Name    = "ScrollkeeperStandardCommands",
+-- Initialize module
+Scrollkeeper.StandardCommands = Scrollkeeper.StandardCommands or {
+  Name = "ScrollkeeperStandardCommands",
   controls = {},
 }
+local _addon = Scrollkeeper.StandardCommands
+
+-- Backward compatibility (DEPRECATED)
+_G.ScrollkeeperStandardCommands = Scrollkeeper.StandardCommands
 
 -- Debug command with comprehensive system check
 SLASH_COMMANDS["/skdebug"] = function()
@@ -38,9 +45,9 @@ SLASH_COMMANDS["/skdebug"] = function()
   end
   
   -- Check specific module states
-  d(string.format(SF.func._L("ScrollkeeperStandardCommands", "DEBUG_CONTEXT"), tostring(ScrollkeeperContextMenu ~= nil)))
-  d(string.format(SF.func._L("ScrollkeeperStandardCommands", "DEBUG_NOTEBOOK"), tostring(ScrollkeeperNotebook ~= nil)))
-  d(string.format(SF.func._L("ScrollkeeperStandardCommands", "DEBUG_DATA"), tostring(ScrollkeeperData ~= nil)))
+  d(string.format(SF.func._L("ScrollkeeperStandardCommands", "DEBUG_CONTEXT"), tostring(Scrollkeeper.ContextMenu ~= nil)))
+  d(string.format(SF.func._L("ScrollkeeperStandardCommands", "DEBUG_NOTEBOOK"), tostring(Scrollkeeper.Notebook ~= nil)))
+  d(string.format(SF.func._L("ScrollkeeperStandardCommands", "DEBUG_DATA"), tostring(Scrollkeeper.Data ~= nil)))
   
   -- Library status
   d(string.format(SF.func._L("ScrollkeeperStandardCommands", "DEBUG_HISTOIRE"), tostring(LibHistoire ~= nil)))
@@ -66,8 +73,8 @@ SLASH_COMMANDS["/sktest"] = function(param)
       d(SF.func._L("ScrollkeeperStandardCommands", "TEST_CONTEXT_ACTIVE"))
       
       -- Check if our module is enabled
-      if ScrollkeeperContextMenu then
-        local settings = ScrollkeeperFramework.getModuleSettings("ScrollkeeperContextMenu", {})
+      if Scrollkeeper.ContextMenu then
+        local settings = SF.getModuleSettings("ScrollkeeperContextMenu", {})
         d(string.format(SF.func._L("ScrollkeeperStandardCommands", "TEST_CONTEXT_ENABLED"), tostring(settings.enabled)))
         d(string.format(SF.func._L("ScrollkeeperStandardCommands", "TEST_CONTEXT_MAIL"), tostring(settings.chatNewMail)))
         d(string.format(SF.func._L("ScrollkeeperStandardCommands", "TEST_CONTEXT_INVITE"), tostring(settings.chatInvite)))
@@ -80,16 +87,16 @@ SLASH_COMMANDS["/sktest"] = function(param)
     
   elseif param == "settings" then
     d(SF.func._L("ScrollkeeperStandardCommands", "TEST_SETTINGS_HEADER"))
-    if ScrollkeeperFramework and ScrollkeeperFramework.getModuleSettings then
+    if SF and SF.getModuleSettings then
       -- Test each module's settings
       local modules = {"ScrollkeeperContextMenu", "ScrollkeeperNotebook", "ScrollkeeperData"}
       for _, modName in ipairs(modules) do
-        local settings = ScrollkeeperFramework.getModuleSettings(modName, {})
+        local settings = SF.getModuleSettings(modName, {})
         d(string.format(SF.func._L("ScrollkeeperStandardCommands", "TEST_SETTINGS_ACCESSIBLE"), modName, tostring(settings ~= nil)))
       end
       
       -- Test panel
-      if ScrollkeeperFramework.panel then
+      if SF.panel then
         d(SF.func._L("ScrollkeeperStandardCommands", "TEST_SETTINGS_PANEL"))
       else
         d(SF.func._L("ScrollkeeperStandardCommands", "TEST_SETTINGS_NO_PANEL"))
@@ -100,8 +107,8 @@ SLASH_COMMANDS["/sktest"] = function(param)
     
   elseif param == "notebook" then
     d(SF.func._L("ScrollkeeperStandardCommands", "TEST_NOTEBOOK_HEADER"))
-    if ScrollkeeperNotebook then
-      local settings = ScrollkeeperFramework.getModuleSettings("ScrollkeeperNotebook", {})
+    if Scrollkeeper.Notebook then
+      local settings = SF.getModuleSettings("ScrollkeeperNotebook", {})
       d(SF.func._L("ScrollkeeperStandardCommands", "TEST_NOTEBOOK_LOADED"))
       d(string.format(SF.func._L("ScrollkeeperStandardCommands", "TEST_NOTEBOOK_ENABLED"), tostring(settings.settings and settings.settings.enabled)))
       
@@ -109,8 +116,8 @@ SLASH_COMMANDS["/sktest"] = function(param)
       d(string.format(SF.func._L("ScrollkeeperStandardCommands", "TEST_NOTEBOOK_WINDOW"), tostring(window ~= nil)))
       
       -- Test note saving
-      if ScrollkeeperNotebook.saveNote then
-        local success = ScrollkeeperNotebook:saveNote("Test Note", "Test content from /sktest", {"test"})
+      if Scrollkeeper.Notebook.saveNote then
+        local success = Scrollkeeper.Notebook:saveNote("Test Note", "Test content from /sktest", {"test"})
         d(string.format(SF.func._L("ScrollkeeperStandardCommands", "TEST_NOTEBOOK_SAVE"), tostring(success)))
       end
     else
@@ -120,8 +127,8 @@ SLASH_COMMANDS["/sktest"] = function(param)
   elseif param == "mail" then
     d(SF.func._L("ScrollkeeperStandardCommands", "TEST_MAIL_HEADER"))
     
-    if ScrollkeeperNotebookMail then
-      local settings = ScrollkeeperFramework.getModuleSettings("ScrollkeeperNotebookMail", {})
+    if Scrollkeeper.NotebookMail then
+      local settings = SF.getModuleSettings("ScrollkeeperNotebookMail", {})
       d(SF.func._L("ScrollkeeperStandardCommands", "TEST_MAIL_LOADED"))
       d(string.format(SF.func._L("ScrollkeeperStandardCommands", "TEST_MAIL_ENABLED"), tostring(settings.enabled)))
       
@@ -140,7 +147,7 @@ SLASH_COMMANDS["/sktest"] = function(param)
   elseif param == "data" then
     d(SF.func._L("ScrollkeeperStandardCommands", "TEST_DATA_HEADER"))
     
-    if ScrollkeeperData then
+    if Scrollkeeper.Data then
       d(SF.func._L("ScrollkeeperStandardCommands", "TEST_DATA_LOADED"))
       
       -- Test LibHistoire
@@ -148,7 +155,7 @@ SLASH_COMMANDS["/sktest"] = function(param)
         d(SF.func._L("ScrollkeeperStandardCommands", "TEST_DATA_LH_AVAILABLE"))
         
         -- Test data functions
-        if ScrollkeeperFramework.Data and ScrollkeeperFramework.Data.getEvents then
+        if SF.Data and SF.Data.getEvents then
           d(string.format(SF.func._L("ScrollkeeperStandardCommands", "TEST_DATA_CACHE_ACCESSIBLE"), tostring(true)))
           
           -- Count total events across all guilds
@@ -156,7 +163,7 @@ SLASH_COMMANDS["/sktest"] = function(param)
           for i = 1, GetNumGuilds() do
             local guildName = GetGuildName(GetGuildId(i))
             if guildName then
-              local events = ScrollkeeperFramework.Data.getEvents(guildName, "all", 999999)
+              local events = SF.Data.getEvents(guildName, "all", 999999)
               count = count + #events
             end
           end
@@ -175,10 +182,10 @@ SLASH_COMMANDS["/sktest"] = function(param)
   elseif param == "attendance" then
     d(SF.func._L("ScrollkeeperStandardCommands", "TEST_ATTENDANCE_HEADER"))
     
-    if ScrollkeeperAttendance then
+    if Scrollkeeper.Attendance then
       d(SF.func._L("ScrollkeeperStandardCommands", "TEST_ATTENDANCE_LOADED"))
       
-      local settings = ScrollkeeperFramework.getModuleSettings("ScrollkeeperAttendance", {})
+      local settings = SF.getModuleSettings("ScrollkeeperAttendance", {})
       d(string.format(SF.func._L("ScrollkeeperStandardCommands", "TEST_ATTENDANCE_ENABLED"), tostring(settings.enabled)))
       
       -- Check for active session
