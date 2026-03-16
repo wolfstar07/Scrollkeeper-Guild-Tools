@@ -1,5 +1,7 @@
-local SF     = ScrollkeeperFramework
-local SF_Set = ScrollkeeperFramework_Settings
+-- Local references
+local Scrollkeeper = Scrollkeeper
+local SF = Scrollkeeper.Framework
+local SF_Set = Scrollkeeper.Settings
 local libScroll = nil
 
 if type(SF) ~= "table" or type(SF_Set) ~= "table" then
@@ -7,8 +9,13 @@ if type(SF) ~= "table" or type(SF_Set) ~= "table" then
   return
 end
 
-local _addon = { Name = "ScrollkeeperProvisionMember", Version = "1" }
-ScrollkeeperProvisionMember = ScrollkeeperProvisionMember or _addon
+-- Initialize module
+Scrollkeeper.ProvisionMember = Scrollkeeper.ProvisionMember or { Name = "ScrollkeeperProvisionMember", Version = "1" }
+local _addon = Scrollkeeper.ProvisionMember
+
+-- Backward compatibility (DEPRECATED)
+_G.ScrollkeeperProvisionMember = Scrollkeeper.ProvisionMember
+
 local DEBUG_FILTERS = false  -- Set to true for debugging
 
 -- Get guilds in display order (respects Guild Reorder if available)
