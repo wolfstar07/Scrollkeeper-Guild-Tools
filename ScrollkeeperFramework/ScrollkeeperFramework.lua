@@ -1,13 +1,19 @@
 -- Scrollkeeper Guild Tools 
 -- ScrollkeeperFramework
 
--- 🪞 Initialize all tables first before any other operations
-ScrollkeeperFramework          = ScrollkeeperFramework or {}
-ScrollkeeperFramework_Settings = ScrollkeeperFramework_Settings or {}
-ScrollkeeperSettings = ScrollkeeperSettings or {}
+-- 🪞 Local references
+Scrollkeeper = Scrollkeeper or {}
+Scrollkeeper.Framework = Scrollkeeper.Framework or {
+  Name = "ScrollkeeperFramework",
+  Version = "1.2.1",
+}
 
--- Local shortcut
-local SF = ScrollkeeperFramework
+-- Local references
+local Scrollkeeper = Scrollkeeper
+local SF = Scrollkeeper.Framework
+
+-- Backward compatibility (DEPRECATED)
+_G.ScrollkeeperFramework = Scrollkeeper.Framework
 
 -- Prevent multiple initialization
 if SF._initialized then
@@ -21,19 +27,19 @@ SF.func = SF.func or {}
 -- Add the _L function with proper fallback behavior
 SF.func._L = SF.func._L or function(addonName, localizationName)
   -- Ensure localization table exists
-  if not ScrollkeeperLocalization then
-    d("[ScrollkeeperFramework] WARNING: ScrollkeeperLocalization table not found!")
+  if not Scrollkeeper.Localization then
+    d("[ScrollkeeperFramework] WARNING: Scrollkeeper.Localization table not found!")
     return localizationName or "MISSING_KEY"
   end
   
   -- Check for addon section
-  if type(ScrollkeeperLocalization[addonName]) ~= "table" then
+  if type(Scrollkeeper.Localization[addonName]) ~= "table" then
     d("[ScrollkeeperFramework] WARNING: No localization for addon: " .. tostring(addonName))
     return localizationName or "MISSING_KEY"
   end
   
   -- Get localized string
-  local str = ScrollkeeperLocalization[addonName][localizationName]
+  local str = Scrollkeeper.Localization[addonName][localizationName]
   if type(str) == "string" and str ~= "" then
     return str
   end
@@ -41,9 +47,6 @@ SF.func._L = SF.func._L or function(addonName, localizationName)
   d("[ScrollkeeperFramework] WARNING: Missing localization key: " .. tostring(addonName) .. "." .. tostring(localizationName))
   return localizationName or "MISSING_KEY"
 end
-
--- Unified settings helper - DEFINED LATER with megaserver support (see line ~334)
--- This placeholder ensures modules can reference SF.getModuleSettings before it's defined
 
 -- Library Integration
 SF.Libraries = SF.Libraries or {}
@@ -242,13 +245,17 @@ SF._settings = SF._settings or {}
 -- Framework metadata
 SF._addon = {
   Name        = "Scrollkeeper",
-  Version     = "1",
+  Version     = "1.2.1",
   Author      = "WolfStar07",
   displayName = SF.func._L("ScrollkeeperFramework", "DISPLAY_NAME"),
 }
 
 -- Initialize framework settings table
-local SF_Set = ScrollkeeperFramework_Settings
+Scrollkeeper.Settings = Scrollkeeper.Settings or {}
+local SF_Set = Scrollkeeper.Settings
+
+-- Backward compatibility (DEPRECATED)
+_G.ScrollkeeperFramework_Settings = Scrollkeeper.Settings
 
 -- 🌟 Module registration functions MUST exist before modules load
 function SF.RegisterModuleOptions(modName, controlsTable)
@@ -357,81 +364,14 @@ function SF.getModuleSettings(moduleName, defaults)
   return ScrollkeeperSettings[settingsKey]
 end
 
--- 📅️ DST & trader‐flip timing logic
-local DST_WINDOWS = {
-  -- US: Second Sunday in March to First Sunday in November
-  NA = { 
-    startMonth = 3, 
-    startWeek = 2,  -- Second Sunday
-    endMonth = 11, 
-    endWeek = 1     -- First Sunday
-  },
-  -- EU: Last Sunday in March to Last Sunday in October
-  EU = { 
-    startMonth = 3, 
-    startWeek = -1,  -- Last Sunday
-    endMonth = 10, 
-    endWeek = -1     -- Last Sunday
-  },
-}
-
--- Calculate the Nth Sunday (or last Sunday if week = -1) of a given month/year
-local function getNthSundayOfMonth(year, month, week)
-  -- Find first day of month
-  local firstDay = os.time({ year = year, month = month, day = 1, hour = 2 })
-  local firstWeekday = tonumber(os.date("!%w", firstDay))
-  
-  -- Calculate first Sunday of month
-  local daysToFirstSunday = (7 - firstWeekday) % 7
-  local firstSunday = 1 + daysToFirstSunday
-  
-  if week == -1 then
-    -- Last Sunday: find last day of month and work backwards
-    local nextMonth = month == 12 and 1 or month + 1
-    local nextYear = month == 12 and year + 1 or year
-    local lastDay = os.time({ year = nextYear, month = nextMonth, day = 1, hour = 2 }) - 86400
-    local lastWeekday = tonumber(os.date("!%w", lastDay))
-    
-    -- Days to subtract to get to Sunday
-    local daysBack = lastWeekday
-    return tonumber(os.date("!%d", lastDay - (daysBack * 86400)))
-  else
-    -- Nth Sunday (1st, 2nd, 3rd, etc.)
-    return firstSunday + ((week - 1) * 7)
-  end
-end
-
-local function getDSTTimestamp(year, month, week)
-  local day = getNthSundayOfMonth(year, month, week)
-  -- DST changes happen at 2 AM local time
-  -- Use 7 AM UTC to ensure we're past the change
-  return os.time({ year = year, month = month, day = day, hour = 7 })
-end
-
-local function isDSTActive(region)
-  local now = GetTimeStamp()
-  local year = tonumber(os.date("!%Y", now))
-  local win = DST_WINDOWS[region]
-  
-  local start = getDSTTimestamp(year, win.startMonth, win.startWeek)
-  local finish = getDSTTimestamp(year, win.endMonth, win.endWeek)
-  
-  return (now >= start and now < finish)
-end
+-- 📅️ Trader‐flip timing logic
+-- Both NA (19:00 UTC) and EU (14:00 UTC) flip at a fixed UTC time year-round.
 
 local function getFlipHourUTC(region)
-  -- ESO Trader Flip times:
-  --   2pm EST = 7pm UTC (19:00) - standard time (winter)
-  --   3pm EDT = 8pm UTC (20:00) - daylight time (summer)
-  
-  if region == "NA" then 
-    return isDSTActive("NA") and 20 or 19  -- 8pm UTC (DST) or 7pm UTC (standard)
+  if region == "EU" then
+    return 14  -- 3pm CET / 4pm CEST — always 14:00 UTC
   end
-  if region == "EU" then 
-    -- EU flip time needs verification, keeping existing logic
-    return isDSTActive("EU") and 13 or 14
-  end
-  return 19
+  return 19    -- NA: 2pm EST / 3pm EDT — always 19:00 UTC
 end
 
 -- ⏱️ Public API: seconds until next trader flip (UTC-correct)
@@ -495,6 +435,7 @@ function SF.initialized()
     "ScrollkeeperContextMenu",
     "ScrollkeeperData",
 	"ScrollkeeperAttendance",
+	"ScrollkeeperApplications",
     "ScrollkeeperHistory",
     "ScrollkeeperNotebookMail",
     "ScrollkeeperNotebook",
