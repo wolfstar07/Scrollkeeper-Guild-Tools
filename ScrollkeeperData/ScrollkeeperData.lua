@@ -1,21 +1,25 @@
--- Scrollkeeper Guild Tools
 -- ScrollkeeperData
 -- Centralized event cache using LibHistoire
 
-local SF     = ScrollkeeperFramework
+-- Local references
+local Scrollkeeper = Scrollkeeper
+local SF = Scrollkeeper.Framework
+
 if type(SF) ~= "table" then
   d(SF.func._L("ScrollkeeperData", "ERROR_FRAMEWORK_MISSING"))
   return
 end
 
-local _addon = {
-  Name    = "ScrollkeeperData",
-}
-ScrollkeeperData = ScrollkeeperData or _addon
+-- Initialize module
+Scrollkeeper.Data = Scrollkeeper.Data or { Name = "ScrollkeeperData" }
+local _addon = Scrollkeeper.Data
+
+-- Backward compatibility (DEPRECATED)
+_G.ScrollkeeperData = Scrollkeeper.Data
 
 -- Ensure Data table exists on framework - FORCE it to exist
-SF.Data = SF.Data or {}
-local D = SF.Data
+SF.Data = Scrollkeeper.Data
+local D = Scrollkeeper.Data
 
 -- Immediately verify the table exists
 if type(SF.Data) ~= "table" then
@@ -77,7 +81,7 @@ local CATEGORIES = {
   [GUILD_HISTORY_EVENT_CATEGORY_TRADER]          = "sales",
 }
 
--- Public API: Get events for a guild/category
+-- Get events for a guild/category
 D.getEvents = function(guildName, category, maxEvents)
   local events = {}
   maxEvents = maxEvents or 10000
@@ -116,7 +120,7 @@ D.getEvents = function(guildName, category, maxEvents)
   return events
 end
 
--- Public API: Get cache status
+-- Get cache status
 D.getCacheStatus = function()
   local status = {}
   for guildName, categories in pairs(eventCache) do
@@ -130,7 +134,7 @@ D.getCacheStatus = function()
   return status
 end
 
--- Public API: Clear cache
+-- Clear cache
 D.clear = function()
   eventCache = {}
   for _, processor in pairs(processors) do
@@ -141,12 +145,12 @@ D.clear = function()
   processors = {}
 end
 
--- Public API: Check if LibHistoire is ready
+-- Check if LibHistoire is ready
 D.isReady = function()
   return histoireReady
 end
 
--- PUBLIC API: Get member donation info (ENHANCED to include manual donations)
+-- Get member donation info (ENHANCED to include manual donations)
 D.getMemberDonationInfo = function(guildName, displayName)
   local totalDonated = 0
   local lastDonationTime = nil
@@ -203,7 +207,7 @@ D.getMemberDonationInfo = function(guildName, displayName)
   }
 end
 
--- PUBLIC API: Get manual donations for a member
+-- Get manual donations for a member
 D.getManualDonations = function(guildName, displayName)
   local manualDonations = getManualDonations()
   if not manualDonations[guildName] or not manualDonations[guildName][displayName] then
@@ -213,7 +217,7 @@ D.getManualDonations = function(guildName, displayName)
   return manualDonations[guildName][displayName].donations or {}
 end
 
--- PUBLIC API: Clear manual donations for a member
+-- Clear manual donations for a member
 D.clearManualDonations = function(guildName, displayName)
   local manualDonations = getManualDonations()
   if manualDonations[guildName] and manualDonations[guildName][displayName] then
@@ -275,7 +279,7 @@ function D.logManualDonation(guildName, displayName, amount, donationType, notes
   -- Store using event ID as key (same structure as LibHistoire events)
   eventCache[guildName].bankedGold[eventId] = manualEvent
   
-  d(string.format("[ScrollkeeperData] Logged: %d gold from %s to %s", 
+  d(string.format(SF.func._L("ScrollkeeperData", "LOG_MANUAL_DONATION"), 
     amountNum, displayName, guildName))
   
   return true
@@ -284,26 +288,26 @@ end
 -- Add a debug function to check cache contents
 function D.debugCache(guildName)
   if not guildName then
-    d("[Data Debug] No guild specified")
+    d(SF.func._L("ScrollkeeperData", "DEBUG_NO_GUILD"))
     return
   end
   
   if not eventCache[guildName] then
-    d(string.format("[Data Debug] No cache for guild: %s", guildName))
-    d("[Data Debug] Available guilds:")
+    d(string.format(SF.func._L("ScrollkeeperData", "DEBUG_NO_CACHE_FOR_GUILD"), guildName))
+    d(SF.func._L("ScrollkeeperData", "DEBUG_AVAILABLE_GUILDS"))
     for name, _ in pairs(eventCache) do
-      d(string.format("  - %s", name))
+      d(string.format(SF.func._L("ScrollkeeperData", "DEBUG_GUILD_LIST_ITEM"), name))
     end
     return
   end
   
   local guild = eventCache[guildName]
-  d(string.format("[Data Debug] Cache for %s:", guildName))
+  d(string.format(SF.func._L("ScrollkeeperData", "DEBUG_CACHE_FOR_GUILD"), guildName))
   
   if guild.bankedGold then
     local count = 0
     for _ in pairs(guild.bankedGold) do count = count + 1 end
-    d(string.format("  bankedGold: %d events", count))
+    d(string.format(SF.func._L("ScrollkeeperData", "DEBUG_BANKED_GOLD_COUNT"), count))
     
     -- Show last 5 deposits
     local deposits = {}
@@ -324,23 +328,23 @@ function D.debugCache(guildName)
     table.sort(deposits, function(a, b) return a.time > b.time end)
     
     if #deposits > 0 then
-      d("  Recent deposits:")
+      d(SF.func._L("ScrollkeeperData", "DEBUG_RECENT_DEPOSITS"))
       for i = 1, math.min(5, #deposits) do
         d("    " .. deposits[i].text)
       end
     else
-      d("  No deposits found")
+      d(SF.func._L("ScrollkeeperData", "DEBUG_NO_DEPOSITS"))
     end
   else
-    d("  bankedGold: NOT PRESENT")
+    d(SF.func._L("ScrollkeeperData", "DEBUG_BANKED_GOLD_MISSING"))
   end
   
   if guild.roster then
     local count = 0
     for _ in pairs(guild.roster) do count = count + 1 end
-    d(string.format("  roster: %d events", count))
+    d(string.format(SF.func._L("ScrollkeeperData", "DEBUG_ROSTER_COUNT"), count))
   else
-    d("  roster: NOT PRESENT")
+    d(SF.func._L("ScrollkeeperData", "DEBUG_ROSTER_MISSING"))
   end
 end
 
@@ -485,7 +489,7 @@ local function startProcessor(guildId, guildName, categoryKey, categoryId)
   return true
 end
 
---- Start caching ALL categories for ALL guilds
+-- Start caching ALL categories for ALL guilds
 local function startAllProcessors()
   local guildsStarted = 0
   local totalProcessors = 0
@@ -521,7 +525,7 @@ end
 -- Delete a manual entry from the cache
 function D.deleteManualEntry(guildName, timestamp, eventInfo)
   if not guildName or not timestamp or not eventInfo then
-    d("[ScrollkeeperData] deleteManualEntry: Missing required parameters")
+    d(SF.func._L("ScrollkeeperData", "ERROR_DELETE_MISSING_PARAMS"))
     return false
   end
   
@@ -554,11 +558,11 @@ function D.deleteManualEntry(guildName, timestamp, eventInfo)
   end
   
   if deleted then
-    d("[ScrollkeeperData] Successfully deleted manual entry from cache and storage")
+    d(SF.func._L("ScrollkeeperData", "SUCCESS_DELETE_ENTRY"))
     return true
   end
   
-  d("[ScrollkeeperData] deleteManualEntry: Entry not found")
+  d(SF.func._L("ScrollkeeperData", "ERROR_DELETE_NOT_FOUND"))
   return false
 end
 
@@ -592,7 +596,7 @@ end
 -- Test specific member donations
 SLASH_COMMANDS["/sgtcheckgold"] = function(args)
   if not SF.Data or not SF.Data.checkMemberGold then
-    d("Data module or check function not available")
+    d(SF.func._L("ScrollkeeperData", "ERROR_DATA_MODULE_UNAVAILABLE"))
     return
   end
   
@@ -603,8 +607,8 @@ SLASH_COMMANDS["/sgtcheckgold"] = function(args)
   end
   
   if #parts < 2 then
-    d("Usage: /sgtcheckgold GuildName|@DisplayName|Days")
-    d("Example: /sgtcheckgold Dragon's Nest Thievery Co|@YourName|14")
+    d(SF.func._L("ScrollkeeperData", "CMD_CHECKGOLD_USAGE"))
+    d(SF.func._L("ScrollkeeperData", "CMD_CHECKGOLD_EXAMPLE"))
     return
   end
   
@@ -613,7 +617,7 @@ SLASH_COMMANDS["/sgtcheckgold"] = function(args)
   local days = tonumber(parts[3]) or 30
   
   local total, msg = SF.Data.checkMemberGold(guildName, displayName, days)
-  d(string.format("%s donated %d gold in last %d days (%s)", displayName, total, days, msg))
+  d(string.format(SF.func._L("ScrollkeeperData", "CMD_CHECKGOLD_RESULT"), displayName, total, days, msg))
 end
 
 -- Start initialization
@@ -623,7 +627,7 @@ local function startDataModule()
   if _dataModuleStarted then return end
   
   if not LibHistoire then
-    d("[ScrollkeeperData] ERROR: LibHistoire not found")
+    d(SF.func._L("ScrollkeeperData", "ERROR_LIBHISTOIRE_MISSING"))
     return
   end
   
