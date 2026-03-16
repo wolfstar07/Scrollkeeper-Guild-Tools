@@ -1,16 +1,21 @@
 -- Scrollkeeper Guild Tools Addon
 -- ScrollkeeperWelcome
 
-local SF     = ScrollkeeperFramework
-local SF_Set = ScrollkeeperFramework_Settings
+-- Local references
+local Scrollkeeper = Scrollkeeper
+local SF = Scrollkeeper.Framework
+local SF_Set = Scrollkeeper.Settings
+
 if type(SF) ~= "table" or not SF.initAddon or type(SF_Set) ~= "table" then
   return
 end
 
-local _addon = {
-  Name    = "ScrollkeeperWelcome",
-}
-ScrollkeeperWelcome = ScrollkeeperWelcome or _addon
+-- Initialize module
+Scrollkeeper.Welcome = Scrollkeeper.Welcome or { Name = "ScrollkeeperWelcome" }
+local _addon = Scrollkeeper.Welcome
+
+-- Backward compatibility (DEPRECATED)
+_G.ScrollkeeperWelcome = Scrollkeeper.Welcome
 
 -- 💾 SavedVars defaults
 local defaultMsg = "Welcome %1 to %2"
@@ -158,7 +163,7 @@ function _addon.guildMemberAdded(_, guildId, accountName)
     joinedMembers[guildId][accountName] = GetTimeStamp()
 
     -- Notification appears ONLY when we have a valid message to send
-    d(string.format("[ScrollkeeperWelcome] %s joined %s as %s", accountName, guildName, rankName))
+    d(string.format(SF.func._L("ScrollkeeperWelcome", "LOG_MEMBER_JOINED"), accountName, guildName, rankName))
 
     QueueChatMessage(("/g%d %s"):format(guildIndex, msg))
   end, 1500)
