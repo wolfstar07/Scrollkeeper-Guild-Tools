@@ -1,16 +1,19 @@
--- Scrollkeeper Guild Tools Addon
 -- ScrollkeeperAttendance
 -- Event attendance tracking with late/early tracking
 
-local _addon = {
-  Name = "ScrollkeeperAttendance",
-}
-ScrollkeeperAttendance = ScrollkeeperAttendance or _addon
+-- Local references
+local Scrollkeeper = Scrollkeeper
+local SF = Scrollkeeper.Framework
+local SF_Set = Scrollkeeper.Settings
+
+-- Initialize module
+Scrollkeeper.Attendance = Scrollkeeper.Attendance or { Name = "ScrollkeeperAttendance" }
+local _addon = Scrollkeeper.Attendance
 
 if _addon._initialized then return end
 
-local SF = ScrollkeeperFramework
-local SF_Set = ScrollkeeperFramework_Settings
+-- Backward compatibility (DEPRECATED)
+_G.ScrollkeeperAttendance = Scrollkeeper.Attendance
 if type(SF) ~= "table" then
   d("[ScrollkeeperAttendance] Framework not available")
   return
@@ -103,15 +106,15 @@ local function stopTracking()
   settings.currentSession = nil
   
   -- Create note if Notebook is available
-  if ScrollkeeperNotebook and ScrollkeeperNotebook.saveNote then
+  if Scrollkeeper.Notebook and Scrollkeeper.Notebook.saveNote then
     local attendanceText = generateAttendanceReport(activeSession)
     
     -- Use the correct saveNote signature: (title, body, tagList, meta)
-    local success = ScrollkeeperNotebook:saveNote(
+    local success = Scrollkeeper.Notebook:saveNote(
       activeSession.eventName,           -- title
-      attendanceText,                     -- body
-      {"attendance", "event"},            -- tags as table
-      {category = "Events"}               -- meta
+      attendanceText,                    -- body
+      {"attendance", "event"},           -- tags as table
+      {category = "Events"}              -- meta
     )
     
     if success then
