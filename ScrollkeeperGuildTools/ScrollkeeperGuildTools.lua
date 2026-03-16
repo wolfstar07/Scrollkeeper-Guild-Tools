@@ -1,14 +1,18 @@
 -- Scrollkeeper Guild Tools
 -- ScrollkeeperGuildTools
 
-local _addon = {
-  Name    = "ScrollkeeperGuildTools",
-}
-ScrollkeeperGuildTools = ScrollkeeperGuildTools or _addon
 
--- 🧠 Lib Dependencies
-local SF     = ScrollkeeperFramework
-local SF_Set = ScrollkeeperFramework_Settings
+-- 🧠 Local references  
+local Scrollkeeper = Scrollkeeper
+local SF = Scrollkeeper.Framework
+local SF_Set = Scrollkeeper.Settings
+
+-- Initialize module
+Scrollkeeper.GuildTools = Scrollkeeper.GuildTools or { Name = "ScrollkeeperGuildTools" }
+local _addon = Scrollkeeper.GuildTools
+
+-- Backward compatibility (DEPRECATED)
+_G.ScrollkeeperGuildTools = Scrollkeeper.GuildTools
 
 if type(SF) ~= "table" or not SF.initAddon then
   return
@@ -35,10 +39,6 @@ end
 
 -- Initialize without registering any settings
 local function initialize()
-  
-  -- DO NOT register settings - this module has no controls
-  -- SF_Set.RegisterModuleOptions(_addon.Name, {})  -- REMOVED
-
   _addon.initialized()
 end
 
