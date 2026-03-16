@@ -1,8 +1,10 @@
 -- Scrollkeeper Guild Tools Addon
 -- ScrollkeeperColorThemes
    
-local SF     = ScrollkeeperFramework
-local SF_Set = ScrollkeeperFramework_Settings
+-- Local references
+local Scrollkeeper = Scrollkeeper
+local SF = Scrollkeeper.Framework
+local SF_Set = Scrollkeeper.Settings
 
 -- Bail out if the framework isn't present
 if type(SF) ~= "table" or not SF.initAddon then
@@ -10,10 +12,12 @@ if type(SF) ~= "table" or not SF.initAddon then
   return
 end
 
-local _addon = {
-  Name    = "ScrollkeeperColorThemes",
-}
-ScrollkeeperColorThemes = ScrollkeeperColorThemes or _addon
+-- Initialize module
+Scrollkeeper.ColorThemes = Scrollkeeper.ColorThemes or { Name = "ScrollkeeperColorThemes" }
+local _addon = Scrollkeeper.ColorThemes
+
+-- Backward compatibility (DEPRECATED)
+_G.ScrollkeeperColorThemes = Scrollkeeper.ColorThemes
 
 -- 🎨 Define themes with hex values
 local themes = {
