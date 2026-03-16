@@ -1,26 +1,24 @@
-local _historyAddon = {
-	Name    = "ScrollkeeperHistory",
-}
-ScrollkeeperHistory = ScrollkeeperHistory or _historyAddon
+-- Local references
+local Scrollkeeper = Scrollkeeper
+local SF = Scrollkeeper.Framework
+local SF_Set = Scrollkeeper.Settings
 
-if SF and SF.func and SF.func._L then
-  d(string.format(SF.func._L("ScrollkeeperHistory", "LOG_LOADING"), tostring(SF and SF.Data ~= nil)))
-  if SF and SF.Data then
-    d(string.format(SF.func._L("ScrollkeeperHistory", "LOG_DATA_GETEVENTS"), type(SF.Data.getEvents)))
-  end
-end
-
--- Prevent multiple initialization
-if _historyAddon._initialized then return end
-
--- Framework shortcuts
-local SF     = ScrollkeeperFramework
-local SF_Set = ScrollkeeperFramework_Settings
-local libScroll = nil
 if type(SF) ~= "table" then
-  d(SF.func._L("ScrollkeeperHistory", "ERROR_FRAMEWORK_MISSING"))
+  d("[ScrollkeeperHistory] ERROR: Framework missing")
   return
 end
+
+-- Initialize module
+Scrollkeeper.History = Scrollkeeper.History or { Name = "ScrollkeeperHistory" }
+local _addon = Scrollkeeper.History
+
+-- Backward compatibility (DEPRECATED)
+_G.ScrollkeeperHistory = Scrollkeeper.History
+
+-- Prevent multiple initialization
+if _addon._initialized then return end
+
+local libScroll = nil
 
 local LibTextFilter = LibTextFilter
 
@@ -65,7 +63,7 @@ end
 local function getSettings()
   -- Try framework method first
   if SF and SF.getModuleSettings and type(SF.getModuleSettings) == "function" then
-    local settings = SF.getModuleSettings(_historyAddon.Name, defaults)
+    local settings = SF.getModuleSettings(_addon.Name, defaults)
     if settings then
       return settings
     end
@@ -1419,7 +1417,7 @@ end
 
 -- Initialize
 local function initialize()
-  if _historyAddon._initialized then return end
+  if _addon._initialized then return end
 
   -- Initialize LibScroll reference
   libScroll = LibScroll
@@ -1446,22 +1444,22 @@ local function initialize()
   -- Register with framework
   if SF_Set and SF_Set.RegisterModuleOptions then
     local controls = buildControls()
-    SF_Set.RegisterModuleOptions(_historyAddon.Name, controls)
+    SF_Set.RegisterModuleOptions(_addon.Name, controls)
   end
   
-  _historyAddon._initialized = true
+  _addon._initialized = true
   d(SF.func._L("ScrollkeeperHistory", "SUCCESS_READY"))
 end
 
 -- Keep the same callback registration as before
 CALLBACK_MANAGER:RegisterCallback("Scrollkeeper_Initialized", initialize)
 
-EVENT_MANAGER:RegisterForEvent(_historyAddon.Name, EVENT_PLAYER_ACTIVATED, function(_, initial)
+EVENT_MANAGER:RegisterForEvent(_addon.Name, EVENT_PLAYER_ACTIVATED, function(_, initial)
   if not initial then return end
-  EVENT_MANAGER:UnregisterForEvent(_historyAddon.Name, EVENT_PLAYER_ACTIVATED)
+  EVENT_MANAGER:UnregisterForEvent(_addon.Name, EVENT_PLAYER_ACTIVATED)
   
   zo_callLater(function()
-    if not _historyAddon._initialized then
+    if not _addon._initialized then
       d(SF.func._L("ScrollkeeperHistory", "LOG_FALLBACK_INIT"))
       initialize()
     end
