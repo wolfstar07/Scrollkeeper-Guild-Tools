@@ -1,16 +1,28 @@
 -- Scrollkeeper Guild Tools Addon
 -- ScrollkeeperNotebook
 
-local SF     = ScrollkeeperFramework
-local SF_Set = ScrollkeeperFramework_Settings
+-- Local references
+local Scrollkeeper = Scrollkeeper
+local SF = Scrollkeeper.Framework
+local SF_Set = Scrollkeeper.Settings
+
 if type(SF) ~= "table" or not SF.initAddon then
   d(SF.func._L("ScrollkeeperNotebook", "ERROR_FRAMEWORK_MISSING"))
   return
 end
 
-local _addon = {
-  Name    = "ScrollkeeperNotebook",
-}
+-- Initialize module
+Scrollkeeper.Notebook = Scrollkeeper.Notebook or { Name = "ScrollkeeperNotebook" }
+local _addon = Scrollkeeper.Notebook
+
+-- Backward compatibility (DEPRECATED)
+_G.ScrollkeeperNotebook = Scrollkeeper.Notebook
+
+if type(SF) ~= "table" or not SF.initAddon then
+  d(SF.func._L("ScrollkeeperNotebook", "ERROR_FRAMEWORK_MISSING"))
+  return
+end
+
 ScrollkeeperNotebook = ScrollkeeperNotebook or _addon
 
 -- Prevent multiple initialization
@@ -82,7 +94,11 @@ local function loadNoteIntoEditor(note)
   if bodyInput then 
     bodyInput:SetText(note.body or "")
     bodyInput:LoseFocus()
-    -- Trigger character count update
+    -- Resize content and scroll back to top
+    zo_callLater(function()
+      local win = GetControl("ScrollkeeperNotebook_Window")
+      if win and win.resizeBodyToContent then win.resizeBodyToContent() end
+    end, 50)
     if bodyInput:GetHandler("OnTextChanged") then
       bodyInput:GetHandler("OnTextChanged")()
     end
@@ -563,24 +579,63 @@ local function createNotebookPreviewWindow()
   bodyHeaderLabel:SetColor(0.8, 0.8, 0.8, 1)
   
   -- Body display area with scroll
-  local bodyBg = WINDOW_MANAGER:CreateControl(nil, mailPanel, CT_BACKDROP)
-  bodyBg:SetDimensions(560, 340)
-  bodyBg:SetAnchor(TOPLEFT, mailPanel, TOPLEFT, 10, 85)
+  local bodyContainer = WINDOW_MANAGER:CreateControl(nil, mailPanel, CT_CONTROL)
+  bodyContainer:SetDimensions(560, 340)
+  bodyContainer:SetAnchor(TOPLEFT, mailPanel, TOPLEFT, 10, 85)
+  
+  local bodyBg = WINDOW_MANAGER:CreateControl(nil, bodyContainer, CT_BACKDROP)
+  bodyBg:SetDimensions(540, 340)
+  bodyBg:SetAnchor(TOPLEFT, bodyContainer, TOPLEFT, 0, 0)
   bodyBg:SetCenterColor(0.0, 0.0, 0.0, 1)
   bodyBg:SetEdgeColor(0.5, 0.5, 0.5, 1)
   bodyBg:SetEdgeTexture("", 1, 1, 0)
   
-  -- Body display with color support
-  local bodyDisplay = WINDOW_MANAGER:CreateControl(nil, bodyBg, CT_LABEL)
+  -- Read-only edit box with scrolling
+  local bodyDisplay = WINDOW_MANAGER:CreateControl(nil, bodyBg, CT_EDITBOX)
   bodyDisplay:SetFont("ZoFontGame")
   bodyDisplay:SetAnchor(TOPLEFT, bodyBg, TOPLEFT, 10, 10)
-  bodyDisplay:SetDimensions(540, 320)
-  bodyDisplay:SetVerticalAlignment(TEXT_ALIGN_TOP)
-  bodyDisplay:SetWrapMode(TEXT_WRAP_MODE_ELLIPSIS)
+  bodyDisplay:SetDimensions(510, 320)
+  bodyDisplay:SetColor(1, 1, 1, 1)
+  bodyDisplay:SetMaxInputChars(10000)
+  bodyDisplay:SetMultiLine(true)
+  bodyDisplay:SetEditEnabled(false)  -- Read-only
+  bodyDisplay:SetMouseEnabled(true)
+  
+  -- Add scrollbar
+  local scrollbar = WINDOW_MANAGER:CreateControl(nil, bodyContainer, CT_SLIDER)
+  scrollbar:SetDimensions(16, 340)
+  scrollbar:SetAnchor(TOPRIGHT, bodyContainer, TOPRIGHT, 0, 0)
+  scrollbar:SetOrientation(ORIENTATION_VERTICAL)
+  scrollbar:SetThumbTexture("/esoui/art/miscellaneous/scrollbox_elevator.dds", "/esoui/art/miscellaneous/scrollbox_elevator_disabled.dds", nil, 8, 16)
+  scrollbar:SetMouseEnabled(true)
+  
+  -- Mousewheel scrolling for preview
+  bodyDisplay:SetHandler("OnMouseWheel", function(self, delta)
+    local text = self:GetText()
+    local textLength = string.len(text)
+    local cursorPosition = self:GetCursorPosition()
+    
+    if delta > 0 then
+      self:SetCursorPosition(math.max(0, cursorPosition - 50))
+    else
+      self:SetCursorPosition(math.min(textLength, cursorPosition + 50))
+    end
+  end)
+  
+  -- Auto show/hide scrollbar based on content length
+  local function updateScrollbar()
+    local text = bodyDisplay:GetText() or ""
+    if string.len(text) > 8000 then
+      scrollbar:SetHidden(false)
+    else
+      scrollbar:SetHidden(true)
+    end
+  end
   
   -- Store references
   window.subjectDisplay = subjectDisplay
   window.bodyDisplay = bodyDisplay
+  window.updateScrollbar = updateScrollbar
   
   -- Function to update preview
   window.updatePreview = function(subject, body)
@@ -588,8 +643,11 @@ local function createNotebookPreviewWindow()
       subjectDisplay:SetText(subject or "")
     end
     if bodyDisplay then
-      -- ESO will automatically render color codes
       bodyDisplay:SetText(body or "")
+      -- Update scrollbar visibility
+      if window.updateScrollbar then
+        window.updateScrollbar()
+      end
     end
   end
   
@@ -890,16 +948,45 @@ local function createNotebookWindow()
   bodyCountLabel:SetAnchor(TOPRIGHT, rightPanel, TOPRIGHT, -5, 105)
   bodyCountLabel:SetColor(1, 1, 1, 1)
   
-  local bodyBg = WINDOW_MANAGER:CreateControl(windowName .. "_BodyBg", rightPanel, CT_BACKDROP)
-  bodyBg:SetDimensions(490, 320)
+  -- Body area: bordered backdrop containing a ZO_ScrollContainer + editbox
+  local BODY_W = 490
+  local BODY_H = 320
+  local SCROLLBAR_W = 16
+  local EDITBOX_W = BODY_W - SCROLLBAR_W - 10  -- 10px = left pad(5) + right gap(5)
+
+  local bodyBg = WINDOW_MANAGER:CreateControl("ScrollkeeperNotebook_BodyBg", rightPanel, CT_BACKDROP)
+  bodyBg:SetDimensions(BODY_W, BODY_H)
   bodyBg:SetAnchor(TOPLEFT, rightPanel, TOPLEFT, 5, 125)
   bodyBg:SetCenterColor(0.0, 0.0, 0.0, 1)
   bodyBg:SetEdgeColor(0.5, 0.5, 0.5, 1)
   bodyBg:SetEdgeTexture("", 1, 1, 0)
-  
-  local bodyInput = WINDOW_MANAGER:CreateControl("ScrollkeeperNotebook_BodyInput", bodyBg, CT_EDITBOX)
-  bodyInput:SetAnchor(TOPLEFT, bodyBg, TOPLEFT, 5, 5)
-  bodyInput:SetDimensions(480, 310)
+
+  -- ZO_ScrollContainer handles clipping and drives the scrollbar automatically
+  local scrollContainer = WINDOW_MANAGER:CreateControlFromVirtual(
+    "ScrollkeeperNotebook_BodyScroll", bodyBg, "ZO_ScrollContainer")
+  scrollContainer:SetDimensions(BODY_W - 4, BODY_H - 4)  -- small inset so border shows
+  scrollContainer:SetAnchor(TOPLEFT, bodyBg, TOPLEFT, 2, 2)
+
+  -- The scroll child is the editbox's parent; its height will grow with text.
+  -- ZO_ScrollContainer names it "ScrollChild" internally — use GetNamedChild
+  local scrollChild = scrollContainer:GetNamedChild("ScrollChild")
+  if not scrollChild then
+    -- Last resort: iterate direct children to find the scroll child control
+    for i = 1, scrollContainer:GetNumChildren() do
+      local child = scrollContainer:GetChild(i)
+      if child then scrollChild = child break end
+    end
+  end
+
+  if not scrollChild then
+    d("|cFF5555ScrollkeeperNotebook: failed to get scroll child — body area unavailable|r")
+    return window
+  end
+  -- Editbox lives inside the scroll child
+  local bodyInput = WINDOW_MANAGER:CreateControl(
+    "ScrollkeeperNotebook_BodyInput", scrollChild, CT_EDITBOX)
+  bodyInput:SetAnchor(TOPLEFT, scrollChild, TOPLEFT, 5, 5)
+  bodyInput:SetDimensions(EDITBOX_W, BODY_H - 4)  -- initial height; grows below
   bodyInput:SetFont("ZoFontGame")
   bodyInput:SetColor(1, 1, 1, 1)
   bodyInput:SetMaxInputChars(5000)
@@ -907,14 +994,64 @@ local function createNotebookWindow()
   bodyInput:SetText(SF.func._L("ScrollkeeperNotebook", "DEFAULT_NOTE_BODY"))
   bodyInput:SetEditEnabled(true)
   bodyInput:SetMouseEnabled(true)
-  bodyInput:SetHandler("OnMouseUp", function(self) 
-    self:TakeFocus() 
+  
+  -- ZoFontGame renders at ~22px line height. We use 24 to ensure we always
+  -- overestimate rather than underestimate, which prevents top-clipping.
+  local LINE_HEIGHT = 24
+  local MIN_HEIGHT  = BODY_H - 4
+  -- Average char width for ZoFontGame at this editbox width.
+  -- Using 6.5px (narrower than reality) means we assume more wrapping,
+  -- producing more lines -> taller scroll child -> no top clipping.
+  local AVG_CHAR_W  = 6.5
+
+  local function resizeBodyToContent()
+    local text = bodyInput:GetText() or ""
+    local lineW = math.floor(EDITBOX_W / AVG_CHAR_W)
+    local lines = 0
+    for segment in (text .. "\n"):gmatch("([^\n]*)\n") do
+      -- Each explicit line is at least 1 row; longer lines wrap
+      lines = lines + math.max(1, math.ceil((#segment + 1) / lineW))
+    end
+    -- Extra 20% buffer on top of the calculated height as a safety margin
+    local newH = math.max(MIN_HEIGHT, math.ceil(lines * LINE_HEIGHT * 1.2) + 20)
+    bodyInput:SetHeight(newH)
+    scrollChild:SetHeight(newH + 20)
+  end
+
+  local function resizeAndResetScroll()
+    resizeBodyToContent()
+    if scrollContainer.ScrollToTop then
+      scrollContainer:ScrollToTop()
+    elseif scrollContainer.scroll and scrollContainer.scroll.SetVerticalScroll then
+      scrollContainer.scroll:SetVerticalScroll(0)
+    else
+      -- Universal fallback: re-anchor the scroll child to the top of the container
+      scrollChild:ClearAnchors()
+      scrollChild:SetAnchor(TOPLEFT, scrollContainer, TOPLEFT, 0, 0)
+    end
+  end
+  
+  -- Allow clicking to edit
+  bodyInput:SetHandler("OnMouseUp", function(self, button, upInside)
+    if upInside and button == MOUSE_BUTTON_INDEX_LEFT then
+      self:TakeFocus()
+    end
   end)
   
-  -- Update body character count
+  -- Store references for note loading to work
+  window.bodyInput = bodyInput
+  window.bodyScrollContainer = scrollContainer
+  window.resizeBodyToContent = resizeAndResetScroll  -- used by loadNoteIntoEditor
+
+  -- Update body character count and resize scroll child on text change
   bodyInput:SetHandler("OnTextChanged", function()
     local text = bodyInput:GetText()
     local count = string.len(text)
+
+    -- Delay resize so ESO finishes laying out text before we measure
+    zo_callLater(resizeBodyToContent, 50)
+
+    -- Update character count label
     bodyCountLabel:SetText(string.format(SF.func._L("ScrollkeeperNotebook", "CHAR_COUNT_BODY"), count))
     if count > 5000 then
       bodyCountLabel:SetColor(1, 0.4, 0.4, 1) -- Red if over limit
