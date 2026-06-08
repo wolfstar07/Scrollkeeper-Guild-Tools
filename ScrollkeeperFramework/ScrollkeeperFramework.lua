@@ -5,7 +5,7 @@
 Scrollkeeper = Scrollkeeper or {}
 Scrollkeeper.Framework = Scrollkeeper.Framework or {
   Name = "ScrollkeeperFramework",
-  Version = "1.2.1",
+  Version = "1.3",
 }
 
 -- Local references
@@ -245,7 +245,7 @@ SF._settings = SF._settings or {}
 -- Framework metadata
 SF._addon = {
   Name        = "Scrollkeeper",
-  Version     = "1.2.1",
+  Version     = "1.3",
   Author      = "WolfStar07",
   displayName = SF.func._L("ScrollkeeperFramework", "DISPLAY_NAME"),
 }
@@ -319,14 +319,15 @@ end
 -- 🌍 Megaserver Detection
 local function detectRegion()
   local world = GetWorldName()
-  if world:find("NA") then return "NA" end
+  if world:find("NA") or world:find("PTS") then return "NA" end
   if world:find("EU") then return "EU" end
   return "NA"
 end
 SF._addon.region = detectRegion()
 
--- Store the megaserver name
-SF._addon.megaserver = GetWorldName() -- Returns "NA Megaserver" or "EU Megaserver"
+-- Store the normalized megaserver name (PTS maps to NA Megaserver)
+local _worldName = GetWorldName() or "NA Megaserver"
+SF._addon.megaserver = _worldName:find("EU") and "EU Megaserver" or "NA Megaserver"
 
 -- Enhanced getModuleSettings with megaserver support
 function SF.getModuleSettings(moduleName, defaults)
@@ -335,27 +336,20 @@ function SF.getModuleSettings(moduleName, defaults)
     return {}
   end
   
-  -- Include megaserver in the key
-  local megaserver = GetWorldName() or "Unknown"
+  if type(ScrollkeeperSettings) ~= "table" then
+    ScrollkeeperSettings = {}
+  end
+
+  -- Normalize the megaserver key. PTS uses the NA Megaserver key so settings
+  -- are shared between live NA and PTS rather than siloed under a PTS-only key.
+  local worldName = GetWorldName() or "NA Megaserver"
+  local megaserver
+  if worldName:find("EU") then
+    megaserver = "EU Megaserver"
+  else
+    megaserver = "NA Megaserver"
+  end
   local settingsKey = moduleName .. "_" .. megaserver
-  
-  -- ONE-TIME MIGRATION: Move existing settings to megaserver-specific keys
-  -- This runs on-demand when each module first requests its settings
-  if not ScrollkeeperSettings._migrated_to_megaserver then
-    ScrollkeeperSettings._migrated_to_megaserver = {}
-  end
-  
-  -- Check if THIS module has been migrated yet
-  if not ScrollkeeperSettings._migrated_to_megaserver[moduleName] then
-    -- Check if old-style settings exist for this module
-    if ScrollkeeperSettings[moduleName] and not string.find(moduleName, "_" .. megaserver .. "$") then
-      -- Copy old settings to new megaserver-specific key
-      ScrollkeeperSettings[settingsKey] = ZO_DeepTableCopy(ScrollkeeperSettings[moduleName])
-      d("[ScrollkeeperFramework] Migrated " .. moduleName .. " settings to " .. megaserver)
-    end
-    -- Mark this module as migrated
-    ScrollkeeperSettings._migrated_to_megaserver[moduleName] = true
-  end
   
   -- Return existing megaserver-specific settings, or create defaults
   if not ScrollkeeperSettings[settingsKey] then
@@ -670,7 +664,9 @@ SF.initAddon(SF._addon.Name, function()
       SF.initialized()
     end, 500) -- Give modules 500ms to register
   end, 8000)
+  
 
   -- Start trying to add chat buttons after other addons load
   zo_callLater(trySetupChatButtons, 10000)
+  
 end)
