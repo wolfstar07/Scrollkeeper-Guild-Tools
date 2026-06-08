@@ -47,6 +47,14 @@ local function getSettings()
   return SF.getModuleSettings(_addon.Name, defaults)
 end
 
+-- Guild mail compose injection
+local gmInjected = false
+
+local ZOS_GM_SUBJECT_FIELD = "ZO_GuildMailManagementSendSubjectField"
+local ZOS_GM_BODY_FIELD    = "ZO_GuildMailManagementSendBodyField"
+local ZOS_GM_COMPOSE_ROOT  = "ZO_GuildMailManagementSend"
+local GUILD_MAIL_MAX_SUBJECT = 45
+
 -- 🔁 Utilities
 local function parseTags(tagString)
   if not tagString then return {} end
@@ -382,101 +390,183 @@ function _addon:logConversation(playerName, conversationText, channelName)
   return true
 end
 
--- Enhanced integration with native mail client
-local function integrateWithMailClient()
-  -- Wait for mail UI to be available
-  zo_callLater(function()
-    if not ZO_MailSend then
-      return
-    end
-	
-	-- Delete old controls if they exist
-    local existingControl = GetControl("ScrollkeeperNotebook_MailTemplates")
-    if existingControl then
-      existingControl:SetHidden(true)
-      existingControl:SetParent(nil)
-    end
-    
-    local existingLabel = GetControl("ScrollkeeperNotebook_MailTemplatesLabel")
-    if existingLabel then
-      existingLabel:SetHidden(true)
-      existingLabel:SetParent(nil)
-    end
-    
-    -- Create dropdown above subject field (no label)
-    local templateDropdown = WINDOW_MANAGER:CreateControlFromVirtual("ScrollkeeperNotebook_MailTemplates", ZO_MailSend, "ZO_ComboBox")
-    templateDropdown:SetDimensions(225, 30)
-    templateDropdown:SetAnchor(BOTTOMLEFT, ZO_MailSendSubjectField, TOPLEFT, 87, -5)
-    
+-- Enhanced integration with Guild Tools
+local function injectIntoGuildMailCompose()
+  if gmInjected then return end
+
+  local subjectField = GetControl(ZOS_GM_SUBJECT_FIELD)
+  local bodyField    = GetControl(ZOS_GM_BODY_FIELD)
+  if not subjectField or not bodyField then
+    d("[ScrollkeeperNotebook] WARNING: guild mail compose controls not found, injection skipped.")
+    return
+  end
+
+  local composeRoot  = GetControl(ZOS_GM_COMPOSE_ROOT) or subjectField:GetParent():GetParent()
+  local rankSelector = GetControl(ZOS_GM_RANK_SELECTOR)
+
+  if not GetControl("ScrollkeeperNotebook_GuildMailTemplates") then
+    local templateDropdown = WINDOW_MANAGER:CreateControlFromVirtual(
+      "ScrollkeeperNotebook_GuildMailTemplates", composeRoot, "ZO_ComboBox")
+    templateDropdown:SetAnchor(BOTTOMLEFT, GetControl(ZOS_GM_SUBJECT_FIELD), TOPLEFT, 65, -10)
+    templateDropdown:SetDimensions(198, 30)
+
     local templateCombo = ZO_ComboBox_ObjectFromContainer(templateDropdown)
-    templateCombo:SetSortsItems(false)
+    templateCombo:SetSortsItems(true)
     templateCombo:SetFont("ZoFontGame")
-    templateCombo:SetSpacing(4)
-    
-    -- Store globally
-    _addon.mailTemplateCombo = templateCombo
-    
-    local function updateMailTemplates()
+    templateCombo:SetSpacing(3)
+
+    local isPopulating = false
+	local lastSelectedTemplate = ""
+
+    local function refreshGuildMailTemplates()
+      isPopulating = true
       templateCombo:ClearItems()
-      
-      local defaultEntry = templateCombo:CreateItemEntry(SF.func._L("ScrollkeeperNotebook", "MAIL_DROPDOWN_SELECT"), function() end)
-      templateCombo:AddItem(defaultEntry)
-      
-      local settings = getSettings()  
-      if settings and settings.noteList and settings.noteList[SF.func._L("ScrollkeeperNotebook", "CAT_MAIL")] then
-        local mailNotes = settings.noteList[SF.func._L("ScrollkeeperNotebook", "CAT_MAIL")]
-        
+
+      local placeholder = templateCombo:CreateItemEntry(
+        SF.func._L("ScrollkeeperNotebook", "MAIL_DROPDOWN_SELECT"), function() end)
+      templateCombo:AddItem(placeholder)
+
+      local settings  = getSettings()
+      local mailCat   = SF.func._L("ScrollkeeperNotebook", "CAT_MAIL")
+      local mailNotes = settings.noteList and settings.noteList[mailCat]
+      local lastSel   = lastSelectedTemplate
+      local lastEntry = nil
+      local count     = 0
+
+      if mailNotes then
         for title, note in pairs(mailNotes) do
-          if type(note) == "table" and note.title and note.body then
-            -- Filter out failure logs
-            local isFailureLog = false
-            
-            -- Check if title starts with "Mail Failures"
-            if string.find(title, "^Mail Failures") then
-              isFailureLog = true
-            end
-            
-            -- Also check tags if they exist
+          if type(note) == "table" and note.body then
+            local isLog = string.find(title, "^Mail Failures") ~= nil
             if note.tags then
               for _, tag in ipairs(note.tags) do
-                if tag == "failures" or tag == "mail-log" then
-                  isFailureLog = true
-                  break
-                end
+                if tag == "failures" or tag == "mail-log" then isLog = true end
               end
             end
-            
-            -- Only add if NOT a failure log
-            if not isFailureLog then
+            if not isLog then
+              count = count + 1
+              local capturedTitle = title
+              local capturedNote  = note
               local entry = templateCombo:CreateItemEntry(title, function()
-                if ZO_MailSendSubjectField then
-                  ZO_MailSendSubjectField:SetText(title)
-                end
-                if ZO_MailSendBodyField then
-                  ZO_MailSendBodyField:SetText(note.body or "")
-                end
+                if isPopulating then return end
+                subjectField:SetText(string.sub(capturedTitle, 1, GUILD_MAIL_MAX_SUBJECT))
+                bodyField:SetText(capturedNote.body or "")
+                lastSelectedTemplate = capturedTitle
               end)
               templateCombo:AddItem(entry)
+              if title == lastSel then lastEntry = entry end
             end
           end
         end
       end
-      
-      templateCombo:SelectItem(defaultEntry)
+
+      if count == 0 then
+        templateCombo:AddItem(templateCombo:CreateItemEntry(
+          SF.func._L("ScrollkeeperNotebook", "GUILDMAIL_NO_TEMPLATES"), function() end))
+      end
+
+      templateCombo:SelectItem(lastEntry or placeholder)
+      isPopulating = false
     end
-    
-    _addon.updateMailTemplates = updateMailTemplates
-    updateMailTemplates()
-    
-    local mailSendScene = SCENE_MANAGER:GetScene("mailSend")
-    if mailSendScene then
-      mailSendScene:RegisterCallback("StateChange", function(oldState, newState)
-        if newState == SCENE_SHOWING then
-          updateMailTemplates()
+
+    _addon.refreshGuildMailTemplates = refreshGuildMailTemplates
+	gmInjected = true 
+    refreshGuildMailTemplates()
+  else
+    GetControl("ScrollkeeperNotebook_GuildMailTemplates"):SetHidden(false)
+    if _addon.refreshGuildMailTemplates then _addon.refreshGuildMailTemplates() end
+  end
+end
+
+local function hookGuildMailScene()
+  local scene = SCENE_MANAGER and SCENE_MANAGER:GetScene("guildRecruitmentKeyboard")
+  if not scene then
+    zo_callLater(hookGuildMailScene, 2000)
+    return
+  end
+
+  scene:RegisterCallback("StateChange", function(oldState, newState)
+    if newState == SCENE_SHOWING then
+      if not gmInjected then
+        injectIntoGuildMailCompose()
+      elseif _addon.refreshGuildMailTemplates then
+        local dd = GetControl("ScrollkeeperNotebook_GuildMailTemplates")
+        if dd then dd:SetHidden(false) end
+        _addon.refreshGuildMailTemplates()
+      end
+    end
+  end)
+end
+
+-- Enhanced integration with native mail client
+local function integrateWithMailClient()
+  local mailSendScene = SCENE_MANAGER and SCENE_MANAGER:GetScene("mailSend")
+  if not mailSendScene then
+    zo_callLater(integrateWithMailClient, 2000)
+    return
+  end
+
+  -- Delete old controls if they exist
+  local existingControl = GetControl("ScrollkeeperNotebook_MailTemplates")
+  if existingControl then
+    existingControl:SetHidden(true)
+    existingControl:SetParent(nil)
+  end
+  local existingLabel = GetControl("ScrollkeeperNotebook_MailTemplatesLabel")
+  if existingLabel then
+    existingLabel:SetHidden(true)
+    existingLabel:SetParent(nil)
+  end
+
+  local templateDropdown = WINDOW_MANAGER:CreateControlFromVirtual("ScrollkeeperNotebook_MailTemplates", ZO_MailSend, "ZO_ComboBox")
+  templateDropdown:SetDimensions(225, 30)
+  templateDropdown:SetAnchor(BOTTOMLEFT, ZO_MailSendSubjectField, TOPLEFT, 87, -5)
+
+  local templateCombo = ZO_ComboBox_ObjectFromContainer(templateDropdown)
+  templateCombo:SetSortsItems(false)
+  templateCombo:SetFont("ZoFontGame")
+  templateCombo:SetSpacing(4)
+
+  _addon.mailTemplateCombo = templateCombo
+
+  local function updateMailTemplates()
+    templateCombo:ClearItems()
+
+    local defaultEntry = templateCombo:CreateItemEntry(SF.func._L("ScrollkeeperNotebook", "MAIL_DROPDOWN_SELECT"), function() end)
+    templateCombo:AddItem(defaultEntry)
+
+    local settings = getSettings()
+    if settings and settings.noteList and settings.noteList[SF.func._L("ScrollkeeperNotebook", "CAT_MAIL")] then
+      local mailNotes = settings.noteList[SF.func._L("ScrollkeeperNotebook", "CAT_MAIL")]
+      for title, note in pairs(mailNotes) do
+        if type(note) == "table" and note.title and note.body then
+          local isFailureLog = string.find(title, "^Mail Failures") ~= nil
+          if note.tags then
+            for _, tag in ipairs(note.tags) do
+              if tag == "failures" or tag == "mail-log" then isFailureLog = true break end
+            end
+          end
+          if not isFailureLog then
+            local entry = templateCombo:CreateItemEntry(title, function()
+              if ZO_MailSendSubjectField then ZO_MailSendSubjectField:SetText(title) end
+              if ZO_MailSendBodyField then ZO_MailSendBodyField:SetText(note.body or "") end
+            end)
+            templateCombo:AddItem(entry)
+          end
         end
-      end)
+      end
     end
-  end, 3000)
+
+    templateCombo:SelectItem(defaultEntry)
+  end
+
+  _addon.updateMailTemplates = updateMailTemplates
+  updateMailTemplates()
+
+  mailSendScene:RegisterCallback("StateChange", function(oldState, newState)
+    if newState == SCENE_SHOWING then
+      updateMailTemplates()
+    end
+  end)
 end
 
 -- Theme update function for notebook window
@@ -1177,6 +1267,10 @@ local function createNotebookWindow()
       }
       d(string.format(SF.func._L("ScrollkeeperNotebook", "SUCCESS_TEMPLATE_SAVED"), title))
       refreshNoteList()
+      -- Refresh the guild mail template dropdown immediately if injected
+      if _addon.refreshGuildMailTemplates then
+        _addon.refreshGuildMailTemplates()
+      end
     else
       d(SF.func._L("ScrollkeeperNotebook", "ERROR_TEMPLATE_NO_TITLE"))
     end
@@ -1282,6 +1376,8 @@ local function initializeNotebookUI()
   
   -- Integrate with mail client
   integrateWithMailClient()
+  -- Inject into ZOS guild mail compose
+  hookGuildMailScene()
 end
 
 -- ⚙️ Build the LibAddonMenu-2.0 settings controls
