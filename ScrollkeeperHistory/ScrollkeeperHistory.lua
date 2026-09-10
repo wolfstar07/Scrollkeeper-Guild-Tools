@@ -417,7 +417,13 @@ local function setupSmoothScroll(scrollControl, scrollBar, contentHeight, visibl
         if newValue ~= current then
           scrollBar:SetValue(newValue)
           window.scrollOffset = math.floor(newValue)
-          updateFunc(window)
+          local pendingGeneration = (self.pendingGeneration or 0) + 1
+          self.pendingGeneration = pendingGeneration
+          zo_callLater(function()
+            if self.pendingGeneration == pendingGeneration then
+              updateFunc(window)
+            end
+          end, 16)
         end
       end
     end)
