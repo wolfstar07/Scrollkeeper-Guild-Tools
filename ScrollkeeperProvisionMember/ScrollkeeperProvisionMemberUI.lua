@@ -177,8 +177,8 @@ local function createExportWindow(exportText)
 
   -- Select All button
   local selectAllBtn = WINDOW_MANAGER:CreateControl(nil, window, CT_BUTTON)
-  selectAllBtn:SetDimensions(100, 30)
-  selectAllBtn:SetAnchor(BOTTOM, window, BOTTOM, 0, -40)
+  selectAllBtn:SetDimensions(95, 27)
+  selectAllBtn:SetAnchor(BOTTOM, window, BOTTOM, 0, -35)
   local selectAllBtnBg = WINDOW_MANAGER:CreateControl(nil, selectAllBtn, CT_BACKDROP)
   selectAllBtnBg:SetAnchorFill(selectAllBtn)
   ApplyTemplateToControl(selectAllBtnBg, "ZO_DefaultBackdrop")
@@ -201,7 +201,7 @@ local function createExportWindow(exportText)
   local instruction = WINDOW_MANAGER:CreateControl(nil, window, CT_LABEL)
   instruction:SetFont("ZoFontGame")
   instruction:SetText(SF.func._L("ScrollkeeperProvisionMember", "EXPORT_INSTRUCTION"))
-  instruction:SetAnchor(BOTTOMLEFT, window, BOTTOMLEFT, 10, -10)
+  instruction:SetAnchor(BOTTOMLEFT, window, BOTTOMLEFT, 10, -5)
   instruction:SetColor(0.8, 0.8, 0.8, 1)
 
   -- Auto-focus after creation
@@ -505,11 +505,13 @@ local function createProvisionWindow()
   listPanel:SetDimensions(960, 470)
   listPanel:SetAnchor(TOPLEFT, statsPanel, BOTTOMLEFT, 0, 10)
   listPanel:SetCenterColor(0.05, 0.05, 0.05, 0.8)
+  listPanel:SetEdgeColor(0.1, 0.1, 0.1, 0.95)
+  listPanel:SetEdgeTexture("", 1, 1, 0)
 
   -- Column headers
   local headerPanel = WINDOW_MANAGER:CreateControl(nil, listPanel, CT_BACKDROP)
-  headerPanel:SetDimensions(940, 30)
-  headerPanel:SetAnchor(TOPLEFT, listPanel, TOPLEFT, 10, 10)
+  headerPanel:SetDimensions(960, 30)
+  headerPanel:SetAnchor(TOPLEFT, listPanel, TOPLEFT, 0, 8)
   headerPanel:SetCenterColor(0.1, 0.1, 0.2, 1)
   headerPanel:SetEdgeColor(1, 1, 1, 1)
   headerPanel:SetEdgeTexture("", 1, 1, 0)
@@ -571,14 +573,14 @@ local function createProvisionWindow()
 
   -- Scrollable content area
   local scrollContainer = WINDOW_MANAGER:CreateControl(nil, listPanel, CT_CONTROL)
-  scrollContainer:SetDimensions(940, 415)
-  scrollContainer:SetAnchor(TOPLEFT, headerPanel, BOTTOMLEFT, 0, 5)
+  scrollContainer:SetDimensions(960, 420)
+  scrollContainer:SetAnchor(TOPLEFT, headerPanel, BOTTOMLEFT, 0, 3)
   scrollContainer:SetMouseEnabled(true)
 
   -- Scroll bar
   local scrollBar = WINDOW_MANAGER:CreateControl(nil, listPanel, CT_SLIDER)
-  scrollBar:SetDimensions(16, 415)
-  scrollBar:SetAnchor(TOPRIGHT, listPanel, TOPRIGHT, -5, 40)
+  scrollBar:SetDimensions(16, 420)
+  scrollBar:SetAnchor(TOPRIGHT, listPanel, TOPRIGHT, -3, 41)
   scrollBar:SetOrientation(ORIENTATION_VERTICAL)
   scrollBar:SetMinMax(0, 100)
   scrollBar:SetValue(0)
@@ -833,7 +835,7 @@ local function createProvisionWindow()
 
     local guildMembers = settings.taggedMembers[window.selectedGuild] or {}
     local rowHeight = 35
-    local visibleRows = math.floor(415 / rowHeight)
+    local visibleRows = math.floor(420 / rowHeight)
 
 -- Build member list
 local memberList = {}
@@ -966,7 +968,7 @@ end
 
         -- Create row with unique name
         local rowControl = WINDOW_MANAGER:CreateControl(getUniqueControlName("Row"), scrollContainer, CT_CONTROL)
-        rowControl:SetDimensions(920, rowHeight)
+        rowControl:SetDimensions(940, rowHeight)
         rowControl:SetAnchor(TOPLEFT, scrollContainer, TOPLEFT, 0, displayRow * rowHeight)
 
         table.insert(window.memberRows, rowControl)
@@ -1793,7 +1795,6 @@ end
     applyProvisionTheme(window)
   end, 100)
 
-
   -- Add OnShow handler for the open message
   window:SetHandler("OnShow", function()
     -- Refresh guild list when opening
@@ -1812,4 +1813,4 @@ end
 end
 
 -- Export so Commands.lua (and any other PM file) can build the window
-PM.Internal.CreateWindow = createProvisionWindow						
+PM.Internal.CreateWindow = createProvisionWindow	
