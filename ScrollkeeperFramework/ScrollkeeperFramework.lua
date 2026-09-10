@@ -191,6 +191,21 @@ function SF.applyThemeToTitleBar(titleBar, titleLabel)
   end
 end
 
+-- Ornate window frame
+ SF.ORNATE_FRAME_TEXTURE = "Scrollkeeper/ScrollkeeperFramework/textures/ui-border_lineonly.dds"
+ SF.ORNATE_FRAME_EDGE_W  = 128
+ SF.ORNATE_FRAME_EDGE_H  = 16
+
+function SF.addOrnateFrame(window)
+  local frame = WINDOW_MANAGER:CreateControl(nil, window, CT_BACKDROP)
+  frame:SetAnchorFill(window)
+  frame:SetCenterColor(0, 0, 0, 0)
+  frame:SetEdgeTexture(SF.ORNATE_FRAME_TEXTURE, SF.ORNATE_FRAME_EDGE_W, SF.ORNATE_FRAME_EDGE_H)
+  frame:SetDrawLevel(10)
+  
+  return frame
+end
+
 -- Convert hex to theme color
 function SF.setThemeColorFromHex(colorType, hexValue)
   if not SF.theme or not SF.theme.colors or not SF.theme.colors[colorType] then return end
@@ -665,7 +680,6 @@ SF.initAddon(SF._addon.Name, function()
     end, 500) -- Give modules 500ms to register
   end, 8000)
   
-
   -- Start trying to add chat buttons after other addons load
   zo_callLater(trySetupChatButtons, 10000)
   
