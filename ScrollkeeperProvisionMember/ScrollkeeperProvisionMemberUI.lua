@@ -230,6 +230,7 @@ local function createExportWindow(exportText)
     if window.updateTheme then window.updateTheme() end
   end, 100)
 
+  SF.addOrnateFrame(window)
   return window
 end
 
@@ -1770,8 +1771,9 @@ end
   end)
   
    populateGuildDropdown()
+  SF.addOrnateFrame(window)
    return window
 end
 
 -- Export so Commands.lua (and any other PM file) can build the window
-PM.Internal.CreateWindow = createProvisionWindow						
+PM.Internal.CreateWindow = createProvisionWindow
