@@ -236,6 +236,7 @@ end
 -- Mousewheel scrolling for the provision window's member list
 local function setupSmoothScroll(scrollControl, scrollBar, contentHeight, visibleHeight, updateFunc, window)
   if not scrollControl or not scrollBar or not updateFunc or not window then return end
+  local pendingGeneration = 0
 
   scrollControl:SetHandler("OnMouseWheel", function(self, delta)
     if not scrollBar:IsHidden() then
@@ -245,7 +246,13 @@ local function setupSmoothScroll(scrollControl, scrollBar, contentHeight, visibl
       if newValue ~= current then
         scrollBar:SetValue(newValue)
         window.scrollOffset = math.floor(newValue)
-        updateFunc(window)
+        pendingGeneration = pendingGeneration + 1
+        local thisGeneration = pendingGeneration
+        zo_callLater(function()
+          if thisGeneration == pendingGeneration then
+            updateFunc(window)
+          end
+        end, 16)
       end
     end
   end)
@@ -836,6 +843,24 @@ local function createProvisionWindow()
     local guildMembers = settings.taggedMembers[window.selectedGuild] or {}
     local rowHeight = 35
     local visibleRows = math.floor(420 / rowHeight)
+	
+	local guildId = nil
+    for i = 1, GetNumGuilds() do
+      if GetGuildName(GetGuildId(i)) == window.selectedGuild then
+        guildId = GetGuildId(i)
+        break
+      end
+    end
+
+    local daysOfflineByMember = {}
+    if guildId then
+      for i = 1, GetNumGuildMembers(guildId) do
+        local memberDisplayName, _, _, _, secondsOffline = GetGuildMemberInfo(guildId, i)
+        if memberDisplayName then
+          daysOfflineByMember[memberDisplayName] = math.floor(secondsOffline / 86400)
+        end
+      end
+    end
 
 -- Build member list
 local memberList = {}
@@ -873,52 +898,15 @@ end
         local aValue = 0
         local bValue = 0
 
-        -- Get sort value based on reason type
         if a.data.reason == SF.func._L("ScrollkeeperProvisionMember", "REASON_INACTIVE") then
-          -- For inactive members, sort by days offline
-          local guildId = nil
-          for i = 1, GetNumGuilds() do
-            if GetGuildName(GetGuildId(i)) == window.selectedGuild then
-              guildId = GetGuildId(i)
-              break
-            end
-          end
-
-          if guildId then
-            for i = 1, GetNumGuildMembers(guildId) do
-              local memberDisplayName, _, _, _, secondsOffline = GetGuildMemberInfo(guildId, i)
-              if memberDisplayName == a.name then
-                aValue = math.floor(secondsOffline / 86400)
-                break
-              end
-            end
-          end
+          aValue = daysOfflineByMember[a.name] or 0
         else
-          -- For other members (rank, gold, donor), sort by join time
           aValue = math.floor((GetTimeStamp() - (a.data.actualJoinTime or a.data.joinDate or 0)) / 86400)
         end
 
         if b.data.reason == SF.func._L("ScrollkeeperProvisionMember", "REASON_INACTIVE") then
-          -- For inactive members, sort by days offline
-          local guildId = nil
-          for i = 1, GetNumGuilds() do
-            if GetGuildName(GetGuildId(i)) == window.selectedGuild then
-              guildId = GetGuildId(i)
-              break
-            end
-          end
-
-          if guildId then
-            for i = 1, GetNumGuildMembers(guildId) do
-              local memberDisplayName, _, _, _, secondsOffline = GetGuildMemberInfo(guildId, i)
-              if memberDisplayName == b.name then
-                bValue = math.floor(secondsOffline / 86400)
-                break
-              end
-            end
-          end
+          bValue = daysOfflineByMember[b.name] or 0
         else
-          -- For other members (rank, gold, donor), sort by join time
           bValue = math.floor((GetTimeStamp() - (b.data.actualJoinTime or b.data.joinDate or 0)) / 86400)
         end
 
@@ -1055,14 +1043,6 @@ end
 
         if data.reason == SF.func._L("ScrollkeeperProvisionMember", "REASON_RANK") or not data.reason then
           -- Probation members: show days since join
-          local guildId = nil
-          for i = 1, GetNumGuilds() do
-            if GetGuildName(GetGuildId(i)) == window.selectedGuild then
-              guildId = GetGuildId(i)
-              break
-            end
-          end
-
           if guildId then
             local calculatedDays, source = PM.Internal.getAccurateDaysSinceJoin(guildId, window.selectedGuild, memberName, data)
 
@@ -1099,39 +1079,20 @@ end
 
         elseif data.reason == SF.func._L("ScrollkeeperProvisionMember", "REASON_INACTIVE") then
           -- Inactive members: show days offline
-          local guildId = nil
-          for i = 1, GetNumGuilds() do
-            if GetGuildName(GetGuildId(i)) == window.selectedGuild then
-              guildId = GetGuildId(i)
-              break
-            end
+        local daysOffline = daysOfflineByMember[memberName]
+        if daysOffline then
+          daysSince = tostring(daysOffline) .. "d"
+          if daysOffline >= 90 then
+            daysColor = {1, 0.2, 0.2, 1}
+          elseif daysOffline >= 60 then
+            daysColor = {1, 0.4, 0.4, 1}
+          else
+            daysColor = {1, 0.6, 0.4, 1}
           end
-
-          if guildId then
-            -- Get their actual offline time
-            for i = 1, GetNumGuildMembers(guildId) do
-              local memberDisplayName, _, _, _, secondsOffline = GetGuildMemberInfo(guildId, i)
-              if memberDisplayName == memberName then
-                local daysOffline = math.floor(secondsOffline / 86400)
-                daysSince = tostring(daysOffline) .. "d"
-
-                -- Color code: more days = more red
-                if daysOffline >= 90 then
-                  daysColor = {1, 0.2, 0.2, 1} -- Dark red for very inactive
-                elseif daysOffline >= 60 then
-                  daysColor = {1, 0.4, 0.4, 1} -- Red
-                else
-                  daysColor = {1, 0.6, 0.4, 1} -- Orange
-                end
-                break
-              end
-            end
-          end
-
-          if daysSince == "" then
-            daysSince = SF.func._L("ScrollkeeperProvisionMember", "DAYS_UNKNOWN")
-            daysColor = {0.6, 0.6, 0.6, 1}
-          end
+        else
+          daysSince = SF.func._L("ScrollkeeperProvisionMember", "DAYS_UNKNOWN")
+          daysColor = {0.6, 0.6, 0.6, 1}
+        end
 
         elseif data.reason == SF.func._L("ScrollkeeperProvisionMember", "REASON_GOLD") then
           -- Gold filter members: leave blank or show "N/A"
@@ -1813,4 +1774,4 @@ end
 end
 
 -- Export so Commands.lua (and any other PM file) can build the window
-PM.Internal.CreateWindow = createProvisionWindow	
+PM.Internal.CreateWindow = createProvisionWindow						
