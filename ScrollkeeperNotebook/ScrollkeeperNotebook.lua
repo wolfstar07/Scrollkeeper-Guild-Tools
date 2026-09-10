@@ -758,6 +758,7 @@ local function createNotebookPreviewWindow()
     if window.updateTheme then window.updateTheme() end
   end, 100)
   
+  SF.addOrnateFrame(window)
   return window
 end
 
@@ -1339,6 +1340,7 @@ local function createNotebookWindow()
     applyNotebookTheme(window)
   end, 100)
   
+  SF.addOrnateFrame(window)
   return window
 end
 
