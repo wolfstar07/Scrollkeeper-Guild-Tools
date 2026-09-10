@@ -518,7 +518,7 @@ local function createProvisionWindow()
   -- Column headers
   local headerPanel = WINDOW_MANAGER:CreateControl(nil, listPanel, CT_BACKDROP)
   headerPanel:SetDimensions(960, 30)
-  headerPanel:SetAnchor(TOPLEFT, listPanel, TOPLEFT, 0, 8)
+  headerPanel:SetAnchor(TOPLEFT, listPanel, TOPLEFT, 0, 0)
   headerPanel:SetCenterColor(0.1, 0.1, 0.2, 1)
   headerPanel:SetEdgeColor(1, 1, 1, 1)
   headerPanel:SetEdgeTexture("", 1, 1, 0)
@@ -527,25 +527,25 @@ local function createProvisionWindow()
   local statusHeader = WINDOW_MANAGER:CreateControl(nil, headerPanel, CT_LABEL)
   statusHeader:SetFont("ZoFontGameBold")
   statusHeader:SetText(SF.func._L("ScrollkeeperProvisionMember", "STATUS"))
-  statusHeader:SetAnchor(TOPLEFT, headerPanel, TOPLEFT, 420, 4)
+  statusHeader:SetAnchor(LEFT, headerPanel, LEFT, 420, 0)
   statusHeader:SetColor(1, 1, 1, 1)
 
   local notesHeader = WINDOW_MANAGER:CreateControl(nil, headerPanel, CT_LABEL)
   notesHeader:SetFont("ZoFontGameBold")
   notesHeader:SetText(SF.func._L("ScrollkeeperProvisionMember", "NOTES"))
-  notesHeader:SetAnchor(TOPLEFT, headerPanel, TOPLEFT, 600, 4)
+  notesHeader:SetAnchor(LEFT, headerPanel, LEFT, 600, 0)
   notesHeader:SetColor(1, 1, 1, 1)
 
   local actionsHeader = WINDOW_MANAGER:CreateControl(nil, headerPanel, CT_LABEL)
   actionsHeader:SetFont("ZoFontGameBold")
   actionsHeader:SetText(SF.func._L("ScrollkeeperProvisionMember", "ACTIONS"))
-  actionsHeader:SetAnchor(TOPLEFT, headerPanel, TOPLEFT, 800, 4)
+  actionsHeader:SetAnchor(LEFT, headerPanel, LEFT, 800, 0)
   actionsHeader:SetColor(1, 1, 1, 1)
 
   -- Sortable Name header - needs to be a button for clicking
   local nameHeaderBtn = WINDOW_MANAGER:CreateControl(nil, headerPanel, CT_BUTTON)
   nameHeaderBtn:SetDimensions(200, 25)
-  nameHeaderBtn:SetAnchor(TOPLEFT, headerPanel, TOPLEFT, 25, 4)
+  nameHeaderBtn:SetAnchor(LEFT, headerPanel, LEFT, 25, 0)
   nameHeaderBtn:SetMouseEnabled(true)
 
   local nameHeaderLabel = WINDOW_MANAGER:CreateControl(nil, nameHeaderBtn, CT_LABEL)
@@ -563,7 +563,7 @@ local function createProvisionWindow()
   -- Sortable Days header - needs to be a button for clicking
   local daysHeaderBtn = WINDOW_MANAGER:CreateControl(nil, headerPanel, CT_BUTTON)
   daysHeaderBtn:SetDimensions(60, 25)
-  daysHeaderBtn:SetAnchor(TOPLEFT, headerPanel, TOPLEFT, 340, 4)
+  daysHeaderBtn:SetAnchor(LEFT, headerPanel, LEFT, 340, 0)
   daysHeaderBtn:SetMouseEnabled(true)
 
   local daysHeaderLabel = WINDOW_MANAGER:CreateControl(nil, daysHeaderBtn, CT_LABEL)
@@ -581,13 +581,13 @@ local function createProvisionWindow()
   -- Scrollable content area
   local scrollContainer = WINDOW_MANAGER:CreateControl(nil, listPanel, CT_CONTROL)
   scrollContainer:SetDimensions(960, 420)
-  scrollContainer:SetAnchor(TOPLEFT, headerPanel, BOTTOMLEFT, 0, 3)
+  scrollContainer:SetAnchor(TOPLEFT, headerPanel, BOTTOMLEFT, 0, 5)
   scrollContainer:SetMouseEnabled(true)
 
   -- Scroll bar
   local scrollBar = WINDOW_MANAGER:CreateControl(nil, listPanel, CT_SLIDER)
   scrollBar:SetDimensions(16, 420)
-  scrollBar:SetAnchor(TOPRIGHT, listPanel, TOPRIGHT, -3, 41)
+  scrollBar:SetAnchor(TOPRIGHT, listPanel, TOPRIGHT, -3, 35)
   scrollBar:SetOrientation(ORIENTATION_VERTICAL)
   scrollBar:SetMinMax(0, 100)
   scrollBar:SetValue(0)
@@ -841,7 +841,7 @@ local function createProvisionWindow()
     end
 
     local guildMembers = settings.taggedMembers[window.selectedGuild] or {}
-    local rowHeight = 35
+    local rowHeight = 30
     local visibleRows = math.floor(420 / rowHeight)
 	
 	local guildId = nil
