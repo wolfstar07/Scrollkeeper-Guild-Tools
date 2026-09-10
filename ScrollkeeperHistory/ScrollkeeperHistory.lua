@@ -743,6 +743,7 @@ local function createHistoryWindow()
     applyHistoryTheme(window)
   end, 100)
     
+  SF.addOrnateFrame(window)
   return window
 end
 
@@ -1149,6 +1150,7 @@ local function createExportWindow(exportText)
   zo_callLater(function()
     if window.updateTheme then window.updateTheme() end
   end, 100)
+  SF.addOrnateFrame(window)
   return window
 end
 
