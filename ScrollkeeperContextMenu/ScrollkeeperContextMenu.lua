@@ -422,7 +422,7 @@ local function createDonationWindow(displayName)
   zo_callLater(function()
     if window.updateTheme then window.updateTheme() end
   end, 100)
-  
+						   
   return window
 end
 
