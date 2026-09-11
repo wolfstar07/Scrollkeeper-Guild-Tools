@@ -656,11 +656,15 @@ local function setupChatMenuButtons()
     settingsButton:show()
   end
 end
-  -- Wait for LibChatMenuButton to be available
+
+-- Wait for LibChatMenuButton to be available
+local CHAT_BUTTON_RETRY_LIMIT = 5
+local chatButtonRetryCount = 0
 local function trySetupChatButtons()
   if LibChatMenuButton then
     setupChatMenuButtons()
-  else
+  elseif chatButtonRetryCount < CHAT_BUTTON_RETRY_LIMIT then
+    chatButtonRetryCount = chatButtonRetryCount + 1
     -- Try again in 2 seconds
     zo_callLater(trySetupChatButtons, 2000)
   end
@@ -679,7 +683,7 @@ SF.initAddon(SF._addon.Name, function()
       SF.initialized()
     end, 500) -- Give modules 500ms to register
   end, 8000)
-  
+
   -- Start trying to add chat buttons after other addons load
   zo_callLater(trySetupChatButtons, 10000)
   
