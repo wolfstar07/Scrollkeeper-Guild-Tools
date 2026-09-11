@@ -43,7 +43,7 @@ Scrollkeeper.Localization["ScrollkeeperColorThemes"] = {
   NOTE = "Note : Les modifications de thème s'appliquent immédiatement à toutes les fenêtres Scrollkeeper ouvertes.",
   
   -- Error Messages
-  ERROR_FRAMEWORK_MISSING = "|c00FF00[ScrollkeeperColorThemes]|r ERREUR : ScrollkeeperFramework manquant !",
+  ERROR_FRAMEWORK_MISSING = "|cFFD700[ScrollkeeperColorThemes]|r ERREUR : ScrollkeeperFramework manquant !",
   
   -- Theme Names
   THEME_EMBER = "Braise",
@@ -52,6 +52,7 @@ Scrollkeeper.Localization["ScrollkeeperColorThemes"] = {
   THEME_SKY = "Ciel",
   THEME_REGALIA = "Regalia",
   THEME_BRIAR = "Ronce",
+  THEME_JUNGLE = "Jungle",
   
   -- Status Messages
   STATUS_UNKNOWN = "Inconnu",
@@ -436,20 +437,20 @@ Scrollkeeper.Localization["ScrollkeeperNotebook"] = {
   WINDOW_TITLE = "Carnet Scrollkeeper",
   
   -- Error Messages
-  ERROR_FRAMEWORK_MISSING = "|c00FF00[ScrollkeeperNotebook]|r ERREUR : ScrollkeeperFramework manquant !",
-  ERROR_ALREADY_INIT = "|c00FF00[ScrollkeeperNotebook]|r Déjà initialisé, passage...",
-  ERROR_WINDOW_EXISTS = "|c00FF00[ScrollkeeperNotebook]|r La fenêtre existe déjà, retour de l'existante",
-  ERROR_DROPDOWN_FAILED = "|c00FF00[ScrollkeeperNotebook]|r Avertissement : Impossible de créer le menu déroulant",
+  ERROR_FRAMEWORK_MISSING = "|cFFD700[ScrollkeeperNotebook]|r ERREUR : ScrollkeeperFramework manquant !",
+  ERROR_ALREADY_INIT = "|cFFD700[ScrollkeeperNotebook]|r Déjà initialisé, passage...",
+  ERROR_WINDOW_EXISTS = "|cFFD700[ScrollkeeperNotebook]|r La fenêtre existe déjà, retour de l'existante",
+  ERROR_DROPDOWN_FAILED = "|cFFD700[ScrollkeeperNotebook]|r Avertissement : Impossible de créer le menu déroulant",
   ERROR_WINDOW_NOT_INIT = "Fenêtre de carnet non initialisée.",
   ERROR_NO_NOTE_ENTRY = "Il n'y a pas d'entrée de note pour %s.",
-  ERROR_DISABLED = "|c00FF00[ScrollkeeperNotebook]|r Le carnet est désactivé",
-  ERROR_NO_TITLE = "|c00FF00[ScrollkeeperNotebook]|r Veuillez entrer un titre pour la note",
-  ERROR_SAVE_FAILED = "|c00FF00[ScrollkeeperNotebook]|r Échec de l'enregistrement de la note",
-  ERROR_TEMPLATE_NO_TITLE = "|c00FF00[ScrollkeeperNotebook]|r Veuillez entrer un titre pour le modèle",
+  ERROR_DISABLED = "|cFFD700[ScrollkeeperNotebook]|r Le carnet est désactivé",
+  ERROR_NO_TITLE = "|cFFD700[ScrollkeeperNotebook]|r Veuillez entrer un titre pour la note",
+  ERROR_SAVE_FAILED = "|cFFD700[ScrollkeeperNotebook]|r Échec de l'enregistrement de la note",
+  ERROR_TEMPLATE_NO_TITLE = "|cFFD700[ScrollkeeperNotebook]|r Veuillez entrer un titre pour le modèle",
   
   -- Success Messages
-  SUCCESS_NOTE_SAVED = "|c00FF00[ScrollkeeperNotebook]|r Note enregistrée : %s",
-  SUCCESS_TEMPLATE_SAVED = "|c00FF00[ScrollkeeperNotebook]|r Modèle de courrier enregistré : %s",
+  SUCCESS_NOTE_SAVED = "|cFFD700[ScrollkeeperNotebook]|r Note enregistrée : %s",
+  SUCCESS_TEMPLATE_SAVED = "|cFFD700[ScrollkeeperNotebook]|r Modèle de courrier enregistré : %s",
   
   -- Window Labels
   LABEL_SEARCH = "Rechercher :",
@@ -514,6 +515,11 @@ Scrollkeeper.Localization["ScrollkeeperNotebook"] = {
   BTN_PREVIEW_MAIL = "Aperçu",
   PREVIEW_TITLE = "Aperçu du courrier",
   ERROR_NO_BODY = "Veuillez saisir du texte dans le corps",
+  
+  -- Guild Tools Integration
+  GUILDMAIL_NO_TEMPLATES   = "(Utilisez 'Enregistrer comme courrier' dans le Carnet pour ajouter des modèles)",
+  SETTING_GUILDMAIL_INJECT = "Afficher le sélecteur de modèles dans le courrier de guilde",
+  SETTING_GUILDMAIL_INJECT_TIP = "Affiche un sélecteur de modèles de courrier du Carnet dans la fenêtre de rédaction du courrier de guilde.",
 }
 
 --------------------------------------------------------------------------------
@@ -525,18 +531,18 @@ Scrollkeeper.Localization["ScrollkeeperHistory"] = {
   WINDOW_TITLE = "Recherche d'Historique de Guilde",
   
   -- Error Messages
-  ERROR_FRAMEWORK_MISSING = "|c00FF00[ScrollkeeperHistory]|r ERREUR : ScrollkeeperFramework manquant !",
-  ERROR_WINDOW_FAILED = "|c00FF00[ScrollkeeperHistory]|r Échec de la création de la fenêtre",
-  ERROR_NO_EXPORT = "|c00FF00[ScrollkeeperHistory]|r Aucun événement à exporter",
+  ERROR_FRAMEWORK_MISSING = "|cFFD700[ScrollkeeperHistory]|r ERREUR : ScrollkeeperFramework manquant !",
+  ERROR_WINDOW_FAILED = "|cFFD700[ScrollkeeperHistory]|r Échec de la création de la fenêtre",
+  ERROR_NO_EXPORT = "|cFFD700[ScrollkeeperHistory]|r Aucun événement à exporter",
   
   -- Success Messages
-  SUCCESS_READY = "|c00FF00[ScrollkeeperHistory]|r Prêt - utilisez /sgthistory",
+  SUCCESS_READY = "|cFFD700[ScrollkeeperHistory]|r Prêt - utilisez /sgthistory",
   
   -- Log Messages
-  LOG_LOADING = "|c00FF00[ScrollkeeperHistory]|r Chargement... SF.Data existe : %s",
-  LOG_DATA_GETEVENTS = "|c00FF00[ScrollkeeperHistory]|r SF.Data.getEvents au chargement : %s",
-  LOG_DATA_UNAVAILABLE = "[History] SF.Data.getEvents non disponible",
-  LOG_FALLBACK_INIT = "|c00FF00[ScrollkeeperHistory]|r Initialisation de secours déclenchée",
+  LOG_LOADING = "|cFFD700[ScrollkeeperHistory]|r Chargement... SF.Data existe : %s",
+  LOG_DATA_GETEVENTS = "|cFFD700[ScrollkeeperHistory]|r SF.Data.getEvents au chargement : %s",
+  LOG_DATA_UNAVAILABLE = "|cFFD700[ScrollkeeperHistory]|r SF.Data.getEvents non disponible",
+  LOG_FALLBACK_INIT = "|cFFD700[ScrollkeeperHistory]|r Initialisation de secours déclenchée",
   
   -- Window Labels
   LABEL_GUILD = "Guilde :",
@@ -657,7 +663,7 @@ Scrollkeeper.Localization["ScrollkeeperHistory"] = {
   -- Member Names
   MEMBER_UNKNOWN = "Inconnu",
     
-  LOG_LIBSCROLL_NOT_FOUND = "|c00FF00[ScrollkeeperHistory]|r LibScroll introuvable - utilisation du défilement de base",
+  LOG_LIBSCROLL_NOT_FOUND = "|cFFD700[ScrollkeeperHistory]|r LibScroll introuvable - utilisation du défilement de base",
 }
 
 --------------------------------------------------------------------------------
@@ -690,7 +696,7 @@ Scrollkeeper.Localization["ScrollkeeperRoster"] = {
                  "|cFF0000< 2 heures|r - Urgent!",
   
   -- Error Messages
-  ERROR_FRAMEWORK_MISSING = "|c00FF00[ScrollkeeperRoster]|r ERREUR : ScrollkeeperFramework manquant !",
+  ERROR_FRAMEWORK_MISSING = "|cFFD700[ScrollkeeperRoster]|r ERREUR : ScrollkeeperFramework manquant !",
   
   -- Tasks
   TASKS_HEADER = "Rappels de Tâches",
@@ -837,14 +843,14 @@ Scrollkeeper.Localization["ScrollkeeperData"] = {
   -- Log Messages
   EVENTS_CACHED = "%s/%s : %d événements en cache",
   STARTED_CACHING = "Démarrage de la mise en cache de %d guildes",
-  MODULE_LOADED = "|c00FF00[ScrollkeeperData]|r Chargé - service de mise en cache en arrière-plan",
+  MODULE_LOADED = "|cFFD700[ScrollkeeperData]|r Chargé - service de mise en cache en arrière-plan",
   LOG_MANUAL_DONATION = "%s - %d or enregistré manuellement",
   MANUAL_DONATION_SOURCE = "Entrée Manuelle",
   
   -- Error Messages
-  ERROR_FRAMEWORK_MISSING = "|c00FF00[ScrollkeeperData]|r ERREUR : ScrollkeeperFramework manquant !",
-  ERROR_DATA_NOT_TABLE = "|c00FF00[ScrollkeeperData]|r CRITIQUE : SF.Data n'est pas une table !",
-  ERROR_HISTOIRE_NOT_FOUND = "|c00FF00[ScrollkeeperData]|r ERREUR : LibHistoire non trouvé !",
+  ERROR_FRAMEWORK_MISSING = "|cFFD700[ScrollkeeperData]|r ERREUR : ScrollkeeperFramework manquant !",
+  ERROR_DATA_NOT_TABLE = "|cFFD700[ScrollkeeperData]|r CRITIQUE : SF.Data n'est pas une table !",
+  ERROR_HISTOIRE_NOT_FOUND = "|cFFD700[ScrollkeeperData]|r ERREUR : LibHistoire non trouvé !",
   
   -- Cache Display
   GUILD_HEADER = "%s :",
@@ -858,12 +864,12 @@ Scrollkeeper.Localization["ScrollkeeperData"] = {
   CAT_SALES = "ventes",
   
   -- Manual donation logging
-  LOG_MANUAL_DONATION = "|c00FF00[ScrollkeeperData]|r Enregistré : %d or de %s vers %s",
+  LOG_MANUAL_DONATION = "|cFFD700[ScrollkeeperData]|r Enregistré : %d or de %s vers %s",
   
   -- Delete entry messages
-  ERROR_DELETE_MISSING_PARAMS = "|c00FF00[ScrollkeeperData]|r deleteManualEntry : Paramètres requis manquants",
-  SUCCESS_DELETE_ENTRY = "|c00FF00[ScrollkeeperData]|r Entrée manuelle supprimée avec succès du cache et du stockage",
-  ERROR_DELETE_NOT_FOUND = "|c00FF00[ScrollkeeperData]|r deleteManualEntry : Entrée introuvable",
+  ERROR_DELETE_MISSING_PARAMS = "|cFFD700[ScrollkeeperData]|r deleteManualEntry : Paramètres requis manquants",
+  SUCCESS_DELETE_ENTRY = "|cFFD700[ScrollkeeperData]|r Entrée manuelle supprimée avec succès du cache et du stockage",
+  ERROR_DELETE_NOT_FOUND = "|cFFD700[ScrollkeeperData]|r deleteManualEntry : Entrée introuvable",
   
   -- Debug cache messages
   DEBUG_NO_GUILD = "[Débogage Données] Aucune guilde spécifiée",
@@ -885,7 +891,7 @@ Scrollkeeper.Localization["ScrollkeeperData"] = {
   CMD_CHECKGOLD_RESULT = "%s a donné %d or au cours des %d derniers jours (%s)",
   
   -- Initialization
-  ERROR_LIBHISTOIRE_MISSING = "|c00FF00[ScrollkeeperData]|r ERREUR : LibHistoire introuvable",
+  ERROR_LIBHISTOIRE_MISSING = "|cFFD700[ScrollkeeperData]|r ERREUR : LibHistoire introuvable",
 }
 
 --------------------------------------------------------------------------------
@@ -896,7 +902,7 @@ Scrollkeeper.Localization["ScrollkeeperWelcome"] = {
   DESCRIPTION = "Configurez les messages de bienvenue pour les membres de la guilde. Utilisez %1 pour le nom du joueur et %2 pour le nom de la guilde. Les messages seront mis en file d'attente lors de l'acceptation de plusieurs candidatures ou si le champ de texte est actif.",
   MASTER_ENABLE = "Activer les Messages de Bienvenue",
   MASTER_ENABLE_TIP = "Activer ou désactiver tous les messages de bienvenue.",
-  LOG_MEMBER_JOINED = "|c00FF00[ScrollkeeperWelcome]|r %s a rejoint %s en tant que %s",
+  LOG_MEMBER_JOINED = "|cFFD700[ScrollkeeperWelcome]|r %s a rejoint %s en tant que %s",
   
   -- Template
   TEMPLATE_HEADER = "Variables de Modèle",
@@ -1048,16 +1054,16 @@ Scrollkeeper.Localization["ScrollkeeperStandardCommands"] = {
   TEST_DATA_NOT_LOADED = "Module de données non chargé",
   
   -- Error Messages
-  ERROR_FRAMEWORK_MISSING = "|c00FF00[ScrollkeeperStandardCommands]|r ERREUR : ScrollkeeperFramework manquant !",
+  ERROR_FRAMEWORK_MISSING = "|cFFD700[ScrollkeeperStandardCommands]|r ERREUR : ScrollkeeperFramework manquant !",
   ERROR_NOTEBOOK_DISABLED = "Le carnet est désactivé dans les paramètres",
   ERROR_NOTEBOOK_NO_WINDOW = "Fenêtre du carnet non disponible",
   ERROR_NOTEBOOK_NOT_LOADED = "Module carnet non chargé",
   
   -- Log Messages
-  LOG_REGISTERING = "|c00FF00[ScrollkeeperStandardCommands]|r Enregistrement des commandes slash...",
-  LOG_REGISTERED = "|c00FF00[ScrollkeeperStandardCommands]|r Commandes slash enregistrées",
-  LOG_INITIALIZING = "|c00FF00[ScrollkeeperStandardCommands]|r Initialisation...",
-  LOG_COMPLETE = "|c00FF00[ScrollkeeperStandardCommands]|r Initialisation terminée",
+  LOG_REGISTERING = "|cFFD700[ScrollkeeperStandardCommands]|r Enregistrement des commandes slash...",
+  LOG_REGISTERED = "|cFFD700[ScrollkeeperStandardCommands]|r Commandes slash enregistrées",
+  LOG_INITIALIZING = "|cFFD700[ScrollkeeperStandardCommands]|r Initialisation...",
+  LOG_COMPLETE = "|cFFD700[ScrollkeeperStandardCommands]|r Initialisation terminée",
 }
 
 --------------------------------------------------------------------------------
@@ -1150,12 +1156,12 @@ Scrollkeeper.Localization["ScrollkeeperApplications"] = {
   GUILD_TOGGLE_TIP = "Enregistrer les candidatures pour %s",
 
   -- Errors
-  ERROR_NOTEBOOK_UNAVAILABLE = "|c00FF00[ScrollkeeperApplications]|r Le module Carnet n'est pas disponible. Les candidatures ne peuvent pas être enregistrées.",
-  WARNING_NOTEBOOK_MISSING = "|c00FF00[ScrollkeeperApplications]|r ATTENTION : Module Carnet non chargé. L'enregistrement des candidatures ne fonctionnera pas.",
+  ERROR_NOTEBOOK_UNAVAILABLE = "|cFFD700[ScrollkeeperApplications]|r Le module Carnet n'est pas disponible. Les candidatures ne peuvent pas être enregistrées.",
+  WARNING_NOTEBOOK_MISSING = "|cFFD700[ScrollkeeperApplications]|r ATTENTION : Module Carnet non chargé. L'enregistrement des candidatures ne fonctionnera pas.",
   
-  SUCCESS_LOGGED_SINGLE = "|c00FF00[ScrollkeeperApplications]|r Candidature de |cFFD700%s|r pour |cFFD700%s|r enregistrée",
+  SUCCESS_LOGGED_SINGLE = "|cFFD700[ScrollkeeperApplications]|r Candidature de |cFFD700%s|r pour |cFFD700%s|r enregistrée",
   ERROR_SAVE_FAILED = "|cFF5555[ScrollkeeperApplications]|r Échec de l'enregistrement de la candidature de %s",
-  SUCCESS_LOGGED_MULTIPLE = "|c00FF00[ScrollkeeperApplications]|r %d candidatures pour |cFFD700%s|r enregistrées",
+  SUCCESS_LOGGED_MULTIPLE = "|cFFD700[ScrollkeeperApplications]|r %d candidatures pour |cFFD700%s|r enregistrées",
 }
 -- Backward compatibility (DEPRECATED)
 _G.Scrollkeeper.Localization = Scrollkeeper.Localization
