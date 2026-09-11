@@ -43,7 +43,7 @@ Scrollkeeper.Localization["ScrollkeeperColorThemes"] = {
   NOTE = "Примечание: Изменения темы применяются немедленно ко всем открытым окнам Scrollkeeper.",
   
   -- Error Messages
-  ERROR_FRAMEWORK_MISSING = "|c00FF00[ScrollkeeperColorThemes]|r ОШИБКА: ScrollkeeperFramework отсутствует!",
+  ERROR_FRAMEWORK_MISSING = "|cFFD700[ScrollkeeperColorThemes]|r ОШИБКА: ScrollkeeperFramework отсутствует!",
   
   -- Theme Names
   THEME_EMBER = "Угли",
@@ -52,6 +52,7 @@ Scrollkeeper.Localization["ScrollkeeperColorThemes"] = {
   THEME_SKY = "Небо",
   THEME_REGALIA = "Регалия",
   THEME_BRIAR = "Шиповник",
+  THEME_JUNGLE = "Джунгли",
   
   -- Status Messages
   STATUS_UNKNOWN = "Неизвестно",
@@ -436,20 +437,20 @@ Scrollkeeper.Localization["ScrollkeeperNotebook"] = {
   WINDOW_TITLE = "Блокнот Scrollkeeper",
     
   -- Error Messages
-  ERROR_FRAMEWORK_MISSING = "|c00FF00[ScrollkeeperNotebook]|r ОШИБКА: ScrollkeeperFramework отсутствует!",
-  ERROR_ALREADY_INIT = "|c00FF00[ScrollkeeperNotebook]|r Уже инициализировано, пропуск...",
-  ERROR_WINDOW_EXISTS = "|c00FF00[ScrollkeeperNotebook]|r Окно уже существует, возврат существующего",
-  ERROR_DROPDOWN_FAILED = "|c00FF00[ScrollkeeperNotebook]|r Предупреждение: Не удалось создать выпадающее меню",
+  ERROR_FRAMEWORK_MISSING = "|cFFD700[ScrollkeeperNotebook]|r ОШИБКА: ScrollkeeperFramework отсутствует!",
+  ERROR_ALREADY_INIT = "|cFFD700[ScrollkeeperNotebook]|r Уже инициализировано, пропуск...",
+  ERROR_WINDOW_EXISTS = "|cFFD700[ScrollkeeperNotebook]|r Окно уже существует, возврат существующего",
+  ERROR_DROPDOWN_FAILED = "|cFFD700[ScrollkeeperNotebook]|r Предупреждение: Не удалось создать выпадающее меню",
   ERROR_WINDOW_NOT_INIT = "Окно блокнота не инициализировано.",
   ERROR_NO_NOTE_ENTRY = "Нет записи заметки для %s.",
-  ERROR_DISABLED = "|c00FF00[ScrollkeeperNotebook]|r Блокнот отключён",
-  ERROR_NO_TITLE = "|c00FF00[ScrollkeeperNotebook]|r Введите заголовок для заметки",
-  ERROR_SAVE_FAILED = "|c00FF00[ScrollkeeperNotebook]|r Не удалось сохранить заметку",
-  ERROR_TEMPLATE_NO_TITLE = "|c00FF00[ScrollkeeperNotebook]|r Введите заголовок для шаблона",
+  ERROR_DISABLED = "|cFFD700[ScrollkeeperNotebook]|r Блокнот отключён",
+  ERROR_NO_TITLE = "|cFFD700[ScrollkeeperNotebook]|r Введите заголовок для заметки",
+  ERROR_SAVE_FAILED = "|cFFD700[ScrollkeeperNotebook]|r Не удалось сохранить заметку",
+  ERROR_TEMPLATE_NO_TITLE = "|cFFD700[ScrollkeeperNotebook]|r Введите заголовок для шаблона",
     
   -- Success Messages
-  SUCCESS_NOTE_SAVED = "|c00FF00[ScrollkeeperNotebook]|r Заметка сохранена: %s",
-  SUCCESS_TEMPLATE_SAVED = "|c00FF00[ScrollkeeperNotebook]|r Шаблон почты сохранён: %s",
+  SUCCESS_NOTE_SAVED = "|cFFD700[ScrollkeeperNotebook]|r Заметка сохранена: %s",
+  SUCCESS_TEMPLATE_SAVED = "|cFFD700[ScrollkeeperNotebook]|r Шаблон почты сохранён: %s",
     
   -- Window Labels
   LABEL_SEARCH = "Поиск:",
@@ -514,6 +515,11 @@ Scrollkeeper.Localization["ScrollkeeperNotebook"] = {
   BTN_PREVIEW_MAIL = "Просмотр",
   PREVIEW_TITLE = "Предварительный просмотр письма",
   ERROR_NO_BODY = "Пожалуйста, введите текст в тело сообщения",
+  
+  -- Guild Tools Integration
+  GUILDMAIL_NO_TEMPLATES   = "(Используйте «Сохранить как письмо» в Блокноте, чтобы добавить шаблоны)",
+  SETTING_GUILDMAIL_INJECT = "Показывать список шаблонов в почте гильдии",
+  SETTING_GUILDMAIL_INJECT_TIP = "Отображает список шаблонов писем из Блокнота в окне создания почты гильдии.",
 }
 
 --------------------------------------------------------------------------------
@@ -525,18 +531,18 @@ Scrollkeeper.Localization["ScrollkeeperHistory"] = {
   WINDOW_TITLE = "Поиск Истории Гильдии",
     
   -- Error Messages
-  ERROR_FRAMEWORK_MISSING = "|c00FF00[ScrollkeeperHistory]|r ОШИБКА: ScrollkeeperFramework отсутствует!",
-  ERROR_WINDOW_FAILED = "|c00FF00[ScrollkeeperHistory]|r Не удалось создать окно",
-  ERROR_NO_EXPORT = "|c00FF00[ScrollkeeperHistory]|r Нет событий для экспорта",
+  ERROR_FRAMEWORK_MISSING = "|cFFD700[ScrollkeeperHistory]|r ОШИБКА: ScrollkeeperFramework отсутствует!",
+  ERROR_WINDOW_FAILED = "|cFFD700[ScrollkeeperHistory]|r Не удалось создать окно",
+  ERROR_NO_EXPORT = "|cFFD700[ScrollkeeperHistory]|r Нет событий для экспорта",
     
   -- Success Messages
-  SUCCESS_READY = "|c00FF00[ScrollkeeperHistory]|r Готово - используйте /sgthistory",
+  SUCCESS_READY = "|cFFD700[ScrollkeeperHistory]|r Готово - используйте /sgthistory",
     
   -- Log Messages
-  LOG_LOADING = "|c00FF00[ScrollkeeperHistory]|r Загрузка... SF.Data существует: %s",
-  LOG_DATA_GETEVENTS = "|c00FF00[ScrollkeeperHistory]|r SF.Data.getEvents при загрузке: %s",
-  LOG_DATA_UNAVAILABLE = "[History] SF.Data.getEvents недоступен",
-  LOG_FALLBACK_INIT = "|c00FF00[ScrollkeeperHistory]|r Запущена резервная инициализация",
+  LOG_LOADING = "|cFFD700[ScrollkeeperHistory]|r Загрузка... SF.Data существует: %s",
+  LOG_DATA_GETEVENTS = "|cFFD700[ScrollkeeperHistory]|r SF.Data.getEvents при загрузке: %s",
+  LOG_DATA_UNAVAILABLE = "|cFFD700[ScrollkeeperHistory]|r SF.Data.getEvents недоступен",
+  LOG_FALLBACK_INIT = "|cFFD700[ScrollkeeperHistory]|r Запущена резервная инициализация",
     
   -- Window Labels
   LABEL_GUILD = "Гильдия:",
@@ -657,7 +663,7 @@ Scrollkeeper.Localization["ScrollkeeperHistory"] = {
   -- Member Names
   MEMBER_UNKNOWN = "Неизвестно",
     
-  LOG_LIBSCROLL_NOT_FOUND = "|c00FF00[ScrollkeeperHistory]|r LibScroll не найден - используется базовая прокрутка",
+  LOG_LIBSCROLL_NOT_FOUND = "|cFFD700[ScrollkeeperHistory]|r LibScroll не найден - используется базовая прокрутка",
 }
 
 --------------------------------------------------------------------------------
@@ -690,7 +696,7 @@ Scrollkeeper.Localization["ScrollkeeperRoster"] = {
                  "|cFF0000< 2 часов|r - Срочно!",
 				   
   -- Error Messages
-  ERROR_FRAMEWORK_MISSING = "|c00FF00[ScrollkeeperRoster]|r ОШИБКА: ScrollkeeperFramework отсутствует!",
+  ERROR_FRAMEWORK_MISSING = "|cFFD700[ScrollkeeperRoster]|r ОШИБКА: ScrollkeeperFramework отсутствует!",
   
   -- Tasks
   TASKS_HEADER = "Напоминания о Задачах",
@@ -837,14 +843,14 @@ Scrollkeeper.Localization["ScrollkeeperData"] = {
   -- Log Messages
   EVENTS_CACHED = "%s/%s: %d событий в кэше",
   STARTED_CACHING = "Начато кэширование %d гильдий",
-  MODULE_LOADED = "|c00FF00[ScrollkeeperData]|r Загружен - фоновая служба кэширования",
+  MODULE_LOADED = "|cFFD700[ScrollkeeperData]|r Загружен - фоновая служба кэширования",
   LOG_MANUAL_DONATION = "%s - %d золота записано вручную",
   MANUAL_DONATION_SOURCE = "Ручной Ввод",
     
   -- Error Messages
-  ERROR_FRAMEWORK_MISSING = "|c00FF00[ScrollkeeperData]|r ОШИБКА: ScrollkeeperFramework отсутствует!",
-  ERROR_DATA_NOT_TABLE = "|c00FF00[ScrollkeeperData]|r КРИТИЧНО: SF.Data не является таблицей!",
-  ERROR_HISTOIRE_NOT_FOUND = "|c00FF00[ScrollkeeperData]|r ОШИБКА: LibHistoire не найден!",
+  ERROR_FRAMEWORK_MISSING = "|cFFD700[ScrollkeeperData]|r ОШИБКА: ScrollkeeperFramework отсутствует!",
+  ERROR_DATA_NOT_TABLE = "|cFFD700[ScrollkeeperData]|r КРИТИЧНО: SF.Data не является таблицей!",
+  ERROR_HISTOIRE_NOT_FOUND = "|cFFD700[ScrollkeeperData]|r ОШИБКА: LibHistoire не найден!",
     
   -- Cache Display
   GUILD_HEADER = "%s:",
@@ -858,12 +864,12 @@ Scrollkeeper.Localization["ScrollkeeperData"] = {
   CAT_SALES = "продажи",
   
   -- Manual donation logging
-  LOG_MANUAL_DONATION = "|c00FF00[ScrollkeeperData]|r Записано: %d золота от %s в %s",
+  LOG_MANUAL_DONATION = "|cFFD700[ScrollkeeperData]|r Записано: %d золота от %s в %s",
   
   -- Delete entry messages
-  ERROR_DELETE_MISSING_PARAMS = "|c00FF00[ScrollkeeperData]|r deleteManualEntry: Отсутствуют обязательные параметры",
-  SUCCESS_DELETE_ENTRY = "|c00FF00[ScrollkeeperData]|r Ручная запись успешно удалена из кеша и хранилища",
-  ERROR_DELETE_NOT_FOUND = "|c00FF00[ScrollkeeperData]|r deleteManualEntry: Запись не найдена",
+  ERROR_DELETE_MISSING_PARAMS = "|cFFD700[ScrollkeeperData]|r deleteManualEntry: Отсутствуют обязательные параметры",
+  SUCCESS_DELETE_ENTRY = "|cFFD700[ScrollkeeperData]|r Ручная запись успешно удалена из кеша и хранилища",
+  ERROR_DELETE_NOT_FOUND = "|cFFD700[ScrollkeeperData]|r deleteManualEntry: Запись не найдена",
   
   -- Debug cache messages
   DEBUG_NO_GUILD = "[Отладка Данных] Гильдия не указана",
@@ -885,7 +891,7 @@ Scrollkeeper.Localization["ScrollkeeperData"] = {
   CMD_CHECKGOLD_RESULT = "%s пожертвовал %d золота за последние %d дней (%s)",
   
   -- Initialization
-  ERROR_LIBHISTOIRE_MISSING = "|c00FF00[ScrollkeeperData]|r ОШИБКА: LibHistoire не найден",
+  ERROR_LIBHISTOIRE_MISSING = "|cFFD700[ScrollkeeperData]|r ОШИБКА: LibHistoire не найден",
 }
 
 --------------------------------------------------------------------------------
@@ -896,7 +902,7 @@ Scrollkeeper.Localization["ScrollkeeperWelcome"] = {
   DESCRIPTION = "Настройте приветственные сообщения для членов гильдии. Используйте %1 для имени игрока и %2 для названия гильдии. Сообщения будут поставлены в очередь при принятии нескольких заявок или если текстовое поле активно.",
   MASTER_ENABLE = "Включить Приветственные Сообщения",
   MASTER_ENABLE_TIP = "Включить/отключить все приветственные сообщения.",
-  LOG_MEMBER_JOINED = "|c00FF00[ScrollkeeperWelcome]|r %s присоединился к %s как %s",
+  LOG_MEMBER_JOINED = "|cFFD700[ScrollkeeperWelcome]|r %s присоединился к %s как %s",
     
   -- Template
   TEMPLATE_HEADER = "Переменные Шаблона",
@@ -1048,16 +1054,16 @@ Scrollkeeper.Localization["ScrollkeeperStandardCommands"] = {
   TEST_DATA_NOT_LOADED = "Модуль данных не загружен",
     
   -- Error Messages
-  ERROR_FRAMEWORK_MISSING = "|c00FF00[ScrollkeeperStandardCommands]|r ОШИБКА: ScrollkeeperFramework отсутствует!",
+  ERROR_FRAMEWORK_MISSING = "|cFFD700[ScrollkeeperStandardCommands]|r ОШИБКА: ScrollkeeperFramework отсутствует!",
   ERROR_NOTEBOOK_DISABLED = "Блокнот отключён в настройках",
   ERROR_NOTEBOOK_NO_WINDOW = "Окно блокнота недоступно",
   ERROR_NOTEBOOK_NOT_LOADED = "Модуль блокнота не загружен",
     
   -- Log Messages
-  LOG_REGISTERING = "|c00FF00[ScrollkeeperStandardCommands]|r Регистрация slash-команд...",
-  LOG_REGISTERED = "|c00FF00[ScrollkeeperStandardCommands]|r Slash-команды зарегистрированы",
-  LOG_INITIALIZING = "|c00FF00[ScrollkeeperStandardCommands]|r Инициализация...",
-  LOG_COMPLETE = "|c00FF00[ScrollkeeperStandardCommands]|r Инициализация завершена",
+  LOG_REGISTERING = "|cFFD700[ScrollkeeperStandardCommands]|r Регистрация slash-команд...",
+  LOG_REGISTERED = "|cFFD700[ScrollkeeperStandardCommands]|r Slash-команды зарегистрированы",
+  LOG_INITIALIZING = "|cFFD700[ScrollkeeperStandardCommands]|r Инициализация...",
+  LOG_COMPLETE = "|cFFD700[ScrollkeeperStandardCommands]|r Инициализация завершена",
 }
 
 --------------------------------------------------------------------------------
@@ -1150,12 +1156,12 @@ Scrollkeeper.Localization["ScrollkeeperApplications"] = {
   GUILD_TOGGLE_TIP = "Записывать заявки для %s",
   
   -- Errors
-  ERROR_NOTEBOOK_UNAVAILABLE = "|c00FF00[ScrollkeeperApplications]|r Модуль Блокнота недоступен. Заявки не могут быть записаны.",
-  WARNING_NOTEBOOK_MISSING = "|c00FF00[ScrollkeeperApplications]|r ВНИМАНИЕ: Модуль Блокнота не загружен. Запись заявок не будет работать.",
+  ERROR_NOTEBOOK_UNAVAILABLE = "|cFFD700[ScrollkeeperApplications]|r Модуль Блокнота недоступен. Заявки не могут быть записаны.",
+  WARNING_NOTEBOOK_MISSING = "|cFFD700[ScrollkeeperApplications]|r ВНИМАНИЕ: Модуль Блокнота не загружен. Запись заявок не будет работать.",
   
-  SUCCESS_LOGGED_SINGLE = "|c00FF00[ScrollkeeperApplications]|r Заявка от |cFFD700%s|r в |cFFD700%s|r записана",
+  SUCCESS_LOGGED_SINGLE = "|cFFD700[ScrollkeeperApplications]|r Заявка от |cFFD700%s|r в |cFFD700%s|r записана",
   ERROR_SAVE_FAILED = "|cFF5555[ScrollkeeperApplications]|r Не удалось сохранить заявку от %s",
-  SUCCESS_LOGGED_MULTIPLE = "|c00FF00[ScrollkeeperApplications]|r Записано заявок для |cFFD700%s|r: %d",
+  SUCCESS_LOGGED_MULTIPLE = "|cFFD700[ScrollkeeperApplications]|r Записано заявок для |cFFD700%s|r: %d",
 }
 -- Backward compatibility (DEPRECATED)
 _G.Scrollkeeper.Localization = Scrollkeeper.Localization
