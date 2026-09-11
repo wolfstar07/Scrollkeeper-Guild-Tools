@@ -377,7 +377,7 @@ local function collectGuildEvents(guildName, maxEvents, searchTerm, selectedCate
       
       local matches = false
       if LibTextFilter then
-        matches = LibTextFilter:Filter(searchText, searchTerm)
+        matches = LibTextFilter:Filter(searchText, string.lower(searchTerm))
       else
         matches = string.find(searchText, string.lower(searchTerm), 1, true) ~= nil
       end
@@ -504,7 +504,12 @@ local function createHistoryWindow()
   closeBtn:SetDimensions(25, 25)
   closeBtn:SetAnchor(RIGHT, titleBar, RIGHT, -5, 0)
   closeBtn:SetNormalTexture("/esoui/art/buttons/decline_up.dds")
-  closeBtn:SetHandler("OnClicked", function() window:SetHidden(true) end)
+  closeBtn:SetHandler("OnClicked", function()
+    window:SetHidden(true)
+    if LibTextFilter then
+      LibTextFilter:ClearCachedTokens()
+    end
+  end)
   
   -- Control panel
   local controlPanel = WINDOW_MANAGER:CreateControl(nil, window, CT_BACKDROP)
