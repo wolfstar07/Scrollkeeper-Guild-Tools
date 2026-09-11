@@ -43,7 +43,7 @@ Scrollkeeper.Localization["ScrollkeeperColorThemes"] = {
   NOTE = "注：テーマの変更は、開いているすべてのScrollkeeperウィンドウに即座に適用されます。",
   
   -- Error Messages
-  ERROR_FRAMEWORK_MISSING = "|c00FF00[ScrollkeeperColorThemes]|r エラー：ScrollkeeperFrameworkが見つかりません！",
+  ERROR_FRAMEWORK_MISSING = "|cFFD700[ScrollkeeperColorThemes]|r エラー：ScrollkeeperFrameworkが見つかりません！",
   
   -- Theme Names
   THEME_EMBER = "残り火",
@@ -52,6 +52,7 @@ Scrollkeeper.Localization["ScrollkeeperColorThemes"] = {
   THEME_SKY = "空",
   THEME_REGALIA = "レガリア",
   THEME_BRIAR = "ブライアー",
+  THEME_JUNGLE = "ジャングル",
   
   -- Status Messages
   STATUS_UNKNOWN = "不明",
@@ -436,20 +437,20 @@ Scrollkeeper.Localization["ScrollkeeperNotebook"] = {
   WINDOW_TITLE = "Scrollkeeperノートブック",
     
   -- Error Messages
-  ERROR_FRAMEWORK_MISSING = "|c00FF00[ScrollkeeperNotebook]|r エラー：ScrollkeeperFrameworkが見つかりません！",
-  ERROR_ALREADY_INIT = "|c00FF00[ScrollkeeperNotebook]|r 既に初期化されています。スキップします...",
-  ERROR_WINDOW_EXISTS = "|c00FF00[ScrollkeeperNotebook]|r ウィンドウは既に存在します。既存のものを返します",
-  ERROR_DROPDOWN_FAILED = "|c00FF00[ScrollkeeperNotebook]|r 警告：ドロップダウンを作成できませんでした",
+  ERROR_FRAMEWORK_MISSING = "|cFFD700[ScrollkeeperNotebook]|r エラー：ScrollkeeperFrameworkが見つかりません！",
+  ERROR_ALREADY_INIT = "|cFFD700[ScrollkeeperNotebook]|r 既に初期化されています。スキップします...",
+  ERROR_WINDOW_EXISTS = "|cFFD700[ScrollkeeperNotebook]|r ウィンドウは既に存在します。既存のものを返します",
+  ERROR_DROPDOWN_FAILED = "|cFFD700[ScrollkeeperNotebook]|r 警告：ドロップダウンを作成できませんでした",
   ERROR_WINDOW_NOT_INIT = "ノートブックウィンドウが初期化されていません。",
   ERROR_NO_NOTE_ENTRY = "%sのノートエントリがありません。",
-  ERROR_DISABLED = "|c00FF00[ScrollkeeperNotebook]|r ノートブックが無効になっています",
-  ERROR_NO_TITLE = "|c00FF00[ScrollkeeperNotebook]|r ノートのタイトルを入力してください",
-  ERROR_SAVE_FAILED = "|c00FF00[ScrollkeeperNotebook]|r ノートの保存に失敗しました",
-  ERROR_TEMPLATE_NO_TITLE = "|c00FF00[ScrollkeeperNotebook]|r テンプレートのタイトルを入力してください",
+  ERROR_DISABLED = "|cFFD700[ScrollkeeperNotebook]|r ノートブックが無効になっています",
+  ERROR_NO_TITLE = "|cFFD700[ScrollkeeperNotebook]|r ノートのタイトルを入力してください",
+  ERROR_SAVE_FAILED = "|cFFD700[ScrollkeeperNotebook]|r ノートの保存に失敗しました",
+  ERROR_TEMPLATE_NO_TITLE = "|cFFD700[ScrollkeeperNotebook]|r テンプレートのタイトルを入力してください",
     
   -- Success Messages
-  SUCCESS_NOTE_SAVED = "|c00FF00[ScrollkeeperNotebook]|r ノートが保存されました：%s",
-  SUCCESS_TEMPLATE_SAVED = "|c00FF00[ScrollkeeperNotebook]|r メールテンプレートが保存されました：%s",
+  SUCCESS_NOTE_SAVED = "|cFFD700[ScrollkeeperNotebook]|r ノートが保存されました：%s",
+  SUCCESS_TEMPLATE_SAVED = "|cFFD700[ScrollkeeperNotebook]|r メールテンプレートが保存されました：%s",
     
   -- Window Labels
   LABEL_SEARCH = "検索：",
@@ -514,6 +515,11 @@ Scrollkeeper.Localization["ScrollkeeperNotebook"] = {
   BTN_PREVIEW_MAIL = "プレビュー",
   PREVIEW_TITLE = "メールプレビュー",
   ERROR_NO_BODY = "本文にテキストを入力してください",
+  
+  -- Guild Tools Integration
+  GUILDMAIL_NO_TEMPLATES   = "(テンプレートを追加するには、ノートブックで「メールとして保存」を使用してください)",
+  SETTING_GUILDMAIL_INJECT = "ギルドメール作成画面にテンプレート選択欄を表示",
+  SETTING_GUILDMAIL_INJECT_TIP = "ギルドメール作成ウィンドウに、ノートブックのメールテンプレート選択欄を表示します。",
 }
 
 --------------------------------------------------------------------------------
@@ -525,18 +531,18 @@ Scrollkeeper.Localization["ScrollkeeperHistory"] = {
   WINDOW_TITLE = "ギルド履歴検索",
     
   -- Error Messages
-  ERROR_FRAMEWORK_MISSING = "|c00FF00[ScrollkeeperHistory]|r エラー：ScrollkeeperFrameworkが見つかりません！",
-  ERROR_WINDOW_FAILED = "|c00FF00[ScrollkeeperHistory]|r ウィンドウの作成に失敗しました",
-  ERROR_NO_EXPORT = "|c00FF00[ScrollkeeperHistory]|r エクスポートするイベントがありません",
+  ERROR_FRAMEWORK_MISSING = "|cFFD700[ScrollkeeperHistory]|r エラー：ScrollkeeperFrameworkが見つかりません！",
+  ERROR_WINDOW_FAILED = "|cFFD700[ScrollkeeperHistory]|r ウィンドウの作成に失敗しました",
+  ERROR_NO_EXPORT = "|cFFD700[ScrollkeeperHistory]|r エクスポートするイベントがありません",
     
   -- Success Messages
-  SUCCESS_READY = "|c00FF00[ScrollkeeperHistory]|r 準備完了 - /sgthistoryを使用してください",
+  SUCCESS_READY = "|cFFD700[ScrollkeeperHistory]|r 準備完了 - /sgthistoryを使用してください",
     
   -- Log Messages
-  LOG_LOADING = "|c00FF00[ScrollkeeperHistory]|r 読み込み中... SF.Dataが存在します：%s",
-  LOG_DATA_GETEVENTS = "|c00FF00[ScrollkeeperHistory]|r 読み込み時のSF.Data.getEvents：%s",
-  LOG_DATA_UNAVAILABLE = "[History] SF.Data.getEventsが利用できません",
-  LOG_FALLBACK_INIT = "|c00FF00[ScrollkeeperHistory]|r フォールバック初期化がトリガーされました",
+  LOG_LOADING = "|cFFD700[ScrollkeeperHistory]|r 読み込み中... SF.Dataが存在します：%s",
+  LOG_DATA_GETEVENTS = "|cFFD700[ScrollkeeperHistory]|r 読み込み時のSF.Data.getEvents：%s",
+  LOG_DATA_UNAVAILABLE = "|cFFD700[ScrollkeeperHistory]|r SF.Data.getEventsが利用できません",
+  LOG_FALLBACK_INIT = "|cFFD700[ScrollkeeperHistory]|r フォールバック初期化がトリガーされました",
     
   -- Window Labels
   LABEL_GUILD = "ギルド：",
@@ -657,7 +663,7 @@ Scrollkeeper.Localization["ScrollkeeperHistory"] = {
   -- Member Names
   MEMBER_UNKNOWN = "不明",
     
-  LOG_LIBSCROLL_NOT_FOUND = "|c00FF00[ScrollkeeperHistory]|r LibScrollが見つかりません - 基本スクロールを使用します",
+  LOG_LIBSCROLL_NOT_FOUND = "|cFFD700[ScrollkeeperHistory]|r LibScrollが見つかりません - 基本スクロールを使用します",
 }
 
 --------------------------------------------------------------------------------
@@ -690,7 +696,7 @@ Scrollkeeper.Localization["ScrollkeeperRoster"] = {
                  "|cFF00002時間未満|r - 緊急！",
 				   
   -- Error Messages
-  ERROR_FRAMEWORK_MISSING = "|c00FF00[ScrollkeeperRoster]|r エラー：ScrollkeeperFrameworkが見つかりません！",
+  ERROR_FRAMEWORK_MISSING = "|cFFD700[ScrollkeeperRoster]|r エラー：ScrollkeeperFrameworkが見つかりません！",
   
   -- Tasks
   TASKS_HEADER = "タスクリマインダー",
@@ -837,14 +843,14 @@ Scrollkeeper.Localization["ScrollkeeperData"] = {
   -- Log Messages
   EVENTS_CACHED = "%s/%s：%d件のイベントがキャッシュされました",
   STARTED_CACHING = "%d個のギルドのキャッシングを開始しました",
-  MODULE_LOADED = "|c00FF00[ScrollkeeperData]|r 読み込み完了 - バックグラウンドキャッシングサービス",
+  MODULE_LOADED = "|cFFD700[ScrollkeeperData]|r 読み込み完了 - バックグラウンドキャッシングサービス",
   LOG_MANUAL_DONATION = "%s - %dゴールドを手動で記録",
   MANUAL_DONATION_SOURCE = "手動入力",
     
   -- Error Messages
-  ERROR_FRAMEWORK_MISSING = "|c00FF00[ScrollkeeperData]|r エラー：ScrollkeeperFrameworkが見つかりません！",
-  ERROR_DATA_NOT_TABLE = "|c00FF00[ScrollkeeperData]|r 重大：SF.Dataがテーブルではありません！",
-  ERROR_HISTOIRE_NOT_FOUND = "|c00FF00[ScrollkeeperData]|r エラー：LibHistoireが見つかりません！",
+  ERROR_FRAMEWORK_MISSING = "|cFFD700[ScrollkeeperData]|r エラー：ScrollkeeperFrameworkが見つかりません！",
+  ERROR_DATA_NOT_TABLE = "|cFFD700[ScrollkeeperData]|r 重大：SF.Dataがテーブルではありません！",
+  ERROR_HISTOIRE_NOT_FOUND = "|cFFD700[ScrollkeeperData]|r エラー：LibHistoireが見つかりません！",
     
   -- Cache Display
   GUILD_HEADER = "%s：",
@@ -858,12 +864,12 @@ Scrollkeeper.Localization["ScrollkeeperData"] = {
   CAT_SALES = "販売",
   
   -- Manual donation logging
-  LOG_MANUAL_DONATION = "|c00FF00[ScrollkeeperData]|r 記録済み：%sから%sへ%dゴールド",
+  LOG_MANUAL_DONATION = "|cFFD700[ScrollkeeperData]|r 記録済み：%sから%sへ%dゴールド",
   
   -- Delete entry messages
-  ERROR_DELETE_MISSING_PARAMS = "|c00FF00[ScrollkeeperData]|r deleteManualEntry：必須パラメータが不足しています",
-  SUCCESS_DELETE_ENTRY = "|c00FF00[ScrollkeeperData]|r 手動エントリをキャッシュとストレージから正常に削除しました",
-  ERROR_DELETE_NOT_FOUND = "|c00FF00[ScrollkeeperData]|r deleteManualEntry：エントリが見つかりません",
+  ERROR_DELETE_MISSING_PARAMS = "|cFFD700[ScrollkeeperData]|r deleteManualEntry：必須パラメータが不足しています",
+  SUCCESS_DELETE_ENTRY = "|cFFD700[ScrollkeeperData]|r 手動エントリをキャッシュとストレージから正常に削除しました",
+  ERROR_DELETE_NOT_FOUND = "|cFFD700[ScrollkeeperData]|r deleteManualEntry：エントリが見つかりません",
   
   -- Debug cache messages
   DEBUG_NO_GUILD = "[データデバッグ] ギルドが指定されていません",
@@ -885,7 +891,7 @@ Scrollkeeper.Localization["ScrollkeeperData"] = {
   CMD_CHECKGOLD_RESULT = "%sは過去%d日間に%dゴールドを寄付しました（%s）",
   
   -- Initialization
-  ERROR_LIBHISTOIRE_MISSING = "|c00FF00[ScrollkeeperData]|r エラー：LibHistoireが見つかりません",
+  ERROR_LIBHISTOIRE_MISSING = "|cFFD700[ScrollkeeperData]|r エラー：LibHistoireが見つかりません",
 }
 
 --------------------------------------------------------------------------------
@@ -896,7 +902,7 @@ Scrollkeeper.Localization["ScrollkeeperWelcome"] = {
   DESCRIPTION = "ギルドメンバーへのウェルカムメッセージを設定します。プレイヤー名には%1、ギルド名には%2を使用してください。複数の申請を受け入れる際、またはテキストフィールドがアクティブな場合、メッセージはキューに入ります。",
   MASTER_ENABLE = "ウェルカムメッセージを有効化",
   MASTER_ENABLE_TIP = "すべてのウェルカムメッセージをオン/オフに切り替えます。",
-  LOG_MEMBER_JOINED = "|c00FF00[ScrollkeeperWelcome]|r %sが%sに%sとして参加しました",
+  LOG_MEMBER_JOINED = "|cFFD700[ScrollkeeperWelcome]|r %sが%sに%sとして参加しました",
     
   -- Template
   TEMPLATE_HEADER = "テンプレート変数",
@@ -1048,16 +1054,16 @@ Scrollkeeper.Localization["ScrollkeeperStandardCommands"] = {
   TEST_DATA_NOT_LOADED = "データモジュールが読み込まれていません",
     
   -- Error Messages
-  ERROR_FRAMEWORK_MISSING = "|c00FF00[ScrollkeeperStandardCommands]|r エラー：ScrollkeeperFrameworkが見つかりません！",
+  ERROR_FRAMEWORK_MISSING = "|cFFD700[ScrollkeeperStandardCommands]|r エラー：ScrollkeeperFrameworkが見つかりません！",
   ERROR_NOTEBOOK_DISABLED = "ノートブックが設定で無効になっています",
   ERROR_NOTEBOOK_NO_WINDOW = "ノートブックウィンドウが利用できません",
   ERROR_NOTEBOOK_NOT_LOADED = "ノートブックモジュールが読み込まれていません",
     
   -- Log Messages
-  LOG_REGISTERING = "|c00FF00[ScrollkeeperStandardCommands]|r スラッシュコマンドを登録中...",
-  LOG_REGISTERED = "|c00FF00[ScrollkeeperStandardCommands]|r スラッシュコマンド登録済み",
-  LOG_INITIALIZING = "|c00FF00[ScrollkeeperStandardCommands]|r 初期化中...",
-  LOG_COMPLETE = "|c00FF00[ScrollkeeperStandardCommands]|r 初期化完了",
+  LOG_REGISTERING = "|cFFD700[ScrollkeeperStandardCommands]|r スラッシュコマンドを登録中...",
+  LOG_REGISTERED = "|cFFD700[ScrollkeeperStandardCommands]|r スラッシュコマンド登録済み",
+  LOG_INITIALIZING = "|cFFD700[ScrollkeeperStandardCommands]|r 初期化中...",
+  LOG_COMPLETE = "|cFFD700[ScrollkeeperStandardCommands]|r 初期化完了",
 }
 
 --------------------------------------------------------------------------------
@@ -1150,12 +1156,12 @@ Scrollkeeper.Localization["ScrollkeeperApplications"] = {
   GUILD_TOGGLE_TIP = "%sの申請を記録",
   
   -- Errors
-  ERROR_NOTEBOOK_UNAVAILABLE = "|c00FF00[ScrollkeeperApplications]|r ノートブックモジュールが利用できません。申請を記録できません。",
-  WARNING_NOTEBOOK_MISSING = "|c00FF00[ScrollkeeperApplications]|r 警告：ノートブックモジュールが読み込まれていません。申請記録は機能しません。",
+  ERROR_NOTEBOOK_UNAVAILABLE = "|cFFD700[ScrollkeeperApplications]|r ノートブックモジュールが利用できません。申請を記録できません。",
+  WARNING_NOTEBOOK_MISSING = "|cFFD700[ScrollkeeperApplications]|r 警告：ノートブックモジュールが読み込まれていません。申請記録は機能しません。",
   
-  SUCCESS_LOGGED_SINGLE = "|c00FF00[ScrollkeeperApplications]|r |cFFD700%s|rから|cFFD700%s|rへの応募を記録しました",
+  SUCCESS_LOGGED_SINGLE = "|cFFD700[ScrollkeeperApplications]|r |cFFD700%s|rから|cFFD700%s|rへの応募を記録しました",
   ERROR_SAVE_FAILED = "|cFF5555[ScrollkeeperApplications]|r %sの応募の保存に失敗しました",
-  SUCCESS_LOGGED_MULTIPLE = "|c00FF00[ScrollkeeperApplications]|r |cFFD700%s|rの応募を%d件記録しました",
+  SUCCESS_LOGGED_MULTIPLE = "|cFFD700[ScrollkeeperApplications]|r |cFFD700%s|rの応募を%d件記録しました",
 }
 -- Backward compatibility (DEPRECATED)
 _G.Scrollkeeper.Localization = Scrollkeeper.Localization
