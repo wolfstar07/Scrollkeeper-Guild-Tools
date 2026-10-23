@@ -10,18 +10,13 @@ local SF_Set = Scrollkeeper.Settings
 Scrollkeeper.ContextMenu = Scrollkeeper.ContextMenu or { Name = "ScrollkeeperContextMenu" }
 local _addon = Scrollkeeper.ContextMenu
 
--- Backward compatibility (DEPRECATED)
-_G.ScrollkeeperContextMenu = Scrollkeeper.ContextMenu
-
 -- Prevent multiple initialization
 if _addon._initialized then
   return
 end
 
 -- Framework shortcuts
-local SF     = ScrollkeeperFramework
-local SF_Set = ScrollkeeperFramework_Settings
-if type(SF) ~= "table" then
+if type(SF) ~= "table" or type(SF.func) ~= "table" then
   d("[ScrollkeeperContextMenu] " .. SF.func._L("ScrollkeeperContextMenu", "SF_UNAVAILABLE"))
   return
 end
@@ -422,7 +417,8 @@ local function createDonationWindow(displayName)
   zo_callLater(function()
     if window.updateTheme then window.updateTheme() end
   end, 100)
-						   
+  
+  SF.addOrnateFrame(window)
   return window
 end
 
