@@ -14,9 +14,6 @@ end
 Scrollkeeper.ProvisionMember = Scrollkeeper.ProvisionMember or { Name = "ScrollkeeperProvisionMember", Version = "1" }
 local _addon = Scrollkeeper.ProvisionMember
 
--- Backward compatibility (DEPRECATED)
-_G.ScrollkeeperProvisionMember = Scrollkeeper.ProvisionMember
-
 local DEBUG_FILTERS = false  -- Set to true for debugging
 
 -- Ensure the API table exists
@@ -30,7 +27,7 @@ PM.Internal = PM.Internal or {}
 local LibHistoire = LibHistoire
 PM.Internal.histoireReady = false
 
--- 🧠 Settings defaults
+-- ?? Settings defaults
 PM.Internal.defaults = {
   enabled = false,
   trackingDays = 30,
@@ -226,17 +223,6 @@ local function getMemberJoinTime(guildId, displayName)
     end
   end
 
-  -- Priority 3: Try LibHistoire (if available)
-  if LibHistoire and PM.Internal.histoireReady then
-    local guildData = LibHistoire:GetGuildHistoryProcessor(guildId)
-    if guildData and guildData.GetMemberJoinTime then
-      local success, joinTime = pcall(guildData.GetMemberJoinTime, guildData, displayName)
-      if success and joinTime and joinTime > 0 then
-        return joinTime, SF.func._L("ScrollkeeperProvisionMember", "SOURCE_HISTOIRE")
-      end
-    end
-  end
-
   return nil, SF.func._L("ScrollkeeperProvisionMember", "SOURCE_UNKNOWN")
 end
 
@@ -250,17 +236,15 @@ function PM.Internal.checkMemberDonations(guildId, guildName, displayName, requi
     return false, 0
   end
 
-  if not SF.Data or not SF.Data.getEvents then
+  if not SF.Data or not SF.Data.getMemberDeposits or not SF.Data.getOldestTimestamp then
     if debugMode then
-      d("[PM Debug] checkMemberDonations: SF.Data.getEvents not available")
+      d("[PM Debug] checkMemberDonations: SF.Data deposit index not available")
     end
     return false, 0
   end
 
-  -- Get ALL bankedGold events
-  local allEvents = SF.Data.getEvents(guildName, "bankedGold", 999999)
-
-  if not allEvents or #allEvents == 0 then
+  -- No bankedGold history at all for this guild
+  if not SF.Data.getOldestTimestamp(guildName, "bankedGold") then
     if debugMode then
       d(string.format("[PM Debug] checkMemberDonations: No events found for guild %s", guildName))
     end
@@ -280,50 +264,33 @@ function PM.Internal.checkMemberDonations(guildId, guildName, displayName, requi
       displayName, guildName, requiredAmount, timePeriodDays))
     d(string.format("[PM Debug] Current timestamp: %d, Cutoff timestamp: %d", now, cutoffTime))
     d(string.format("[PM Debug] Cutoff date: %s", os.date("%Y-%m-%d %H:%M:%S", cutoffTime)))
-    d(string.format("[PM Debug] Total bankedGold events to scan: %d", #allEvents))
+    d(string.format("[PM Debug] Member deposit events: %d", #SF.Data.getMemberDeposits(guildName, displayName)))
   end
 
-  -- Filter and sum deposits
-  for _, event in ipairs(allEvents) do
-    if event.eventType == GUILD_HISTORY_BANKED_CURRENCY_EVENT_DEPOSITED then
-      local eventDisplayName = event.info.displayName or event.info.actingDisplayName
+  -- Sum this member's deposits (index is rebuilt only when the cache changes)
+  local memberDeposits = SF.Data.getMemberDeposits(guildName, displayName)
+  for _, event in ipairs(memberDeposits) do
+    allDepositsForMember = allDepositsForMember + 1
+    local eventAmount = event.info.amount or 0
 
-      -- Normalize both names for comparison (remove @ if present)
-      local normalizedEventName = eventDisplayName
-      local normalizedSearchName = displayName
+    if not oldestEventTime or event.timestamp < oldestEventTime then
+      oldestEventTime = event.timestamp
+    end
+    if not newestEventTime or event.timestamp > newestEventTime then
+      newestEventTime = event.timestamp
+    end
 
-      if normalizedEventName and string.sub(normalizedEventName, 1, 1) == "@" then
-        normalizedEventName = string.sub(normalizedEventName, 2)
+    if event.timestamp >= cutoffTime then
+      totalInPeriod = totalInPeriod + eventAmount
+      depositsFound = depositsFound + 1
+      if debugMode then
+        d(string.format("[PM Debug]   IN PERIOD: %d gold on %s (timestamp: %d)",
+          eventAmount, os.date("%Y-%m-%d %H:%M:%S", event.timestamp), event.timestamp))
       end
-      if normalizedSearchName and string.sub(normalizedSearchName, 1, 1) == "@" then
-        normalizedSearchName = string.sub(normalizedSearchName, 2)
-      end
-
-      if normalizedEventName == normalizedSearchName then
-        allDepositsForMember = allDepositsForMember + 1
-        local eventAmount = event.info.amount or 0
-        local eventDate = os.date("%Y-%m-%d %H:%M:%S", event.timestamp)
-
-        if not oldestEventTime or event.timestamp < oldestEventTime then
-          oldestEventTime = event.timestamp
-        end
-        if not newestEventTime or event.timestamp > newestEventTime then
-          newestEventTime = event.timestamp
-        end
-
-        if event.timestamp >= cutoffTime then
-          totalInPeriod = totalInPeriod + eventAmount
-          depositsFound = depositsFound + 1
-          if debugMode then
-            d(string.format("[PM Debug]   IN PERIOD: %d gold on %s (timestamp: %d)",
-              eventAmount, eventDate, event.timestamp))
-          end
-        else
-          if debugMode then
-            d(string.format("[PM Debug]   TOO OLD: %d gold on %s (timestamp: %d)",
-              eventAmount, eventDate, event.timestamp))
-          end
-        end
+    else
+      if debugMode then
+        d(string.format("[PM Debug]   TOO OLD: %d gold on %s (timestamp: %d)",
+          eventAmount, os.date("%Y-%m-%d %H:%M:%S", event.timestamp), event.timestamp))
       end
     end
   end
@@ -367,10 +334,7 @@ function PM.Internal.checkMemberInactivity(guildId, displayName, inactiveDays, d
   for i = 1, GetNumGuildMembers(guildId) do
     local memberName, _, _, _, lastOnline = GetGuildMemberInfo(guildId, i)
     if memberName == displayName then
-      -- CRITICAL FIX: ESO's GetGuildMemberInfo returns lastOnline in SECONDS since epoch
-      -- but it's actually the time SINCE last online, not a timestamp
-      -- We need to get the actual last online time
-      local now = GetTimeStamp()
+      -- 5th return is seconds since the member last logged off
       local secondsSinceOnline = lastOnline
       local daysSinceOnline = math.floor(secondsSinceOnline / 86400)
 
@@ -584,16 +548,10 @@ local function shouldTrackMember(guildId, guildName, displayName, force)
   -- FILTER 2: Gold donation filter (checks ALL members, not just probationary)
   if guildSettings.goldDonationFilter and guildSettings.goldDonationFilter.enabled then
     -- Check if data is ready
-    if SF.Data and SF.Data.isReady and SF.Data.isReady() then
-      local allEvents = SF.Data.getEvents(guildName, "bankedGold", 999999)
-      if allEvents and #allEvents > 0 then
+    if SF.Data and SF.Data.isLoaded and SF.Data.isLoaded(guildName, "bankedGold") then
+      local oldestTimestamp = SF.Data.getOldestTimestamp(guildName, "bankedGold")
+      if oldestTimestamp then
         -- Check history depth - be lenient, allow 90% of required days
-        local oldestTimestamp = nil
-        for _, event in ipairs(allEvents) do
-          if not oldestTimestamp or event.timestamp < oldestTimestamp then
-            oldestTimestamp = event.timestamp
-          end
-        end
 
         local leniency = 0.9
         local lenientHistoryTime = GetTimeStamp() - (guildSettings.goldDonationFilter.timePeriodDays * 86400 * leniency)
@@ -660,16 +618,10 @@ local function shouldTrackMember(guildId, guildName, displayName, force)
     end
 
     -- Check if data is ready
-    if SF.Data and SF.Data.isReady and SF.Data.isReady() then
-      local allEvents = SF.Data.getEvents(guildName, "bankedGold", 999999)
-      if allEvents and #allEvents > 0 then
+    if SF.Data and SF.Data.isLoaded and SF.Data.isLoaded(guildName, "bankedGold") then
+      local oldestTimestamp = SF.Data.getOldestTimestamp(guildName, "bankedGold")
+      if oldestTimestamp then
         -- Check history depth
-        local oldestTimestamp = nil
-        for _, event in ipairs(allEvents) do
-          if not oldestTimestamp or event.timestamp < oldestTimestamp then
-            oldestTimestamp = event.timestamp
-          end
-        end
 
         local leniency = 0.9
         local lenientHistoryTime = GetTimeStamp() - (guildSettings.donorFilter.timePeriodDays * 86400 * leniency)
@@ -803,21 +755,6 @@ function PM.Internal.getAccurateDaysSinceJoin(guildId, guildName, memberName, st
     end
   end
 
-  -- 3. Try LibHistoire
-  if LibHistoire and PM.Internal.histoireReady then
-    local guildData = LibHistoire:GetGuildHistoryProcessor(guildId)
-    if guildData and guildData.GetMemberJoinTime then
-      local success, joinTime = pcall(guildData.GetMemberJoinTime, guildData, memberName)
-      if success and joinTime and joinTime > 0 then
-        local daysSince = math.floor((now - joinTime) / 86400)
-        if daysSince >= 0 and daysSince <= 3650 then
-          storedData.actualJoinTime = joinTime
-          return daysSince, SF.func._L("ScrollkeeperProvisionMember", "SOURCE_HISTOIRE")
-        end
-      end
-    end
-  end
-
   -- 4. Try ScrollkeeperData donation timing
   if SF.Data and SF.Data.getMemberDonationInfo then
     local donationData = SF.Data.getMemberDonationInfo(guildName, memberName)
@@ -847,36 +784,15 @@ function PM.clearBadData()
   local settings = PM.Internal.getSettings()
   if not settings or not settings.taggedMembers then return 0 end
 
+  local promoted = SF.func._L("ScrollkeeperProvisionMember", "STATUS_PROMOTED")
   local clearedCount = 0
-  for guildName, members in pairs(settings.taggedMembers) do
-    if members and type(members) == "table" then
-      local toRemove = {}
+  for _, members in pairs(settings.taggedMembers) do
+    if type(members) == "table" then
       for memberName, data in pairs(members) do
-        if data and type(data) == "table" and data.status ~= SF.func._L("ScrollkeeperProvisionMember", "STATUS_PROMOTED") then
-          -- Find the guild ID for this guild name
-          local guildId = nil
-          for i = 1, GetNumGuilds() do
-            if GetGuildName(GetGuildId(i)) == guildName then
-              guildId = GetGuildId(i)
-              break
-            end
-          end
-
-          if guildId then
-            local shouldTrack, reason, actualJoinTime = shouldTrackMember(guildId, guildName, displayName, force)
-            if not shouldTrack then
-              table.insert(toRemove, memberName)
-              clearedCount = clearedCount + 1
-            end
-          else
-            table.insert(toRemove, memberName)
-            clearedCount = clearedCount + 1
-          end
+        if type(data) == "table" and data.status ~= promoted then
+          members[memberName] = nil -- clearing an existing key during pairs() is safe
+          clearedCount = clearedCount + 1
         end
-      end
-
-      for _, memberName in ipairs(toRemove) do
-        members[memberName] = nil
       end
     end
   end
@@ -909,47 +825,38 @@ function PM.clearGoldProcessed()
   return clearedCount
 end
 
--- Scan for new members
-local function scanForNewMembers(guildId, force)
-  if not guildId then return {} end
+-- Manual scans run as a LibAsync task so large rosters don't stall the client
+local scanTask = LibAsync:Create("ScrollkeeperProvisionMember_Scan")
+local scanRunning = false
+scanTask:OnError(function(task)
+  d("|cFF0000[ScrollkeeperProvisionMember]|r " .. string.format(SF.func._L("ScrollkeeperProvisionMember", "ERROR_SCAN_ABORTED"), tostring(task.Error)))
+end)
+scanTask:Finally(function()
+  scanRunning = false
+end)
 
+local function collectScanJobs(guildId, jobs)
+  if not guildId then return end
   local settings = PM.Internal.getSettings()
-  if not settings or not settings.enabled then return {} end
-
+  if not settings or not settings.enabled then return end
   local guildName = GetGuildName(guildId)
-  if not guildName then return {} end
-
+  if not guildName then return end
   local guildSettings = PM.Internal.getGuildSettings(guildName)
-  if not guildSettings or not guildSettings.enabled then
-    return {}
-  end
+  if not guildSettings or not guildSettings.enabled then return end
 
-  local newMembers = {}
-
-  -- Scan current roster
   for i = 1, GetNumGuildMembers(guildId) do
     local displayName = GetGuildMemberInfo(guildId, i)
     if displayName and displayName ~= "" then
-      local shouldTrack, reason, actualJoinTime = shouldTrackMember(guildId, guildName, displayName, true)  -- Force re-evaluation
-      if shouldTrack then
-        table.insert(newMembers, displayName)
-        
-        if guildSettings.autoTag then
-          PM.tagMemberAsProvisional(guildName, displayName, SF.func._L("ScrollkeeperProvisionMember", "AUTO_TAG_SCAN"), reason, actualJoinTime)
-        end
-      end
+      jobs[#jobs + 1] = { guildId = guildId, guildName = guildName, guildSettings = guildSettings, displayName = displayName }
     end
   end
-
-  return newMembers
 end
 
 -- Initialize LibHistoire integration
 local function initializeLibHistoire()
   if LibHistoire then
-    LibHistoire:RegisterCallback("OnHistoireReady", function()
+    LibHistoire:OnReady(function()
       PM.Internal.histoireReady = true
-      d(SF.func._L("ScrollkeeperProvisionMember", "SUCCESS_HISTOIRE_READY"))
     end)
   end
 end
@@ -988,40 +895,65 @@ function _addon:DisableEvents()
   EVENT_MANAGER:UnregisterForEvent(_addon.Name, EVENT_GUILD_MEMBER_ADDED)
 end
 
--- Manual scan function
-function PM.manualScan()
+-- Manual scan function (asynchronous; optional onComplete(clearedCount, newMembers, reEvaluated))
+function PM.manualScan(onComplete)
   -- Check if data is ready
   if not SF.Data or not SF.Data.isReady or not SF.Data.isReady() then
-    d("[ProvisionMember] ERROR: Guild history data not ready yet. Wait a moment and try again.")
+    d("|cFF0000[ScrollkeeperProvisionMember]|r " .. SF.func._L("ScrollkeeperProvisionMember", "ERROR_DATA_NOT_READY"))
     return
   end
 
-  -- Re-evaluate existing gold-tracked members
-  local reEvaluatedTotal = 0
+  -- clearBadData rebuilds every tag from current data, so don't scan while a guild's gold history is still streaming in
   for i = 1, GetNumGuilds() do
+    local guildName = GetGuildName(GetGuildId(i))
+    if guildName then
+      local gs = PM.Internal.getGuildSettings(guildName)
+      local needsGold = gs and gs.enabled and
+        ((gs.goldDonationFilter and gs.goldDonationFilter.enabled) or
+         (gs.donorFilter and gs.donorFilter.enabled))
+      if needsGold and not (SF.Data.isLoaded and SF.Data.isLoaded(guildName, "bankedGold")) then
+        d("|cFF0000[ScrollkeeperProvisionMember]|r " .. SF.func._L("ScrollkeeperProvisionMember", "ERROR_DATA_NOT_READY"))
+        return
+      end
+    end
+  end
+  
+  if scanRunning then
+    d("|cFF0000[ScrollkeeperProvisionMember]|r " .. SF.func._L("ScrollkeeperProvisionMember", "ERROR_SCAN_RUNNING"))
+    return
+  end
+  scanRunning = true
+
+  local reEvaluatedTotal = 0
+  local clearedCount = 0
+  local results = { count = 0 }
+
+  local jobs = {}
+  for i = 1, GetNumGuilds() do collectScanJobs(GetGuildId(i), jobs) end
+
+  scanTask:For(1, GetNumGuilds()):Do(function(i)
     local guildName = GetGuildName(GetGuildId(i))
     if guildName then
       reEvaluatedTotal = reEvaluatedTotal + PM.reEvaluateMembers(guildName)
     end
-  end
-
-  -- Clear bad data
-  local clearedCount = PM.clearBadData()
-
-  -- Scan for new members (force=false to disable debug spam)
-  local totalNewMembers = 0
-  for i = 1, GetNumGuilds() do
-    local guildId = GetGuildId(i)
-    local newMembers = scanForNewMembers(guildId, false) -- Don't spam debug
-    totalNewMembers = totalNewMembers + #newMembers
-  end
-
-  -- Single completion message
-  d(string.format(SF.func._L("ScrollkeeperProvisionMember", "LOG_SCAN_COMPLETE"), clearedCount, totalNewMembers))
-
-  if reEvaluatedTotal > 0 then
-    d(string.format("[ProvisionMember] Re-evaluated: %d members now meet requirements", reEvaluatedTotal))
-  end
+  end):Then(function()
+    clearedCount = PM.clearBadData()
+  end):For(1, #jobs):Do(function(j)
+    local job = jobs[j]
+    local shouldTrack, reason, actualJoinTime = shouldTrackMember(job.guildId, job.guildName, job.displayName, true)
+    if shouldTrack then
+      results.count = results.count + 1
+      if job.guildSettings.autoTag then
+        PM.tagMemberAsProvisional(job.guildName, job.displayName, SF.func._L("ScrollkeeperProvisionMember", "AUTO_TAG_SCAN"), reason, actualJoinTime)
+      end
+    end
+  end):Then(function()
+    d(string.format(SF.func._L("ScrollkeeperProvisionMember", "LOG_SCAN_COMPLETE"), clearedCount, results.count))
+    if reEvaluatedTotal > 0 then
+      d("[ScrollkeeperProvisionMember] " .. string.format(SF.func._L("ScrollkeeperProvisionMember", "LOG_SCAN_REEVALUATED"), reEvaluatedTotal))
+    end
+    if onComplete then onComplete(clearedCount, results.count, reEvaluatedTotal) end
+  end)
 end
 
 -- Get provisional member report
