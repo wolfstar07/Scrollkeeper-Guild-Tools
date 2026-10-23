@@ -151,7 +151,6 @@ Scrollkeeper.Localization["ScrollkeeperProvisionMember"] = {
  
   -- Success Messages
   SUCCESS_AMT_DETECTED = "Advanced Member Tooltip detectado - seguimiento mejorado activado",
-  SUCCESS_HISTOIRE_READY = "Integración de LibHistoire lista - tiempos de unión precisos disponibles",
   SUCCESS_REMOVED = "%s eliminado del seguimiento",
   SUCCESS_BULK_REMOVED = "%d miembros eliminados masivamente del seguimiento",
   SUCCESS_CLEARED_DATA = "Datos de seguimiento limpiados para %s",
@@ -249,9 +248,11 @@ Scrollkeeper.Localization["ScrollkeeperProvisionMember"] = {
   LOG_NO_GUILD_ID = "No se pudo encontrar ID de hermandad para: %s",
   LOG_NO_GUILD_ID_SIMPLE = "No se pudo encontrar ID de hermandad",
   LOG_FILTER_MODE = "Modo %s - %d miembros seleccionados",
-  LOG_INITIALIZING = "Inicializando - %s",
   ERROR_DATA_NOT_READY = "Los datos del historial de hermandad aún no están listos. Espera un momento e inténtalo de nuevo.",
   LOG_SCAN_COMPLETE_SHORT = "¡Escaneo completo!",
+  ERROR_SCAN_RUNNING = "Ya hay un escaneo en curso.",
+  ERROR_SCAN_ABORTED = "Escaneo cancelado: %s",
+  LOG_SCAN_REEVALUATED = "Reevaluados: %d miembros ahora cumplen los requisitos",
   
   -- Mail Integration
   MAIL_SUBJECT_GOLD = "Recordatorio de Cuotas de Hermandad - %s",
@@ -317,6 +318,8 @@ Scrollkeeper.Localization["ScrollkeeperProvisionMember"] = {
   DONOR_AMOUNT_TIP = "Cantidad de oro requerida para ser considerado un donante activo",
   DONOR_PERIOD = "Período de Tiempo (Días)",
   DONOR_PERIOD_TIP = "Verificar donaciones dentro de los últimos X días",
+  PERIOD_TRADER_WEEK = "Usar la semana actual de comerciantes",
+  PERIOD_TRADER_WEEK_TIP = "Cuenta las donaciones desde el último cambio de comerciantes de gremio en lugar de un número móvil de días. El periodo anterior se ignora mientras esté activado.",
   MANUAL_SCAN_NOTE = "Nota: El seguimiento de miembros requiere escaneo manual. Abre la ventana de Miembros Provisionales y haz clic en el botón Escanear para verificar miembros que necesitan seguimiento.",
 }
 
@@ -534,10 +537,7 @@ Scrollkeeper.Localization["ScrollkeeperHistory"] = {
   ERROR_FRAMEWORK_MISSING = "|cFFD700[ScrollkeeperHistory]|r ERROR: ¡Falta ScrollkeeperFramework!",
   ERROR_WINDOW_FAILED = "|cFFD700[ScrollkeeperHistory]|r Fallo al crear ventana",
   ERROR_NO_EXPORT = "|cFFD700[ScrollkeeperHistory]|r No hay eventos para exportar",
-  
-  -- Success Messages
-  SUCCESS_READY = "|cFFD700[ScrollkeeperHistory]|r Listo - usa /sgthistory",
-  
+
   -- Log Messages
   LOG_LOADING = "|cFFD700[ScrollkeeperHistory]|r Cargando... SF.Data existe: %s",
   LOG_DATA_GETEVENTS = "|cFFD700[ScrollkeeperHistory]|r SF.Data.getEvents al cargar: %s",
@@ -834,7 +834,6 @@ Scrollkeeper.Localization["ScrollkeeperData"] = {
   DESCRIPTION = "Servicio de almacenamiento en caché en segundo plano para datos de historial de hermandad usando LibHistoire.",
   
   -- Status Messages
-  HISTOIRE_READY = "LibHistoire listo - almacenando en caché todo el historial de hermandad",
   CACHE_STATUS = "=== Estado del Caché de Eventos ===",
   NO_CACHED_DATA = "No se encontraron datos en caché",
   CACHE_EMPTY = "El caché está vacío - esto puede tomar unos minutos en la primera carga",
@@ -842,9 +841,6 @@ Scrollkeeper.Localization["ScrollkeeperData"] = {
   
   -- Log Messages
   EVENTS_CACHED = "%s/%s: %d eventos en caché",
-  STARTED_CACHING = "Iniciado almacenamiento en caché de %d hermandades",
-  MODULE_LOADED = "|cFFD700[ScrollkeeperData]|r Cargado - servicio de almacenamiento en caché en segundo plano",
-  LOG_MANUAL_DONATION = "%s - %d oro registrado manualmente",
   MANUAL_DONATION_SOURCE = "Entrada Manual",
   
   -- Error Messages
@@ -855,6 +851,7 @@ Scrollkeeper.Localization["ScrollkeeperData"] = {
   -- Cache Display
   GUILD_HEADER = "%s:",
   CATEGORY_LINE = "  %s: %d eventos",
+  CATEGORY_MANUAL_LINE = "  Donaciones manuales: %d",
   HISTOIRE_STATUS = "LibHistoire listo: %s",
   
   -- Category Names (for display)
@@ -1163,5 +1160,3 @@ Scrollkeeper.Localization["ScrollkeeperApplications"] = {
   ERROR_SAVE_FAILED = "|cFF5555[ScrollkeeperApplications]|r Error al guardar la solicitud de %s",
   SUCCESS_LOGGED_MULTIPLE = "|cFFD700[ScrollkeeperApplications]|r %d solicitudes para |cFFD700%s|r registradas",
 }
--- Backward compatibility (DEPRECATED)
-_G.Scrollkeeper.Localization = Scrollkeeper.Localization
