@@ -563,34 +563,8 @@ local function initialize()
     return
   end
 
-  -- Single consolidated startup message with all integration info
-  local integrations = {}
-
-  -- Check AMT once at startup
-  if AMT and AMT.savedData and AMT.GetAmountDonated then
-    PM.Internal.AMTAvailable = true
-    table.insert(integrations, "AMT: yes")
-  else
-    table.insert(integrations, "AMT: no")
-  end
-
-  -- Check LibHistoire
-  if LibHistoire then
-    if PM.Internal.histoireReady then
-      table.insert(integrations, "LH: yes")
-    end
-  else
-    table.insert(integrations, "LH: no")
-  end
-
-  -- Check Data module
-  if SF.Data then
-    table.insert(integrations, "Data: yes")
-  else
-    table.insert(integrations, "Data: no")
-  end
-
-  d(string.format(SF.func._L("ScrollkeeperProvisionMember", "LOG_INITIALIZING"), table.concat(integrations, " ")))
+  -- Detect AMT once at startup (Core uses it for join-time lookups)
+  PM.Internal.AMTAvailable = (AMT and AMT.savedData and AMT.GetAmountDonated) and true or false
 
   -- Register controls
   local controls = buildControls()
