@@ -1,4 +1,3 @@
--- Scrollkeeper Guild Tools Addon
 -- ScrollkeeperNotebook
 
 -- Local references
@@ -16,9 +15,6 @@ end
 -- Initialize module
 Scrollkeeper.Notebook = Scrollkeeper.Notebook or { Name = "ScrollkeeperNotebook" }
 local _addon = Scrollkeeper.Notebook
-
--- Backward compatibility (DEPRECATED)
-_G.ScrollkeeperNotebook = Scrollkeeper.Notebook
 
 if type(SF) ~= "table" or not SF.initAddon then
   d(SF.func._L("ScrollkeeperNotebook", "ERROR_FRAMEWORK_MISSING"))
