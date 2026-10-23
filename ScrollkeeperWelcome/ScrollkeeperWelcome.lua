@@ -1,4 +1,3 @@
--- Scrollkeeper Guild Tools Addon
 -- ScrollkeeperWelcome
 
 -- Local references
@@ -13,9 +12,6 @@ end
 -- Initialize module
 Scrollkeeper.Welcome = Scrollkeeper.Welcome or { Name = "ScrollkeeperWelcome" }
 local _addon = Scrollkeeper.Welcome
-
--- Backward compatibility (DEPRECATED)
-_G.ScrollkeeperWelcome = Scrollkeeper.Welcome
 
 -- 💾 SavedVars defaults
 local defaultMsg = "Welcome %1 to %2"
