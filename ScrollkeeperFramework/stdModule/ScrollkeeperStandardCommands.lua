@@ -17,9 +17,6 @@ Scrollkeeper.StandardCommands = Scrollkeeper.StandardCommands or {
 }
 local _addon = Scrollkeeper.StandardCommands
 
--- Backward compatibility (DEPRECATED)
-_G.ScrollkeeperStandardCommands = Scrollkeeper.StandardCommands
-
 -- Debug command with comprehensive system check
 SLASH_COMMANDS["/skdebug"] = function()
   d(SF.func._L("ScrollkeeperStandardCommands", "DEBUG_HEADER"))
