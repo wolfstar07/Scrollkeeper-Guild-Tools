@@ -1,4 +1,3 @@
--- Scrollkeeper Guild Tools Addon
 -- ScrollkeeperRoster
 
 local Scrollkeeper = Scrollkeeper
@@ -8,10 +7,8 @@ local SF_Set = Scrollkeeper.Settings
 Scrollkeeper.Roster = Scrollkeeper.Roster or { Name = "ScrollkeeperRoster" }
 local _addon = Scrollkeeper.Roster
 
-_G.ScrollkeeperRoster = Scrollkeeper.Roster
-
 -- Helper for trader flip countdown
-local secondsUntilFlip = ScrollkeeperFramework_Settings.secondsUntilTraderFlip
+local secondsUntilFlip = SF_Set.secondsUntilTraderFlip
 
 -- Settings defaults
 local DEFAULTS = {
