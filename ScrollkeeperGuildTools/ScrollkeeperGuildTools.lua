@@ -1,6 +1,4 @@
--- Scrollkeeper Guild Tools
 -- ScrollkeeperGuildTools
-
 
 -- 🧠 Local references  
 local Scrollkeeper = Scrollkeeper
