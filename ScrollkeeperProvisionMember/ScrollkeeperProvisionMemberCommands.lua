@@ -78,9 +78,9 @@ end
     end
 
     d("=== Checking " .. displayName .. " in " .. guildName .. " ===")
-    d(string.format("Settings: %d gold required in last %d days",
+    d(string.format("Settings: %d gold required since %s",
       guildSettings.goldDonationFilter.requiredAmount,
-      guildSettings.goldDonationFilter.timePeriodDays))
+      os.date("%Y-%m-%d %H:%M:%S", PM.Internal.getPeriodStart(guildSettings.goldDonationFilter))))
 
     -- This will trigger the debug output we added
     local meetsRequirement, totalDonated = PM.Internal.checkMemberDonations(
@@ -88,7 +88,7 @@ end
       guildName,
       displayName,
       guildSettings.goldDonationFilter.requiredAmount,
-      guildSettings.goldDonationFilter.timePeriodDays,
+      PM.Internal.getPeriodStart(guildSettings.goldDonationFilter),
       true  -- Enable debug output for manual command
     )
 
@@ -440,9 +440,21 @@ local function buildControls()
                 gs.goldDonationFilter.timePeriodDays = math.max(1, math.min(365, days))
               end
             end,
-            disabled = function() return not PM.Internal.getGuildSettings(guildName).enabled or not PM.Internal.getGuildSettings(guildName).goldDonationFilter.enabled end,
+            disabled = function() local gs = PM.Internal.getGuildSettings(guildName); return not gs.enabled or not gs.goldDonationFilter.enabled or gs.goldDonationFilter.useTraderWeek == true end,
             default = "30",
             width = "half",
+          },
+		  {
+            type    = "checkbox",
+            name    = SF.func._L("ScrollkeeperProvisionMember", "PERIOD_TRADER_WEEK"),
+            tooltip = SF.func._L("ScrollkeeperProvisionMember", "PERIOD_TRADER_WEEK_TIP"),
+            getFunc = function() return PM.Internal.getGuildSettings(guildName).goldDonationFilter.useTraderWeek == true end,
+            setFunc = function(v)
+              local gs = PM.Internal.getGuildSettings(guildName)
+              if gs and gs.goldDonationFilter then gs.goldDonationFilter.useTraderWeek = v end
+            end,
+            disabled = function() return not PM.Internal.getGuildSettings(guildName).enabled or not PM.Internal.getGuildSettings(guildName).goldDonationFilter.enabled end,
+            default = false,
           },
           {
             type = "header",
@@ -519,9 +531,21 @@ local function buildControls()
                 gs.donorFilter.timePeriodDays = math.max(1, math.min(365, days))
               end
             end,
-            disabled = function() return not PM.Internal.getGuildSettings(guildName).enabled or not PM.Internal.getGuildSettings(guildName).donorFilter.enabled end,
+            disabled = function() local gs = PM.Internal.getGuildSettings(guildName); return not gs.enabled or not gs.donorFilter.enabled or gs.donorFilter.useTraderWeek == true end,
             default = "30",
             width = "half",
+          },
+		  {
+            type    = "checkbox",
+            name    = SF.func._L("ScrollkeeperProvisionMember", "PERIOD_TRADER_WEEK"),
+            tooltip = SF.func._L("ScrollkeeperProvisionMember", "PERIOD_TRADER_WEEK_TIP"),
+            getFunc = function() return PM.Internal.getGuildSettings(guildName).donorFilter.useTraderWeek == true end,
+            setFunc = function(v)
+              local gs = PM.Internal.getGuildSettings(guildName)
+              if gs and gs.donorFilter then gs.donorFilter.useTraderWeek = v end
+            end,
+            disabled = function() return not PM.Internal.getGuildSettings(guildName).enabled or not PM.Internal.getGuildSettings(guildName).donorFilter.enabled end,
+            default = false,
           },
           {
             type = "description",
