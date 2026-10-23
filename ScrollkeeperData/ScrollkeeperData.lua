@@ -14,9 +14,6 @@ end
 Scrollkeeper.Data = Scrollkeeper.Data or { Name = "ScrollkeeperData" }
 local _addon = Scrollkeeper.Data
 
--- Backward compatibility (DEPRECATED)
-_G.ScrollkeeperData = Scrollkeeper.Data
-
 -- Ensure Data table exists on framework - FORCE it to exist
 SF.Data = Scrollkeeper.Data
 local D = Scrollkeeper.Data
@@ -31,14 +28,13 @@ end
 local eventCache = {}
 local processors = {}
 local histoireReady = false
+local loaded = {}  -- [guildName .. "_" .. categoryKey] = true once caught up
+local cacheGeneration = 0  -- bumped whenever eventCache changes; invalidates the sorted/deposit caches
+local sortedCache = {}     -- [guildName .. "|" .. category] = { gen = n, events = {...} }
+local depositIndex = {}    -- [guildName] = { gen = n, byName = { [name] = { event, ... } } }
 
--- CRITICAL: Expose eventCache so other modules can access it
+-- Expose eventCache so other modules can access it
 D.eventCache = eventCache
-SF.Data.eventCache = eventCache
-
--- For backwards compatibility, also expose as dataCache
-D.dataCache = eventCache
-SF.Data.dataCache = eventCache
 
 -- Settings defaults
 local defaults = {
@@ -81,34 +77,41 @@ local CATEGORIES = {
   [GUILD_HISTORY_EVENT_CATEGORY_TRADER]          = "sales",
 }
 
--- Get events for a guild/category
+-- Get events for a guild/category (newest first).
+-- Sorted arrays are cached per guild/category and rebuilt only when the cache has changed.
+-- The returned array is shared with the cache: callers must treat it as read-only.
 D.getEvents = function(guildName, category, maxEvents)
-  local events = {}
   maxEvents = maxEvents or 10000
-  
-  if not eventCache[guildName] then return events end
-  
-  if category == "all" then
-    -- Combine all categories
-    for _, catCache in pairs(eventCache[guildName]) do
-      for _, event in pairs(catCache) do
-        table.insert(events, event)
+
+  if not eventCache[guildName] or not category then return {} end
+
+  local key = guildName .. "|" .. category
+  local entry = sortedCache[key]
+  if not entry or entry.gen ~= cacheGeneration then
+    local events = {}
+
+    if category == "all" then
+      for _, catCache in pairs(eventCache[guildName]) do
+        for _, event in pairs(catCache) do
+          events[#events + 1] = event
+        end
+      end
+    else
+      local catCache = eventCache[guildName][category]
+      if catCache then
+        for _, event in pairs(catCache) do
+          events[#events + 1] = event
+        end
       end
     end
-  else
-    -- Specific category
-    local catCache = eventCache[guildName][category]
-    if catCache then
-      for _, event in pairs(catCache) do
-        table.insert(events, event)
-      end
-    end
+
+    table.sort(events, function(a, b) return a.timestamp > b.timestamp end)
+
+    entry = { gen = cacheGeneration, events = events }
+    sortedCache[key] = entry
   end
-  
-  -- Sort by timestamp, newest first
-  table.sort(events, function(a, b) return a.timestamp > b.timestamp end)
-  
-  -- Limit results
+
+  local events = entry.events
   if #events > maxEvents then
     local limited = {}
     for i = 1, maxEvents do
@@ -116,8 +119,49 @@ D.getEvents = function(guildName, category, maxEvents)
     end
     return limited
   end
-  
+
   return events
+end
+
+-- Timestamp of the oldest cached event for a guild/category (nil when there are none)
+D.getOldestTimestamp = function(guildName, category)
+  local events = D.getEvents(guildName, category, math.huge)
+  local oldest = events[#events]
+  return oldest and oldest.timestamp or nil
+end
+
+-- Deposits made by one member (bankedGold), from an index rebuilt only when the cache has changed.
+-- Names are matched without a leading "@". The returned array is read-only.
+D.getMemberDeposits = function(guildName, displayName)
+  if not guildName or not displayName then return {} end
+
+  local entry = depositIndex[guildName]
+  if not entry or entry.gen ~= cacheGeneration then
+    local byName = {}
+    local goldCache = eventCache[guildName] and eventCache[guildName].bankedGold
+    if goldCache then
+      for _, event in pairs(goldCache) do
+        if event.eventType == GUILD_HISTORY_BANKED_CURRENCY_EVENT_DEPOSITED then
+          local name = event.info.displayName or event.info.actingDisplayName
+          if name then
+            if string.sub(name, 1, 1) == "@" then name = string.sub(name, 2) end
+            local list = byName[name]
+            if not list then
+              list = {}
+              byName[name] = list
+            end
+            list[#list + 1] = event
+          end
+        end
+      end
+    end
+    entry = { gen = cacheGeneration, byName = byName }
+    depositIndex[guildName] = entry
+  end
+
+  local name = displayName
+  if string.sub(name, 1, 1) == "@" then name = string.sub(name, 2) end
+  return entry.byName[name] or {}
 end
 
 -- Get cache status
@@ -136,13 +180,17 @@ end
 
 -- Clear cache
 D.clear = function()
-  eventCache = {}
+  ZO_ClearTable(eventCache)
+  cacheGeneration = cacheGeneration + 1
+  sortedCache = {}
+  depositIndex = {}
   for _, processor in pairs(processors) do
     if processor:IsRunning() then
       processor:Stop()
     end
   end
   processors = {}
+  loaded = {}
 end
 
 -- Check if LibHistoire is ready
@@ -150,49 +198,43 @@ D.isReady = function()
   return histoireReady
 end
 
+-- True once this guild/category processor has caught up with LibHistoire's cached events
+D.isLoaded = function(guildName, categoryKey)
+  return loaded[guildName .. "_" .. categoryKey] == true
+end
+
+-- True when every started processor for this guild has caught up (false if none started)
+D.isGuildLoaded = function(guildName)
+  local any = false
+  for _, categoryKey in pairs(CATEGORIES) do
+    local key = guildName .. "_" .. categoryKey
+    if processors[key] then
+      any = true
+      if not loaded[key] then return false end
+    end
+  end
+  return any
+end
+
+-- True while a processor for this guild/category has been started but has not caught up yet
+D.isLoading = function(guildName, categoryKey)
+  local key = guildName .. "_" .. categoryKey
+  return processors[key] ~= nil and not loaded[key]
+end
+
 -- Get member donation info (ENHANCED to include manual donations)
 D.getMemberDonationInfo = function(guildName, displayName)
   local totalDonated = 0
   local lastDonationTime = nil
   local firstDonationTime = nil
+  local hasManualEntries = false
   
   -- Check automated donations from cache
-  if eventCache[guildName] and eventCache[guildName].bankedGold then
-    for _, event in pairs(eventCache[guildName].bankedGold) do
-      if event.eventType == GUILD_HISTORY_BANKED_CURRENCY_EVENT_DEPOSITED then
-        local eventDisplayName = event.info.displayName or event.info.actingDisplayName
-        if eventDisplayName == displayName then
-          totalDonated = totalDonated + (event.info.amount or 0)
-          
-          if not lastDonationTime or event.timestamp > lastDonationTime then
-            lastDonationTime = event.timestamp
-          end
-          
-          if not firstDonationTime or event.timestamp < firstDonationTime then
-            firstDonationTime = event.timestamp
-          end
-        end
-      end
-    end
-  end
-  
-  -- Add manual donations
-  local manualDonations = getManualDonations()
-  if manualDonations[guildName] and manualDonations[guildName][displayName] then
-    local manualData = manualDonations[guildName][displayName]
-    if manualData.donations then
-      for _, donation in ipairs(manualData.donations) do
-        totalDonated = totalDonated + (donation.amount or 0)
-        
-        if not lastDonationTime or donation.timestamp > lastDonationTime then
-          lastDonationTime = donation.timestamp
-        end
-        
-        if not firstDonationTime or donation.timestamp < firstDonationTime then
-          firstDonationTime = donation.timestamp
-        end
-      end
-    end
+  for _, event in ipairs(D.getMemberDeposits(guildName, displayName)) do
+    totalDonated = totalDonated + (event.info.amount or 0)
+    if event.info._manualEntry then hasManualEntries = true end
+    if not lastDonationTime or event.timestamp > lastDonationTime then lastDonationTime = event.timestamp end
+    if not firstDonationTime or event.timestamp < firstDonationTime then firstDonationTime = event.timestamp end
   end
   
   if totalDonated == 0 then
@@ -203,28 +245,43 @@ D.getMemberDonationInfo = function(guildName, displayName)
     totalDonated = totalDonated,
     lastDonationTime = lastDonationTime,
     firstDonationTime = firstDonationTime,
-    hasManualEntries = manualDonations[guildName] and manualDonations[guildName][displayName] ~= nil
+    hasManualEntries = hasManualEntries
   }
 end
 
--- Get manual donations for a member
+-- Get the manual donation entries (logged events) for a member
 D.getManualDonations = function(guildName, displayName)
-  local manualDonations = getManualDonations()
-  if not manualDonations[guildName] or not manualDonations[guildName][displayName] then
-    return {}
+  local result = {}
+  local entries = getManualDonations()[guildName]
+  if not entries then return result end
+
+  for _, entry in ipairs(entries) do
+    if entry.info and entry.info.displayName == displayName then
+      result[#result + 1] = entry
+    end
   end
-  
-  return manualDonations[guildName][displayName].donations or {}
+  return result
 end
 
--- Clear manual donations for a member
+-- Clear manual donations for a member (saved variables and runtime cache)
 D.clearManualDonations = function(guildName, displayName)
-  local manualDonations = getManualDonations()
-  if manualDonations[guildName] and manualDonations[guildName][displayName] then
-    manualDonations[guildName][displayName] = nil
-    return true
+  local entries = getManualDonations()[guildName]
+  if not entries then return false end
+
+  local removed = false
+  for i = #entries, 1, -1 do
+    local entry = entries[i]
+    if entry.info and entry.info.displayName == displayName then
+      if eventCache[guildName] and eventCache[guildName].bankedGold then
+        eventCache[guildName].bankedGold[entry.eventId] = nil
+      end
+      table.remove(entries, i)
+      removed = true
+    end
   end
-  return false
+
+  if removed then cacheGeneration = cacheGeneration + 1 end
+  return removed
 end
 
 -- Manual donation logging with persistence
@@ -278,6 +335,7 @@ function D.logManualDonation(guildName, displayName, amount, donationType, notes
   
   -- Store using event ID as key (same structure as LibHistoire events)
   eventCache[guildName].bankedGold[eventId] = manualEvent
+  cacheGeneration = cacheGeneration + 1
   
   d(string.format(SF.func._L("ScrollkeeperData", "LOG_MANUAL_DONATION"), 
     amountNum, displayName, guildName))
@@ -316,7 +374,7 @@ function D.debugCache(guildName)
         local name = event.info.displayName or event.info.actingDisplayName or "unknown"
         local amount = event.info.amount or 0
         local date = os.date("%Y-%m-%d", event.timestamp)
-        local isManual = event.info.manualEntry and " (manual)" or ""
+        local isManual = event.info._manualEntry and " (manual)" or ""
         table.insert(deposits, {
           time = event.timestamp,
           text = string.format("%s: %d gold on %s%s", name, amount, date, isManual)
@@ -398,6 +456,7 @@ local function loadManualDonations()
       end
     end
   end
+  cacheGeneration = cacheGeneration + 1
 end
 
 -- Add to cache status
@@ -406,15 +465,10 @@ D.getCacheStatus = function()
   local status = originalGetCacheStatus()
   
   local manualDonations = getManualDonations()
-  -- Add manual donation counts
-  for guildName, members in pairs(manualDonations) do
+  -- Add manual donation counts (manualDonations[guildName] is an array of logged events)
+  for guildName, entries in pairs(manualDonations) do
     status[guildName] = status[guildName] or {}
-    local manualCount = 0
-    for displayName, data in pairs(members) do
-      if data.donations then
-        manualCount = manualCount + #data.donations
-      end
-    end
+    local manualCount = #entries
     if manualCount > 0 then
       status[guildName].manualDonations = manualCount
     end
@@ -453,9 +507,7 @@ local function startProcessor(guildId, guildName, categoryKey, categoryId)
   eventCache[guildName] = eventCache[guildName] or {}
   eventCache[guildName][categoryKey] = eventCache[guildName][categoryKey] or {}
   
-  local eventCount = 0
-  
-  processor:SetNextEventCallback(function(event)
+  processor:SetEventCallback(function(event)
     local eventId = event:GetEventId()
     
     local info = {}
@@ -472,17 +524,16 @@ local function startProcessor(guildId, guildName, categoryKey, categoryId)
       guildName = guildName,
       info = info,
     }
+	cacheGeneration = cacheGeneration + 1
     
-    eventCount = eventCount + 1
   end)
   
   processor:SetOnStopCallback(function(reason)
-    -- Only show summary, not per-category spam
-    if eventCount > 0 then
-      -- Silent - let startAllProcessors show the summary
-    end
+    loaded[processorKey] = nil  -- stream ended; cache no longer guaranteed current
   end)
-  
+  processor:SetRegisteredForFutureEventsCallback(function()
+    loaded[processorKey] = true
+  end)
   processor:Start()
   processors[processorKey] = processor
   
@@ -491,35 +542,29 @@ end
 
 -- Start caching ALL categories for ALL guilds
 local function startAllProcessors()
-  local guildsStarted = 0
-  local totalProcessors = 0
-  
   for i = 1, GetNumGuilds() do
     local guildId = GetGuildId(i)
     local guildName = GetGuildName(guildId)
-    
     if guildName then
-      local processorsStarted = 0
-      
       for categoryId, categoryKey in pairs(CATEGORIES) do
         local processorKey = guildName .. "_" .. categoryKey
         if not processors[processorKey] or not processors[processorKey]:IsRunning() then
-          if startProcessor(guildId, guildName, categoryKey, categoryId) then
-            processorsStarted = processorsStarted + 1
-            totalProcessors = totalProcessors + 1
-          end
+          startProcessor(guildId, guildName, categoryKey, categoryId)
         end
-      end
-      
-      if processorsStarted > 0 then
-        guildsStarted = guildsStarted + 1
       end
     end
   end
-  
-  -- Single summary message
-  if guildsStarted > 0 then
-  end
+end
+
+-- Restart a processor when LibHistoire (re)establishes a managed range
+local rangeCallbackRegistered = false
+local function onManagedRangeFound(guildId, category)
+  local categoryKey = CATEGORIES[category]
+  local guildName = GetGuildName(guildId)
+  if not categoryKey or not guildName then return end
+  local processorKey = guildName .. "_" .. categoryKey
+  if processors[processorKey] and processors[processorKey]:IsRunning() then return end
+  startProcessor(guildId, guildName, categoryKey, category)
 end
 
 -- Delete a manual entry from the cache
@@ -538,6 +583,7 @@ function D.deleteManualEntry(guildName, timestamp, eventInfo)
          event.info and event.info._manualEntry and
          event.info.displayName == eventInfo.displayName then
         eventCache[guildName].bankedGold[eventId] = nil
+		cacheGeneration = cacheGeneration + 1
         deleted = true
         break
       end
@@ -576,7 +622,7 @@ SLASH_COMMANDS["/sgtcache"] = function()
     d("|cFFD700" .. string.format(SF.func._L("ScrollkeeperData", "GUILD_HEADER"), guild) .. "|r")
     for cat, count in pairs(cats) do
       if cat == "manualDonations" then
-        d(string.format("  Manual Donations: %d", count))
+        d(string.format(SF.func._L("ScrollkeeperData", "CATEGORY_MANUAL_LINE"), count))
       else
         d(string.format(SF.func._L("ScrollkeeperData", "CATEGORY_LINE"), cat, count))
       end
@@ -639,7 +685,10 @@ local function startDataModule()
     
     -- Start processors
     startAllProcessors()
-    
+    if not rangeCallbackRegistered then
+      rangeCallbackRegistered = true
+      LibHistoire:RegisterCallback(LibHistoire.callback.MANAGED_RANGE_FOUND, onManagedRangeFound)
+    end
     _dataModuleStarted = true
   end)
 end
@@ -660,5 +709,3 @@ EVENT_MANAGER:RegisterForEvent(_addon.Name, EVENT_PLAYER_ACTIVATED, function(_, 
     startDataModule()
   end, 2000)
 end)
-
-d(SF.func._L("ScrollkeeperData", "MODULE_LOADED"))
