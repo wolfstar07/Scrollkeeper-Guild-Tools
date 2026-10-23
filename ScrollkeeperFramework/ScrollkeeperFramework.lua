@@ -5,15 +5,12 @@
 Scrollkeeper = Scrollkeeper or {}
 Scrollkeeper.Framework = Scrollkeeper.Framework or {
   Name = "ScrollkeeperFramework",
-  Version = "1.3",
+  Version = "1.4",
 }
 
 -- Local references
 local Scrollkeeper = Scrollkeeper
 local SF = Scrollkeeper.Framework
-
--- Backward compatibility (DEPRECATED)
-_G.ScrollkeeperFramework = Scrollkeeper.Framework
 
 -- Prevent multiple initialization
 if SF._initialized then
@@ -57,10 +54,10 @@ local function initializeDateTime()
     SF.Libraries.dateTime = LibDateTime
     -- Add helper functions
     SF.func.formatTimestamp = function(timestamp)
-      return LibDateTime:Format("short", timestamp)
+      return os.date("%m/%d %H:%M", timestamp)
     end
     SF.func.formatDate = function(timestamp)
-      return LibDateTime:Format("date", timestamp)
+      return os.date("%Y-%m-%d", timestamp)
     end
     return true
   else
@@ -260,7 +257,7 @@ SF._settings = SF._settings or {}
 -- Framework metadata
 SF._addon = {
   Name        = "Scrollkeeper",
-  Version     = "1.3",
+  Version     = "1.4",
   Author      = "WolfStar07",
   displayName = SF.func._L("ScrollkeeperFramework", "DISPLAY_NAME"),
 }
@@ -268,9 +265,6 @@ SF._addon = {
 -- Initialize framework settings table
 Scrollkeeper.Settings = Scrollkeeper.Settings or {}
 local SF_Set = Scrollkeeper.Settings
-
--- Backward compatibility (DEPRECATED)
-_G.ScrollkeeperFramework_Settings = Scrollkeeper.Settings
 
 -- 🌟 Module registration functions MUST exist before modules load
 function SF.RegisterModuleOptions(modName, controlsTable)
@@ -385,6 +379,14 @@ end
 
 -- ⏱️ Public API: seconds until next trader flip (UTC-correct)
 function SF_Set.secondsUntilTraderFlip()
+  -- Prefer the game's own kiosk cycle (authoritative, region-independent);
+  -- fall back to the fixed Tuesday calculation below if it isn't available
+  if LibDateTime and LibDateTime.GetTraderWeek then
+    local _, _, traderWeekEnd = LibDateTime:GetTraderWeek()
+    if traderWeekEnd then
+      return math.max(0, traderWeekEnd - GetTimeStamp())
+    end
+  end
   local now = GetTimeStamp()
   local flipUTCsecs = getFlipHourUTC(SF._addon.region) * 3600
   
@@ -535,12 +537,6 @@ local allControls = {
   else
       d("[ScrollkeeperFramework] " .. SF.func._L("ScrollkeeperFramework", "LAM2_UNAVAILABLE"))
   end
-  
-  -- Expose modules for inter-module communication
-  SF.notebook = ScrollkeeperNotebook
-  -- SF.Data = ScrollkeeperData
-  SF.roster = ScrollkeeperRoster
-  SF.history = ScrollkeeperHistory
   
   SF._initialized = true
 end
