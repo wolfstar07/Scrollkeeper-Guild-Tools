@@ -119,8 +119,7 @@ function PM.Internal.getGuildSettings(guildName)
       goldDonationFilter = {
         enabled = false,
         requiredAmount = 5000,
-        timePeriodDays = 30,
-        timeUnit = "days" -- "days", "weeks", "months"
+        timePeriodDays = 30
       },
       inactivityFilter = {
         enabled = false,
@@ -146,8 +145,7 @@ function PM.Internal.getGuildSettings(guildName)
       goldDonationFilter = {
         enabled = false,
         requiredAmount = 5000,
-        timePeriodDays = 30,
-        timeUnit = "days"
+        timePeriodDays = 30
       },
       inactivityFilter = {
         enabled = false,
@@ -178,11 +176,10 @@ function PM.Internal.getGuildSettings(guildName)
     -- Legacy gold filter migration
     local gdf = settings.guildSettings[guildName].goldDonationFilter
     if not gdf then
-      settings.guildSettings[guildName].goldDonationFilter = { enabled = false, requiredAmount = 5000, timePeriodDays = 30, timeUnit = "days" }
+      settings.guildSettings[guildName].goldDonationFilter = { enabled = false, requiredAmount = 5000, timePeriodDays = 30 }
     else
       if not gdf.requiredAmount then gdf.requiredAmount = gdf.minAmount or 5000 end
       if not gdf.timePeriodDays then gdf.timePeriodDays = gdf.daysSinceLastDonation or 30 end
-      if not gdf.timeUnit then gdf.timeUnit = "days" end
       gdf.minAmount = nil
       gdf.daysSinceLastDonation = nil
       gdf.checkFrequency = nil
@@ -226,8 +223,19 @@ local function getMemberJoinTime(guildId, displayName)
   return nil, SF.func._L("ScrollkeeperProvisionMember", "SOURCE_UNKNOWN")
 end
 
--- Check member's gold donations using ScrollkeeperData
-function PM.Internal.checkMemberDonations(guildId, guildName, displayName, requiredAmount, timePeriodDays, debugMode)
+-- Start of a filter's donation window: the current trader week, or a rolling number of days
+function PM.Internal.getPeriodStart(filter)
+  local now = GetTimeStamp()
+  if filter and filter.useTraderWeek and SF_Set.secondsUntilTraderFlip then
+    local secondsLeft = SF_Set.secondsUntilTraderFlip()
+    if secondsLeft <= 0 then secondsLeft = 604800 end
+    return now + secondsLeft - 604800
+  end
+  return now - ((filter and filter.timePeriodDays or 30) * 86400)
+end
+
+-- Check member's gold donations since periodStart (a timestamp) using ScrollkeeperData
+function PM.Internal.checkMemberDonations(guildId, guildName, displayName, requiredAmount, periodStart, debugMode)
   if not guildId or not guildName or not displayName then
     if debugMode then
       d(string.format("[PM Debug] checkMemberDonations: Missing params - guildId:%s, guildName:%s, displayName:%s",
@@ -252,7 +260,7 @@ function PM.Internal.checkMemberDonations(guildId, guildName, displayName, requi
   end
 
   local now = GetTimeStamp()
-  local cutoffTime = now - (timePeriodDays * 86400)
+  local cutoffTime = periodStart
   local totalInPeriod = 0
   local depositsFound = 0
   local allDepositsForMember = 0
@@ -260,8 +268,8 @@ function PM.Internal.checkMemberDonations(guildId, guildName, displayName, requi
   local newestEventTime = nil
 
   if debugMode then
-    d(string.format("[PM Debug] Checking %s in %s: Required=%d gold in last %d days",
-      displayName, guildName, requiredAmount, timePeriodDays))
+    d(string.format("[PM Debug] Checking %s in %s: Required=%d gold since %s",
+      displayName, guildName, requiredAmount, os.date("%Y-%m-%d %H:%M:%S", periodStart)))
     d(string.format("[PM Debug] Current timestamp: %d, Cutoff timestamp: %d", now, cutoffTime))
     d(string.format("[PM Debug] Cutoff date: %s", os.date("%Y-%m-%d %H:%M:%S", cutoffTime)))
     d(string.format("[PM Debug] Member deposit events: %d", #SF.Data.getMemberDeposits(guildName, displayName)))
@@ -434,7 +442,7 @@ function PM.tagMemberAsProvisional(guildName, memberName, notes, reason, actualJ
             guildName,
             memberName,
             guildSettings.donorFilter.minimumAmount or 1000,
-            guildSettings.donorFilter.timePeriodDays or 30,
+            PM.Internal.getPeriodStart(guildSettings.donorFilter),
             false
           )
         end)
@@ -554,7 +562,8 @@ local function shouldTrackMember(guildId, guildName, displayName, force)
         -- Check history depth - be lenient, allow 90% of required days
 
         local leniency = 0.9
-        local lenientHistoryTime = GetTimeStamp() - (guildSettings.goldDonationFilter.timePeriodDays * 86400 * leniency)
+        local now = GetTimeStamp()
+        local lenientHistoryTime = now - ((now - PM.Internal.getPeriodStart(guildSettings.goldDonationFilter)) * leniency)
 
         if oldestTimestamp and oldestTimestamp <= lenientHistoryTime then
           local meetsRequirement, totalDonated = PM.Internal.checkMemberDonations(
@@ -562,7 +571,7 @@ local function shouldTrackMember(guildId, guildName, displayName, force)
             guildName,
             displayName,
             guildSettings.goldDonationFilter.requiredAmount,
-            guildSettings.goldDonationFilter.timePeriodDays,
+            PM.Internal.getPeriodStart(guildSettings.goldDonationFilter),
             false
           )
 
@@ -613,8 +622,8 @@ local function shouldTrackMember(guildId, guildName, displayName, force)
   if guildSettings.donorFilter and guildSettings.donorFilter.enabled then
     if force and DEBUG_FILTERS then
       d(string.format("[PM Donor] === CHECKING %s ===", displayName))
-      d(string.format("[PM Donor] Filter enabled: minimum=%d gold, period=%d days",
-        guildSettings.donorFilter.minimumAmount, guildSettings.donorFilter.timePeriodDays))
+      d(string.format("[PM Donor] Filter enabled: minimum=%d gold, window start=%s",
+        guildSettings.donorFilter.minimumAmount, os.date("%Y-%m-%d %H:%M:%S", PM.Internal.getPeriodStart(guildSettings.donorFilter))))
     end
 
     -- Check if data is ready
@@ -624,7 +633,8 @@ local function shouldTrackMember(guildId, guildName, displayName, force)
         -- Check history depth
 
         local leniency = 0.9
-        local lenientHistoryTime = GetTimeStamp() - (guildSettings.donorFilter.timePeriodDays * 86400 * leniency)
+        local now = GetTimeStamp()
+        local lenientHistoryTime = now - ((now - PM.Internal.getPeriodStart(guildSettings.donorFilter)) * leniency)
 
         if oldestTimestamp and oldestTimestamp <= lenientHistoryTime then
           local meetsMinimum, totalDonated = PM.Internal.checkMemberDonations(
@@ -632,7 +642,7 @@ local function shouldTrackMember(guildId, guildName, displayName, force)
             guildName,
             displayName,
             guildSettings.donorFilter.minimumAmount,
-            guildSettings.donorFilter.timePeriodDays,
+            PM.Internal.getPeriodStart(guildSettings.donorFilter),
             false
           )
 
@@ -706,7 +716,7 @@ function PM.reEvaluateMembers(guildName)
             guildName,
             memberName,
             guildSettings.goldDonationFilter.requiredAmount,
-            guildSettings.goldDonationFilter.timePeriodDays
+            PM.Internal.getPeriodStart(guildSettings.goldDonationFilter)
             -- debugMode defaults to false (nil)
           )
 
