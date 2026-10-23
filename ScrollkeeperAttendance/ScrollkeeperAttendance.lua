@@ -12,8 +12,6 @@ local _addon = Scrollkeeper.Attendance
 
 if _addon._initialized then return end
 
--- Backward compatibility (DEPRECATED)
-_G.ScrollkeeperAttendance = Scrollkeeper.Attendance
 if type(SF) ~= "table" then
   d("[ScrollkeeperAttendance] Framework not available")
   return
@@ -154,7 +152,7 @@ function generateAttendanceReport(session)
   for displayName, data in pairs(session.attendees) do
     local minutesLate = math.max(0, math.floor((data.joinTime - session.startTime) / 60))
     local wasLate = data.joinTime > lateThreshold
-    local leftEarly = data.leaveTime and data.leaveTime < earlyThreshold
+    local didLeaveEarly  = data.leaveTime and data.leaveTime < earlyThreshold
     
     local attendeeInfo = {
       name = displayName,
@@ -165,9 +163,9 @@ function generateAttendanceReport(session)
     
     if wasLate then
       table.insert(late, attendeeInfo)
-    elseif leftEarly then
+    elseif didLeaveEarly  then
       table.insert(leftEarly, attendeeInfo)
-    elseif not leftEarly and not wasLate then
+    elseif not didLeaveEarly  and not wasLate then
       table.insert(fullAttendance, attendeeInfo)
     else
       table.insert(onTime, attendeeInfo)
@@ -313,7 +311,7 @@ SLASH_COMMANDS["/sgtattendance"] = function(args)
 end
 
 -- Shorter alias
-SLASH_COMMANDS["/att"] = SLASH_COMMANDS["/attendance"]
+SLASH_COMMANDS["/att"] = SLASH_COMMANDS["/sgtattendance"]
 
 -- Build settings controls
 local function buildControls()
