@@ -1578,14 +1578,12 @@ end
     end
 
     d("|cFFD700[ProvisionMember]|r " .. SF.func._L("ScrollkeeperProvisionMember", "LOG_STARTING_SCAN"))
-    PM.manualScan()
-
-    zo_callLater(function()
+    PM.manualScan(function()
       populateGuildDropdown()
       updateStats()
       updateMemberList()
       d("|c00FF00[ProvisionMember]|r " .. SF.func._L("ScrollkeeperProvisionMember", "LOG_SCAN_COMPLETE_SHORT"))
-    end, 2000)
+    end)
   end)
 
   scanBtn:SetHandler("OnMouseEnter", function(self)
