@@ -151,7 +151,6 @@ Scrollkeeper.Localization["ScrollkeeperProvisionMember"] = {
    
   -- Success Messages
   SUCCESS_AMT_DETECTED = "Advanced Member Tooltipが検出されました - 拡張追跡が有効化されました",
-  SUCCESS_HISTOIRE_READY = "LibHistoire統合が準備完了 - 正確な加入時間が利用可能",
   SUCCESS_REMOVED = "%sを追跡から削除しました",
   SUCCESS_BULK_REMOVED = "%d名のメンバーを追跡から一括削除しました",
   SUCCESS_CLEARED_DATA = "%sの追跡データをクリアしました",
@@ -249,9 +248,11 @@ Scrollkeeper.Localization["ScrollkeeperProvisionMember"] = {
   LOG_NO_GUILD_ID = "ギルドIDが見つかりませんでした：%s",
   LOG_NO_GUILD_ID_SIMPLE = "ギルドIDが見つかりませんでした",
   LOG_FILTER_MODE = "%sモード - %d名のメンバーが選択されました",
-  LOG_INITIALIZING = "初期化中 - %s",
   ERROR_DATA_NOT_READY = "ギルド履歴データはまだ準備ができていません。しばらく待ってから再試行してください。",
   LOG_SCAN_COMPLETE_SHORT = "スキャン完了！",
+  ERROR_SCAN_RUNNING = "スキャンはすでに実行中です。",
+  ERROR_SCAN_ABORTED = "スキャンが中断されました: %s",
+  LOG_SCAN_REEVALUATED = "再評価: %d 人のメンバーが要件を満たしました",
   
   -- Mail Integration
   MAIL_SUBJECT_GOLD = "ギルド会費リマインダー - %s",
@@ -317,6 +318,8 @@ Scrollkeeper.Localization["ScrollkeeperProvisionMember"] = {
   DONOR_AMOUNT_TIP = "アクティブな寄付者と見なされるために必要なゴールド額",
   DONOR_PERIOD = "期間（日数）",
   DONOR_PERIOD_TIP = "過去X日間の寄付を確認",
+  PERIOD_TRADER_WEEK = "現在のトレーダー週を使用",
+  PERIOD_TRADER_WEEK_TIP = "日数の移動期間ではなく、直近のギルドトレーダー入れ替え以降の寄付を集計します。有効な間、上の期間は無視されます。",
   MANUAL_SCAN_NOTE = "注：メンバー追跡には手動スキャンが必要です。暫定メンバーウィンドウを開き、スキャンボタンをクリックして追跡が必要なメンバーを確認してください。",
 }
 
@@ -534,10 +537,7 @@ Scrollkeeper.Localization["ScrollkeeperHistory"] = {
   ERROR_FRAMEWORK_MISSING = "|cFFD700[ScrollkeeperHistory]|r エラー：ScrollkeeperFrameworkが見つかりません！",
   ERROR_WINDOW_FAILED = "|cFFD700[ScrollkeeperHistory]|r ウィンドウの作成に失敗しました",
   ERROR_NO_EXPORT = "|cFFD700[ScrollkeeperHistory]|r エクスポートするイベントがありません",
-    
-  -- Success Messages
-  SUCCESS_READY = "|cFFD700[ScrollkeeperHistory]|r 準備完了 - /sgthistoryを使用してください",
-    
+     
   -- Log Messages
   LOG_LOADING = "|cFFD700[ScrollkeeperHistory]|r 読み込み中... SF.Dataが存在します：%s",
   LOG_DATA_GETEVENTS = "|cFFD700[ScrollkeeperHistory]|r 読み込み時のSF.Data.getEvents：%s",
@@ -834,7 +834,6 @@ Scrollkeeper.Localization["ScrollkeeperData"] = {
   DESCRIPTION = "LibHistoireを使用したギルド履歴データのバックグラウンドキャッシングサービス。",
     
   -- Status Messages
-  HISTOIRE_READY = "LibHistoire準備完了 - すべてのギルド履歴をキャッシング中",
   CACHE_STATUS = "=== イベントキャッシュステータス ===",
   NO_CACHED_DATA = "キャッシュされたデータが見つかりません",
   CACHE_EMPTY = "キャッシュが空です - 初回読み込み時は数分かかる場合があります",
@@ -842,9 +841,6 @@ Scrollkeeper.Localization["ScrollkeeperData"] = {
     
   -- Log Messages
   EVENTS_CACHED = "%s/%s：%d件のイベントがキャッシュされました",
-  STARTED_CACHING = "%d個のギルドのキャッシングを開始しました",
-  MODULE_LOADED = "|cFFD700[ScrollkeeperData]|r 読み込み完了 - バックグラウンドキャッシングサービス",
-  LOG_MANUAL_DONATION = "%s - %dゴールドを手動で記録",
   MANUAL_DONATION_SOURCE = "手動入力",
     
   -- Error Messages
@@ -855,6 +851,7 @@ Scrollkeeper.Localization["ScrollkeeperData"] = {
   -- Cache Display
   GUILD_HEADER = "%s：",
   CATEGORY_LINE = "  %s：%d件のイベント",
+  CATEGORY_MANUAL_LINE = "  手動の寄付: %d",
   HISTOIRE_STATUS = "LibHistoire準備完了：%s",
     
   -- Category Names (for display)
@@ -1163,5 +1160,3 @@ Scrollkeeper.Localization["ScrollkeeperApplications"] = {
   ERROR_SAVE_FAILED = "|cFF5555[ScrollkeeperApplications]|r %sの応募の保存に失敗しました",
   SUCCESS_LOGGED_MULTIPLE = "|cFFD700[ScrollkeeperApplications]|r |cFFD700%s|rの応募を%d件記録しました",
 }
--- Backward compatibility (DEPRECATED)
-_G.Scrollkeeper.Localization = Scrollkeeper.Localization
