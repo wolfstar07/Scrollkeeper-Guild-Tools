@@ -11,9 +11,6 @@ local SF_Set = Scrollkeeper.Settings
 Scrollkeeper.GuildTools = Scrollkeeper.GuildTools or { Name = "ScrollkeeperGuildTools" }
 local _addon = Scrollkeeper.GuildTools
 
--- Backward compatibility (DEPRECATED)
-_G.ScrollkeeperGuildTools = Scrollkeeper.GuildTools
-
 if type(SF) ~= "table" or not SF.initAddon then
   return
 end
