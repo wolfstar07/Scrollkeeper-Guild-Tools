@@ -1,4 +1,3 @@
--- Scrollkeeper Guild Tools 
 -- ScrollkeeperFramework
 
 -- 🪞 Local references
@@ -560,12 +559,11 @@ local function setupChatMenuButtons()
       
       -- Check if any windows are open
       local anyOpen = false
-      local windows = {
-        GetControl("ScrollkeeperNotebook_Window"),
-        GetControl("ScrollkeeperHistory_Window"),
-        GetControl("ScrollkeeperProvision_Window"),
-        GetControl("ScrollkeeperMail_Window")
-      }
+      local windows = {}
+      for _, name in ipairs({ "ScrollkeeperNotebook_Window", "ScrollkeeperHistory_Window", "ScrollkeeperProvision_Window", "ScrollkeeperMail_Window" }) do
+        local win = GetControl(name)
+        if win then windows[#windows + 1] = win end
+      end
       
       for _, win in ipairs(windows) do
         if win and not win:IsHidden() then
