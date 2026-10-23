@@ -151,7 +151,6 @@ Scrollkeeper.Localization["ScrollkeeperProvisionMember"] = {
    
   -- Success Messages
   SUCCESS_AMT_DETECTED = "Advanced Member Tooltip обнаружен - расширенное отслеживание включено",
-  SUCCESS_HISTOIRE_READY = "Интеграция LibHistoire готова - точное время присоединения доступно",
   SUCCESS_REMOVED = "%s удалён из отслеживания",
   SUCCESS_BULK_REMOVED = "%d членов массово удалены из отслеживания",
   SUCCESS_CLEARED_DATA = "Данные отслеживания очищены для %s",
@@ -249,9 +248,11 @@ Scrollkeeper.Localization["ScrollkeeperProvisionMember"] = {
   LOG_NO_GUILD_ID = "Не удалось найти ID гильдии для: %s",
   LOG_NO_GUILD_ID_SIMPLE = "Не удалось найти ID гильдии",
   LOG_FILTER_MODE = "Режим %s - %d членов выбрано",
-  LOG_INITIALIZING = "Инициализация - %s",
   ERROR_DATA_NOT_READY = "Данные истории гильдии еще не готовы. Подождите немного и попробуйте снова.",
   LOG_SCAN_COMPLETE_SHORT = "Сканирование завершено!",
+  ERROR_SCAN_RUNNING = "Сканирование уже выполняется.",
+  ERROR_SCAN_ABORTED = "Сканирование прервано: %s",
+  LOG_SCAN_REEVALUATED = "Пересмотрено: %d участников теперь соответствуют требованиям",
   
   -- Mail Integration
   MAIL_SUBJECT_GOLD = "Напоминание о Взносах Гильдии - %s",
@@ -317,6 +318,8 @@ Scrollkeeper.Localization["ScrollkeeperProvisionMember"] = {
   DONOR_AMOUNT_TIP = "Количество золота, необходимое для того, чтобы считаться активным жертвователем",
   DONOR_PERIOD = "Период Времени (Дней)",
   DONOR_PERIOD_TIP = "Проверять пожертвования за последние X дней",
+  PERIOD_TRADER_WEEK = "Использовать текущую торговую неделю",
+  PERIOD_TRADER_WEEK_TIP = "Учитывать пожертвования с момента последней смены торговцев гильдии вместо скользящего числа дней. Период выше игнорируется, пока опция включена.",
   MANUAL_SCAN_NOTE = "Примечание: Отслеживание участников требует ручного сканирования. Откройте окно Временных Участников и нажмите кнопку Сканировать, чтобы проверить участников, нуждающихся в отслеживании.",
 }
 
@@ -534,10 +537,7 @@ Scrollkeeper.Localization["ScrollkeeperHistory"] = {
   ERROR_FRAMEWORK_MISSING = "|cFFD700[ScrollkeeperHistory]|r ОШИБКА: ScrollkeeperFramework отсутствует!",
   ERROR_WINDOW_FAILED = "|cFFD700[ScrollkeeperHistory]|r Не удалось создать окно",
   ERROR_NO_EXPORT = "|cFFD700[ScrollkeeperHistory]|r Нет событий для экспорта",
-    
-  -- Success Messages
-  SUCCESS_READY = "|cFFD700[ScrollkeeperHistory]|r Готово - используйте /sgthistory",
-    
+ 
   -- Log Messages
   LOG_LOADING = "|cFFD700[ScrollkeeperHistory]|r Загрузка... SF.Data существует: %s",
   LOG_DATA_GETEVENTS = "|cFFD700[ScrollkeeperHistory]|r SF.Data.getEvents при загрузке: %s",
@@ -834,7 +834,6 @@ Scrollkeeper.Localization["ScrollkeeperData"] = {
   DESCRIPTION = "Фоновая служба кэширования для данных истории гильдии с использованием LibHistoire.",
     
   -- Status Messages
-  HISTOIRE_READY = "LibHistoire готов - кэширование всей истории гильдии",
   CACHE_STATUS = "=== Статус Кэша Событий ===",
   NO_CACHED_DATA = "Кэшированные данные не найдены",
   CACHE_EMPTY = "Кэш пуст - это может занять несколько минут при первой загрузке",
@@ -842,9 +841,6 @@ Scrollkeeper.Localization["ScrollkeeperData"] = {
     
   -- Log Messages
   EVENTS_CACHED = "%s/%s: %d событий в кэше",
-  STARTED_CACHING = "Начато кэширование %d гильдий",
-  MODULE_LOADED = "|cFFD700[ScrollkeeperData]|r Загружен - фоновая служба кэширования",
-  LOG_MANUAL_DONATION = "%s - %d золота записано вручную",
   MANUAL_DONATION_SOURCE = "Ручной Ввод",
     
   -- Error Messages
@@ -855,6 +851,7 @@ Scrollkeeper.Localization["ScrollkeeperData"] = {
   -- Cache Display
   GUILD_HEADER = "%s:",
   CATEGORY_LINE = "  %s: %d событий",
+  CATEGORY_MANUAL_LINE = "  Ручные пожертвования: %d",
   HISTOIRE_STATUS = "LibHistoire готов: %s",
     
   -- Category Names (for display)
@@ -1163,5 +1160,3 @@ Scrollkeeper.Localization["ScrollkeeperApplications"] = {
   ERROR_SAVE_FAILED = "|cFF5555[ScrollkeeperApplications]|r Не удалось сохранить заявку от %s",
   SUCCESS_LOGGED_MULTIPLE = "|cFFD700[ScrollkeeperApplications]|r Записано заявок для |cFFD700%s|r: %d",
 }
--- Backward compatibility (DEPRECATED)
-_G.Scrollkeeper.Localization = Scrollkeeper.Localization
