@@ -16,9 +16,6 @@ end
 Scrollkeeper.ColorThemes = Scrollkeeper.ColorThemes or { Name = "ScrollkeeperColorThemes" }
 local _addon = Scrollkeeper.ColorThemes
 
--- Backward compatibility (DEPRECATED)
-_G.ScrollkeeperColorThemes = Scrollkeeper.ColorThemes
-
 -- 🎨 Define themes with hex values
 local themes = {
   Ember = { -- For Dingo
