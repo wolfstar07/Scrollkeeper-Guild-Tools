@@ -151,7 +151,6 @@ Scrollkeeper.Localization["ScrollkeeperProvisionMember"] = {
  
   -- Success Messages
   SUCCESS_AMT_DETECTED = "Advanced Member Tooltip detected - enhanced tracking enabled",
-  SUCCESS_HISTOIRE_READY = "LibHistoire integration ready - accurate join times available",
   SUCCESS_REMOVED = "Removed %s from tracking",
   SUCCESS_BULK_REMOVED = "Bulk removed %d members from tracking",
   SUCCESS_CLEARED_DATA = "Cleared tracking data for %s",
@@ -249,9 +248,11 @@ Scrollkeeper.Localization["ScrollkeeperProvisionMember"] = {
   LOG_NO_GUILD_ID = "Could not find guild ID for: %s",
   LOG_NO_GUILD_ID_SIMPLE = "Could not find guild ID",
   LOG_FILTER_MODE = "%s mode - %d members selected",
-  LOG_INITIALIZING = "Initializing - %s",
   ERROR_DATA_NOT_READY = "Guild history data not ready yet. Wait a moment and try again.",
   LOG_SCAN_COMPLETE_SHORT = "Scan complete!",
+  ERROR_SCAN_RUNNING = "A scan is already running.",
+  ERROR_SCAN_ABORTED = "Scan aborted: %s",
+  LOG_SCAN_REEVALUATED = "Re-evaluated: %d members now meet requirements",
 
   -- Mail Integration
   MAIL_SUBJECT_GOLD = "Guild Dues Reminder - %s",
@@ -317,6 +318,8 @@ Scrollkeeper.Localization["ScrollkeeperProvisionMember"] = {
   DONOR_AMOUNT_TIP = "Gold amount required to be considered an active donor",
   DONOR_PERIOD = "Time Period (Days)",
   DONOR_PERIOD_TIP = "Check donations within the last X days",
+  PERIOD_TRADER_WEEK = "Use current trader week",
+  PERIOD_TRADER_WEEK_TIP = "Count donations since the most recent guild trader flip instead of a rolling number of days. The time period above is ignored while this is enabled.",
   MANUAL_SCAN_NOTE = "Note: Member tracking requires manual scanning. Open the Provisional Member window and click the Scan button to check for members needing tracking.",
 }
 
@@ -534,9 +537,6 @@ Scrollkeeper.Localization["ScrollkeeperHistory"] = {
   ERROR_FRAMEWORK_MISSING = "|cFFD700[ScrollkeeperHistory]|r ERROR: ScrollkeeperFramework missing!",
   ERROR_WINDOW_FAILED = "|cFFD700[ScrollkeeperHistory]|r Failed to create window",
   ERROR_NO_EXPORT = "|cFFD700[ScrollkeeperHistory]|r No events to export",
-  
-  -- Success Messages
-  SUCCESS_READY = "|cFFD700[ScrollkeeperHistory]|r Ready - use /sgthistory",
   
   -- Log Messages
   LOG_LOADING = "|cFFD700[ScrollkeeperHistory]|r Loading... SF.Data exists: %s",
@@ -834,7 +834,6 @@ Scrollkeeper.Localization["ScrollkeeperData"] = {
   DESCRIPTION = "Background caching service for guild history data using LibHistoire.",
   
   -- Status Messages
-  HISTOIRE_READY = "LibHistoire ready - caching all guild history",
   CACHE_STATUS = "=== Event Cache Status ===",
   NO_CACHED_DATA = "No cached data found",
   CACHE_EMPTY = "Cache is empty - this may take a few minutes on first load",
@@ -842,9 +841,6 @@ Scrollkeeper.Localization["ScrollkeeperData"] = {
   
   -- Log Messages
   EVENTS_CACHED = "%s/%s: %d events cached",
-  STARTED_CACHING = "Started caching %d guilds",
-  MODULE_LOADED = "|cFFD700[ScrollkeeperData]|r Loaded - background caching service",
-  LOG_MANUAL_DONATION = "Manual donation logged: %s - %d gold",
   MANUAL_DONATION_SOURCE = "Manual Entry",
   
   -- Error Messages
@@ -855,6 +851,7 @@ Scrollkeeper.Localization["ScrollkeeperData"] = {
   -- Cache Display
   GUILD_HEADER = "%s:",
   CATEGORY_LINE = "  %s: %d events",
+  CATEGORY_MANUAL_LINE = "  Manual donations: %d",
   HISTOIRE_STATUS = "LibHistoire ready: %s",
   
   -- Category Names (for display)
@@ -1163,5 +1160,3 @@ Scrollkeeper.Localization["ScrollkeeperApplications"] = {
   ERROR_SAVE_FAILED = "|cFF5555[ScrollkeeperApplications]|r Failed to save application from %s",
   SUCCESS_LOGGED_MULTIPLE = "|cFFD700[ScrollkeeperApplications]|r Logged %d applications for |cFFD700%s|r",
 }
--- Backward compatibility (DEPRECATED)
-_G.Scrollkeeper.Localization = Scrollkeeper.Localization
