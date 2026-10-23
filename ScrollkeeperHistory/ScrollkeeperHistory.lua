@@ -1,3 +1,5 @@
+-- ScrollkeeperHistory
+
 -- Local references
 local Scrollkeeper = Scrollkeeper
 local SF = Scrollkeeper.Framework
@@ -11,9 +13,6 @@ end
 -- Initialize module
 Scrollkeeper.History = Scrollkeeper.History or { Name = "ScrollkeeperHistory" }
 local _addon = Scrollkeeper.History
-
--- Backward compatibility (DEPRECATED)
-_G.ScrollkeeperHistory = Scrollkeeper.History
 
 -- Prevent multiple initialization
 if _addon._initialized then return end
@@ -985,7 +984,7 @@ refreshEvents = function(window)
   
   if window.statusLabel then
     if #window.allEvents == 0 then
-      if SF.Data.isReady and SF.Data.isReady() then
+      if SF.Data.isGuildLoaded and SF.Data.isGuildLoaded(window.selectedGuildName) then
         window.statusLabel:SetText(SF.func._L("ScrollkeeperHistory", "STATUS_NO_EVENTS_CACHE"))
       else
         window.statusLabel:SetText(SF.func._L("ScrollkeeperHistory", "STATUS_WAITING_LH"))
@@ -1466,7 +1465,6 @@ local function initialize()
   end
   
   _addon._initialized = true
-  d(SF.func._L("ScrollkeeperHistory", "SUCCESS_READY"))
 end
 
 -- Keep the same callback registration as before
