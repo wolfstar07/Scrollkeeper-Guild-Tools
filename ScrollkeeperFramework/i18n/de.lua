@@ -151,7 +151,6 @@ Scrollkeeper.Localization["ScrollkeeperProvisionMember"] = {
  
   -- Success Messages
   SUCCESS_AMT_DETECTED = "Advanced Member Tooltip erkannt - erweiterte Verfolgung aktiviert",
-  SUCCESS_HISTOIRE_READY = "LibHistoire-Integration bereit - genaue Beitrittszeiten verfügbar",
   SUCCESS_REMOVED = "%s aus Verfolgung entfernt",
   SUCCESS_BULK_REMOVED = "%d Mitglieder massenweise aus Verfolgung entfernt",
   SUCCESS_CLEARED_DATA = "Verfolgungsdaten für %s gelöscht",
@@ -249,9 +248,11 @@ Scrollkeeper.Localization["ScrollkeeperProvisionMember"] = {
   LOG_NO_GUILD_ID = "Konnte Gilden-ID nicht finden für: %s",
   LOG_NO_GUILD_ID_SIMPLE = "Konnte Gilden-ID nicht finden",
   LOG_FILTER_MODE = "%s-Modus - %d Mitglieder ausgewählt",
-  LOG_INITIALIZING = "Initialisiere - %s",
   ERROR_DATA_NOT_READY = "Gildenhistoriendaten sind noch nicht bereit. Warte einen Moment und versuche es erneut.",
   LOG_SCAN_COMPLETE_SHORT = "Scan abgeschlossen!",
+  ERROR_SCAN_RUNNING = "Es läuft bereits ein Scan.",
+  ERROR_SCAN_ABORTED = "Scan abgebrochen: %s",
+  LOG_SCAN_REEVALUATED = "Neu bewertet: %d Mitglieder erfüllen jetzt die Anforderungen",
 
   -- Mail Integration
   MAIL_SUBJECT_GOLD = "Gildenbeitrags-Erinnerung - %s",
@@ -317,6 +318,8 @@ Scrollkeeper.Localization["ScrollkeeperProvisionMember"] = {
   DONOR_AMOUNT_TIP = "Goldbetrag, der erforderlich ist, um als aktiver Spender zu gelten",
   DONOR_PERIOD = "Zeitraum (Tage)",
   DONOR_PERIOD_TIP = "Spenden innerhalb der letzten X Tage überprüfen",
+  PERIOD_TRADER_WEEK = "Aktuelle Händlerwoche verwenden",
+  PERIOD_TRADER_WEEK_TIP = "Zählt Spenden seit dem letzten Händlerwechsel der Gilde statt einer gleitenden Anzahl von Tagen. Der obige Zeitraum wird ignoriert, solange diese Option aktiv ist.",
   MANUAL_SCAN_NOTE = "Hinweis: Die Mitgliederverfolgung erfordert manuelles Scannen. Öffne das Fenster für provisorische Mitglieder und klicke auf die Schaltfläche Scannen, um Mitglieder zu überprüfen, die verfolgt werden müssen.",
 }
 
@@ -534,10 +537,7 @@ Scrollkeeper.Localization["ScrollkeeperHistory"] = {
   ERROR_FRAMEWORK_MISSING = "|cFFD700[ScrollkeeperHistory]|r FEHLER: ScrollkeeperFramework fehlt!",
   ERROR_WINDOW_FAILED = "|cFFD700[ScrollkeeperHistory]|r Fenster erstellen fehlgeschlagen",
   ERROR_NO_EXPORT = "|cFFD700[ScrollkeeperHistory]|r Keine Ereignisse zum Exportieren",
-  
-  -- Success Messages
-  SUCCESS_READY = "|cFFD700[ScrollkeeperHistory]|r Bereit - verwende /sgthistory",
-  
+
   -- Log Messages
   LOG_LOADING = "|cFFD700[ScrollkeeperHistory]|r Lädt... SF.Data existiert: %s",
   LOG_DATA_GETEVENTS = "|cFFD700[ScrollkeeperHistory]|r SF.Data.getEvents beim Laden: %s",
@@ -662,8 +662,6 @@ Scrollkeeper.Localization["ScrollkeeperHistory"] = {
   
   -- Member Names
   MEMBER_UNKNOWN = "Unbekannt",
-    
-  LOG_LIBSCROLL_NOT_FOUND = "|cFFD700[ScrollkeeperHistory]|r LibScroll nicht gefunden - verwende einfaches Scrollen",
 }
 
 --------------------------------------------------------------------------------
@@ -834,7 +832,6 @@ Scrollkeeper.Localization["ScrollkeeperData"] = {
   DESCRIPTION = "Hintergrund-Caching-Dienst für Gildenhistorie-Daten mit LibHistoire.",
   
   -- Status Messages
-  HISTOIRE_READY = "LibHistoire bereit - cacht gesamte Gildenhistorie",
   CACHE_STATUS = "=== Ereignis-Cache-Status ===",
   NO_CACHED_DATA = "Keine zwischengespeicherten Daten gefunden",
   CACHE_EMPTY = "Cache ist leer - dies kann beim ersten Laden einige Minuten dauern",
@@ -842,9 +839,6 @@ Scrollkeeper.Localization["ScrollkeeperData"] = {
   
   -- Log Messages
   EVENTS_CACHED = "%s/%s: %d Ereignisse zwischengespeichert",
-  STARTED_CACHING = "Caching von %d Gilden gestartet",
-  MODULE_LOADED = "|cFFD700[ScrollkeeperData]|r Geladen - Hintergrund-Caching-Dienst",
-  LOG_MANUAL_DONATION = "%s - %d Gold manuell protokolliert",
   MANUAL_DONATION_SOURCE = "Manueller Eintrag",
   
   -- Error Messages
@@ -855,6 +849,7 @@ Scrollkeeper.Localization["ScrollkeeperData"] = {
   -- Cache Display
   GUILD_HEADER = "%s:",
   CATEGORY_LINE = "  %s: %d Ereignisse",
+  CATEGORY_MANUAL_LINE = "  Manuelle Spenden: %d",
   HISTOIRE_STATUS = "LibHistoire bereit: %s",
   
   -- Category Names (for display)
@@ -1163,5 +1158,3 @@ Scrollkeeper.Localization["ScrollkeeperApplications"] = {
   ERROR_SAVE_FAILED = "|cFF5555[ScrollkeeperApplications]|r Speichern der Bewerbung von %s fehlgeschlagen",
   SUCCESS_LOGGED_MULTIPLE = "|cFFD700[ScrollkeeperApplications]|r %d bewerbungen für |cFFD700%s|r protokolliert",
 }
--- Backward compatibility (DEPRECATED)
-_G.Scrollkeeper.Localization = Scrollkeeper.Localization
