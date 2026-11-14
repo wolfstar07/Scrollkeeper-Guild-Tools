@@ -662,8 +662,6 @@ Scrollkeeper.Localization["ScrollkeeperHistory"] = {
     
   -- Member Names
   MEMBER_UNKNOWN = "不明",
-    
-  LOG_LIBSCROLL_NOT_FOUND = "|cFFD700[ScrollkeeperHistory]|r LibScrollが見つかりません - 基本スクロールを使用します",
 }
 
 --------------------------------------------------------------------------------
